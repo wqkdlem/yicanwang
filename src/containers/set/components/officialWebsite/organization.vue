@@ -1,0 +1,249 @@
+<template>
+  <div class="categoryList">
+    <div class="categoryList-top">
+      <div class="categoryList-top-tit">
+        机构媒体联系列表
+        <!-- <span style="color:#3CB371">(2)</span> -->
+      </div>
+      <div class="categoryList-top-con">
+        <div class="categoryList-top-con-left">
+          <div class="categoryList-top-con-i">
+            位置：
+            <el-select v-model="dateData" placeholder="请选择">
+              <el-option
+                v-for="item in searchData.level"
+                :key="item.name"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="categoryList-top-con-i">
+            关键字：
+            <el-input style="width:230px;" v-model="keyword" placeholder="请输入关键字"></el-input>
+          </div>
+        </div>
+        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+      </div>
+    </div>
+    <div class="categoryList-bot">
+      <div class="categoryList-bot-bot">
+        <el-table :data="tableData.data" border :height="700" style="width: 100%;">
+          <!-- <el-table-column align="center" type="selection" width="55"></el-table-column> -->
+          <el-table-column align="center" prop="id" label="ID"></el-table-column>
+          <el-table-column align="center" prop="name" label="类型"></el-table-column>
+          <el-table-column align="center" prop="name" label="机构/媒体"></el-table-column>
+          <el-table-column align="center" prop="title" label="联系人"></el-table-column>
+          <el-table-column align="center" prop="name" label="联系电话"></el-table-column>
+          <el-table-column align="center" prop="name" label="邮箱"></el-table-column>
+          <el-table-column align="center" prop="title" label="主题"></el-table-column>
+          <el-table-column align="center" prop="is_show" label="状态">
+            <div slot-scope="scope">
+              <i
+                v-if="scope.row.is_show"
+                class="el-icon-check"
+                style="font-size:22px;color:#3CB371;"
+              ></i>
+              <i
+                v-if="!scope.row.is_show"
+                class="el-icon-close"
+                style="font-size:22px;color:#FB6534;"
+              ></i>
+            </div>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <span class="demonstration">每页显示</span>
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="100"
+            layout="sizes, prev, pager, next"
+            :total="tableData.page.data_count"
+          ></el-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { get, post, del, put, fakeGet } from "@/utils/request.js";
+export default {
+  name: "HelloWorld",
+  data() {
+    return {
+      searchData: {},
+      tableData: "",
+      changeCateId: "",
+      typeId: "",
+      basicInformation: {
+        name: "",
+        title: "",
+        weight: ""
+      },
+      value: "",
+      shensuo: require("@/assets/new_images/shensuo.png"),
+      collecta: require("@/assets/new_images/collecta.png"),
+      collectb: require("@/assets/new_images/collectb.png"),
+      message: require("@/assets/new_images/message.png"),
+      uplodingImg: require("@/assets/new_images/uplodingImg.png"),
+      ifChangeGoods: false,
+      keyword: "",
+      modelTitle: "",
+      page: 1,
+      limit: 10,
+      ifChanCate: false,
+      ifShowDele: false,
+      dateData: ""
+    };
+  },
+  created() {
+    this.getTableData();
+  },
+  methods: {
+    async getTableData() {
+      let url = "/admin/community_label";
+      // let { type = "" } = this.searchDataidArry;
+      let params = {
+        ctype: this.typeId,
+        keyword: this.keyword,
+        page: this.page,
+        limit: this.limit
+      };
+      let response = await get({ url, params });
+      this.tableData = response;
+    },
+    onChangeCate(data) {
+      this.ifChanCate = true;
+      this.modelTitle = "修改轮播图";
+      this.basicInformation = data;
+    },
+    onAddCate() {
+      this.ifChanCate = true;
+      this.modelTitle = "新增轮播图";
+      this.basicInformation = {
+        name: "",
+        title: "",
+        weight: ""
+      };
+    },
+    handleSizeChange(data) {
+      this.page = 1;
+      this.limit = data;
+      this.getTableData();
+    },
+    handleCurrentChange(data) {
+      this.page = data;
+      this.getTableData();
+    }
+  }
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="less">
+.el-button {
+  height: 40px;
+}
+.el-icon-plusb {
+  color: rgba(153, 153, 153, 1);
+  font-size: 40px;
+}
+.categoryList {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  .categoryList-top {
+    border-radius: 4px;
+    width: 100%;
+    background-color: #fff;
+    padding: 20px 25px;
+    text-align: left;
+    box-sizing: border-box;
+    .categoryList-top-tit {
+      font-size: 18px;
+      font-weight: 500;
+      color: rgba(51, 51, 51, 1);
+    }
+    .categoryList-top-con {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+      .categoryList-top-con-left {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        flex-wrap: wrap;
+        .categoryList-top-con-i {
+          margin-top: 8px;
+          margin-right: 60px;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
+  .categoryList-bot {
+    margin-top: 20px;
+    border-radius: 4px;
+    width: 100%;
+    // background-color: #fff;
+    flex: auto;
+    text-align: left;
+    // padding: 20px 25px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    .categoryList-bot-top {
+      display: flex;
+      justify-content: space-between;
+      .categoryList-bot-top-w {
+        display: flex;
+        justify-content: start;
+        .categoryList-bot-top-i {
+          // width: 130px;
+          margin-right: 30px;
+          padding: 0 12px;
+          box-sizing: border-box;
+          background: rgba(60, 179, 113, 1);
+          color: #ffffff;
+          height: 32px;
+          border-radius: 4px;
+          display: flex;
+          justify-content: start;
+          align-items: center;
+          span {
+            display: inline-block;
+            margin-left: 5px;
+          }
+        }
+      }
+    }
+    .categoryList-bot-bot {
+      margin-top: 20px;
+    }
+  }
+  .categoryList-bot-bot {
+    margin-top: 20px;
+    flex: auto;
+    .block {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+  }
+  .el-table-column-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1px solid red;
+  }
+}
+</style>
