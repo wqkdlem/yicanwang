@@ -1,8 +1,8 @@
 <template>
   <div class="userListDetail">
     <div class="userListDetail-top">
-      <div class="userListDetail-top-tit">用户操作</div>
-      <div class="userListDetail-top-con" @click="onShowUserList">返回</div>
+      <div class="userListDetail-top-tit">订单详情</div>
+      <div class="userListDetail-top-con" @click="onToRawMaterial">返回</div>
     </div>
     <div class="userListDetail-bot">
       <div class="userListDetail-bot-w">
@@ -18,66 +18,103 @@
         <div class="userListDetail-bot-rig">
           <div v-if="navLeftId===1">
             <div class="userListDetail-bot-rig-i">
-              <div class="userListDetail-bot-rig-i-left">用户名</div>
-              <div class="userListDetail-bot-rig-i-right">{{basicInformation.username}}</div>
+              <div class="userListDetail-bot-rig-i-left">订单编号</div>
+              <div class="userListDetail-bot-rig-i-right">{{basicInformation.id}}</div>
             </div>
             <div class="userListDetail-bot-rig-i">
-              <div class="userListDetail-bot-rig-i-left">真实姓名</div>
-              <div class="userListDetail-bot-rig-i-right">{{basicInformation.realname}}</div>
+              <div class="userListDetail-bot-rig-i-left">订单状态</div>
+              <div class="userListDetail-bot-rig-i-right">{{basicInformation.status_text}}</div>
+            </div>
+            <div class="userListDetail-bot-rig-i">
+              <div class="userListDetail-bot-rig-i-left">下单用户</div>
+              <div class="userListDetail-bot-rig-i-right">{{basicInformation.user.username}}</div>
             </div>
             <div class="userListDetail-bot-rig-i">
               <div class="userListDetail-bot-rig-i-left">手机号</div>
-              <div class="userListDetail-bot-rig-i-right">{{basicInformation.mobilePhone}}</div>
+              <div class="userListDetail-bot-rig-i-right">{{basicInformation.user.mobilePhone}}</div>
             </div>
             <div class="userListDetail-bot-rig-i">
-              <div class="userListDetail-bot-rig-i-left">等级</div>
+              <div class="userListDetail-bot-rig-i-left">支付价格</div>
+              <div class="userListDetail-bot-rig-i-right">{{basicInformation.order_amount}}</div>
+            </div>
+            <div class="userListDetail-bot-rig-i">
+              <div class="userListDetail-bot-rig-i-left">获得积分</div>
+              <div class="userListDetail-bot-rig-i-right">{{basicInformation.integral}}</div>
+            </div>
+            <div class="userListDetail-bot-rig-i">
+              <div class="userListDetail-bot-rig-i-left">价格详情</div>
+              <div class="userListDetail-bot-rig-i-right">{{basicInformation.goods_amount}}</div>
+            </div>
+            <!-- -------------------- -->
+            <div
+              class="userListDetail-bot-rig-i"
+              style="border-top:1px solid #D8D8D8;margin-top:10px;padding-top:10px"
+            >
+              <div class="userListDetail-bot-rig-i-left">收货人</div>
+              <div
+                class="userListDetail-bot-rig-i-right"
+              >{{basicInformation.order_address.username}}</div>
+            </div>
+            <div class="userListDetail-bot-rig-i">
+              <div class="userListDetail-bot-rig-i-left">收货电话</div>
+              <div class="userListDetail-bot-rig-i-right">{{basicInformation.telphone}}</div>
+            </div>
+            <div class="userListDetail-bot-rig-i">
+              <div class="userListDetail-bot-rig-i-left">收货地址</div>
+              <div class="userListDetail-bot-rig-i-right">{{basicInformation.address}}</div>
+            </div>
+            <div class="userListDetail-bot-rig-i">
+              <div class="userListDetail-bot-rig-i-left">留言</div>
+              <div class="userListDetail-bot-rig-i-right">{{basicInformation.remark}}</div>
+            </div>
+            <!-- ---------------- -->
+            <div
+              class="userListDetail-bot-rig-i"
+              style="border-top:1px solid #D8D8D8;margin-top:10px;padding-top:10px"
+            >
+              <div class="userListDetail-bot-rig-i-left">快递公司</div>
               <div
                 class="userListDetail-bot-rig-i-right"
               >{{basicInformation.level&&basicInformation.level.level_name?basicInformation.level.level_name:''}}</div>
             </div>
             <div class="userListDetail-bot-rig-i">
-              <div class="userListDetail-bot-rig-i-left">头像</div>
-              <img style="border:1px solid red;" :src="basicInformation.headImg" alt />
+              <div class="userListDetail-bot-rig-i-left">快递编号</div>
+              <div class="userListDetail-bot-rig-i-right">{{basicInformation.expressno}}</div>
             </div>
-            <div class="userListDetail-bot-rig-i">
-              <div class="userListDetail-bot-rig-i-left">余额</div>
-              <div class="userListDetail-bot-rig-i-right">{{basicInformation.balance}}</div>
-            </div>
-            <div class="userListDetail-bot-rig-i">
-              <div class="userListDetail-bot-rig-i-left">积分</div>
-              <div class="userListDetail-bot-rig-i-right">{{basicInformation.integral}}</div>
-            </div>
-            <div class="userListDetail-bot-rig-i">
+            <!-- <div class="userListDetail-bot-rig-i">
               <div class="userListDetail-bot-rig-i-left">是否可用</div>
               <div class="userListDetail-bot-rig-i-right">
                 <el-radio v-model="basicInformation.status" :label="1">是</el-radio>
                 <el-radio v-model="basicInformation.status" :label="2">否</el-radio>
               </div>
-            </div>
-          </div>
-          <div v-if="navLeftId===1">
-            <div class="submit" @click="changeContent">提交</div>
+            </div>-->
           </div>
           <div v-if="navLeftId==2">
-            <el-table :data="addressList" border :height="500" style="width: 100%;">
-              <el-table-column align="center" prop="date" label="收货人">
-                <div slot-scope="slot">
-                  <div>{{slot.row.username}}</div>
-                  <div v-if="slot.row.is_default" style="font-size:13px;color:#3CB371">默认地址</div>
-                </div>
+            <el-table :data="basicInformation.goods" border :height="500" style="width: 100%;">
+              <el-table-column align="goods_name" prop="date" label="商品"></el-table-column>
+              <el-table-column align="center" prop="telphone" label="图片">
+                <img
+                  slot-scope="solt"
+                  :src="solt.row.goods_image"
+                  style="width:50px;height:50px"
+                  alt
+                />
               </el-table-column>
-              <el-table-column align="center" prop="telphone" label="电话"></el-table-column>
-              <el-table-column align="center" prop="address" label="地址"></el-table-column>
-              <el-table-column align="center" prop="createtime" label="创建时间"></el-table-column>
+              <el-table-column align="center" prop="totalPrice" label="价格"></el-table-column>
+              <el-table-column align="center" prop="goods_num" label="数量"></el-table-column>
             </el-table>
           </div>
-          <div v-if="navLeftId===3||navLeftId===4">
-            <el-table :data="userinfo" border :height="500" style="width: 100%;">
+          <div v-if="navLeftId===3">
+            <logistics></logistics>
+            <!-- <el-table :data="userinfo" border :height="500" style="width: 100%;">
               <el-table-column align="center" prop="date" label="充值金额" width="180"></el-table-column>
               <el-table-column align="center" prop="address" label="充值平台"></el-table-column>
               <el-table-column align="center" prop="name" label="充值时间" width="180"></el-table-column>
               <el-table-column align="center" prop="address" label="状态"></el-table-column>
-            </el-table>
+            </el-table>-->
+          </div>
+          <div v-if="navLeftId===4&&logData">
+            <logRecord :logData="logData"></logRecord>
           </div>
         </div>
       </div>
@@ -87,11 +124,11 @@
           <!-- @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage2"-->
+          <!-- :total="tableData.page.data_count" -->
           <el-pagination
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
-            :total="tableData.page.data_count"
           ></el-pagination>
         </div>
       </div>
@@ -101,30 +138,34 @@
 
 <script>
 import { get, post, del, put, fakeGet } from "@/utils/request.js";
+import logistics from "@/components/logistics.vue";
+import logRecord from "@/components/logRecord.vue";
 export default {
   name: "HelloWorld",
-  props: ["userDetailData"],
+  props: ["rawMaterialData"],
+  components: { logistics, logRecord },
   data() {
     return {
       value: "",
       radio: 1,
       navLeft: [
         { title: "基本信息", id: 1 },
-        { title: "收货地址", id: 2 },
-        { title: "充值记录", id: 3 },
-        { title: "消费记录", id: 4 }
+        { title: "购买商品", id: 2 },
+        { title: "物流追踪", id: 3 },
+        { title: "日志记录", id: 4 }
       ],
       userinfo: "",
       addressList: [],
       navLeftId: 1,
       basicInformation: {},
+      logData: "",
       page: 1,
       limit: 10
     };
   },
   created() {
     this.getUserinfo();
-    this.getAddress();
+    this.getLogData();
   },
   methods: {
     getNavLeftId(id) {
@@ -133,38 +174,29 @@ export default {
     },
     //获取用户基本信息
     async getUserinfo() {
-      let url = "/admin/member/";
+      let url = "/admin/raw_order";
       let params = {
-        id: this.userDetailData.id
+        order_id: this.rawMaterialData
       };
       let response = await get({ url, params });
       this.basicInformation = response;
+      console.log(this.basicInformation, "订单详情");
     },
-    //用户基本信息修改
-    async changeContent() {
-      let data = {
-        id: this.userDetailData.id,
-        status: this.basicInformation.status
-      };
-      let url = "/admin/member/";
-      let response = await put({ url, data });
-      console.log(response.msg);
-      if (response.msg) return this.$message(response.msg);
-      this.getUserinfo();
-      this.$message("修改成功");
-    },
-    onShowUserList() {
-      this.$emit("onShowUserList");
-    },
-    async getAddress() {
-      let url = "/admin/address";
+    //获取日志信息
+    async getLogData() {
+      alert("qingqiu");
       let params = {
-        id: this.userDetailData.id,
-        page: this.page,
-        limit: this.limit
+        order_id: this.rawMaterialData
       };
+      let url = "/admin/order_log/";
       let response = await get({ url, params });
-      this.addressList = response.data;
+      if (response.msg) return this.$message(response.msg);
+      this.logData = response;
+      console.log(this.logData);
+    },
+    //返回
+    onToRawMaterial() {
+      this.$emit("onToRawMaterial");
     },
     handleSizeChange(data) {
       this.page = 1;
@@ -257,12 +289,6 @@ export default {
             font-size: 16px;
             color: #979797;
             font-weight: 400;
-            margin-left: 30px;
-          }
-          img {
-            width: 80px;
-            height: 80px;
-            display: inline-block;
             margin-left: 30px;
           }
         }

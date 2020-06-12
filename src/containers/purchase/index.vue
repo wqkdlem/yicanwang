@@ -112,10 +112,20 @@
           </div>
           <div class="content-right-w" v-else-if="currentlySelected&&currentlySelected[0]==='订单'">
             <div v-if="currentlySelected[1]==='原料订单'">
-              <materialOrder></materialOrder>
+              <div>
+                <div v-if="ifShowRawMaterial">
+                  <rawMaterial @onToRawMaterialDetail="onToRawMaterialDetail"></rawMaterial>
+                </div>
+                <div v-if="!ifShowRawMaterial">
+                  <rawMaterialDetail
+                    @onToRawMaterial="onToRawMaterial"
+                    :rawMaterialData="rawMaterialData"
+                  ></rawMaterialDetail>
+                </div>
+              </div>
             </div>
             <div v-else-if="currentlySelected[1]==='汤料订单'">
-              <orderSoup></orderSoup>
+              <soupBases></soupBases>
             </div>
           </div>
           <div class="content-right-w" v-else-if="currentlySelected&&currentlySelected[0]==='数据'">
@@ -169,8 +179,8 @@ import categoryList from "./components/management/categoryList"; //商品管理-
 import soupBasesList from "./components/management/soupBasesList"; //商品管理-汤料列表
 import soupBasesListDetail from "./components/management/soupBasesListDetail"; //商品管理-汤料(详情)
 import evaluationList from "./components/management/evaluationList"; //商品管理-评价列表
-import materialOrder from "./components/management/materialOrder"; //商品管理-原料订单
-import orderSoup from "./components/management/orderSoup"; //商品管理-汤料订单
+// import materialOrder from "./components/management/materialOrder"; //商品管理-原料订单
+// import orderSoup from "./components/management/orderSoup"; //商品管理-汤料订单
 import keyword from "./components/data/keyword"; //数据-关键字统计
 import realtimeConsumption from "./components/data/realtimeConsumption"; //数据-关键字统计
 import dataStatistics from "./components/data/dataStatistics"; //数据-数据整理分析
@@ -183,6 +193,7 @@ import userAddress from "./components/userControl/userAddress"; //用户管理-�
 import userLevel from "./components/userControl/userLevel"; //用户管理-用户等级
 import userLabel from "./components/userControl/userLabel"; //用户管理-用户标签
 import rawMaterial from "./components/orderFrom/rawMaterial"; //订单-原料订单
+import rawMaterialDetail from "./components/orderFrom/rawMaterialDetail"; //订单-原料订单详情
 import soupBases from "./components/orderFrom/soupBases"; //订单-汤料料订单
 export default {
   name: "HelloWorld",
@@ -200,8 +211,6 @@ export default {
     categoryList,
     soupBasesList,
     evaluationList,
-    materialOrder,
-    orderSoup,
     keyword,
     realtimeConsumption,
     dataStatistics,
@@ -216,37 +225,21 @@ export default {
     productListDetail,
     soupBasesListDetail,
     rawMaterial,
+    rawMaterialDetail,
     soupBases
   },
   data() {
     return {
       currentContent: "",
-      navLeft: [
-        // {
-        //   title: "店铺管理",
-        //   grandson: [
-        //     { title: "轮播图管理" },
-        //     { title: "消息发布" },
-        //     { title: "帮助回答" },
-        //     { title: "app版本管理" }
-        //   ]
-        // },
-        // {
-        //   title: "小程序管理",
-        //   grandson: [
-        //     { title: "二维码列表" },
-        //     { title: "小程序广告位" },
-        //     { title: "小程序视频管理" },
-        //     { title: "小程序轮播图管理" }
-        //   ]
-        // }
-      ],
+      navLeft: [],
       currentlySelected: "", //当前三级选中的页面
       ifUserList: true,
       userDetailData: "",
       evaluationId: "",
       productListDetailData: "",
-      ifShowProductList: true
+      ifShowProductList: true,
+      ifShowRawMaterial: true,
+      rawMaterialData: ""
     };
   },
   created() {
@@ -300,6 +293,15 @@ export default {
     },
     onShowProductList() {
       this.ifShowProductList = true;
+    },
+    //原料订单跳转到原料详情
+    onToRawMaterialDetail(data = "") {
+      this.ifShowRawMaterial = false;
+      this.rawMaterialData = data;
+    },
+    // 原料详情跳转回原料订单
+    onToRawMaterial() {
+      this.ifShowRawMaterial = true;
     }
   }
 };

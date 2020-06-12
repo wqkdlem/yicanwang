@@ -174,8 +174,8 @@ export default {
       let params = {
         fileid: "",
         keyword: this.keyword,
-        start_time: date[0],
-        end_time: date[1],
+        start_time: this.date[0],
+        end_time: this.date[1],
         page: this.page,
         limit: this.limit
       };

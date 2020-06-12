@@ -150,8 +150,8 @@ export default {
         limit: this.limit,
         product: this.evaluationId || "",
         keyword: this.keyword,
-        start_time: date[0],
-        end_time: date[1],
+        start_time: this.date[0],
+        end_time: this.date[1],
         status: this.stateId
       };
       let respone = await get({ url, params });

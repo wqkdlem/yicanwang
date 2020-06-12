@@ -221,8 +221,8 @@ export default {
       let url = "/admin/college_video";
       // let { type = "" } = this.searchDataidArry;
       let params = {
-        start_time: date[0],
-        end_time: date[1],
+        start_time: this.date[0],
+        end_time: this.date[1],
         keyword: this.keyword,
         page: this.page,
         limit: this.limit
