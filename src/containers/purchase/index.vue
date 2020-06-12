@@ -195,6 +195,7 @@ import userLabel from "./components/userControl/userLabel"; //用户管理-用�
 import rawMaterial from "./components/orderFrom/rawMaterial"; //订单-原料订单
 import rawMaterialDetail from "./components/orderFrom/rawMaterialDetail"; //订单-原料订单详情
 import soupBases from "./components/orderFrom/soupBases"; //订单-汤料料订单
+import soupBasesDetail from "./components/orderFrom/soupBasesDetail"; //订单-汤料料订单
 export default {
   name: "HelloWorld",
   components: {
@@ -226,7 +227,8 @@ export default {
     soupBasesListDetail,
     rawMaterial,
     rawMaterialDetail,
-    soupBases
+    soupBases,
+    soupBasesDetail
   },
   data() {
     return {

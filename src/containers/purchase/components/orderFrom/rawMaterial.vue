@@ -26,6 +26,7 @@
           <div class="rawMaterial-top-con-i">
             时间：
             <el-date-picker
+              style="border:1px solid rgba(51,51,51,0.14);"
               v-model="date"
               type="daterange"
               range-separator="至"
