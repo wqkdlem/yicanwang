@@ -174,7 +174,7 @@ export default {
     },
     //获取用户基本信息
     async getUserinfo() {
-      let url = "/admin/raw_order";
+      let url = "/admin/soup_order";
       let params = {
         order_id: this.rawMaterialData
       };
@@ -184,7 +184,6 @@ export default {
     },
     //获取日志信息
     async getLogData() {
-      alert("qingqiu");
       let params = {
         order_id: this.rawMaterialData
       };

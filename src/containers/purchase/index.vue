@@ -125,7 +125,11 @@
               </div>
             </div>
             <div v-else-if="currentlySelected[1]==='汤料订单'">
-              <soupBases></soupBases>
+              <soupBases @onToRawMaterialDetail="onToRawMaterialDetail"></soupBases>
+              <soupBasesDetail
+                @onToRawMaterial="onToRawMaterial"
+                :rawMaterialData="rawMaterialData"
+              ></soupBasesDetail>
             </div>
           </div>
           <div class="content-right-w" v-else-if="currentlySelected&&currentlySelected[0]==='数据'">
