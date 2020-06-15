@@ -13,7 +13,7 @@ module.exports = {
             // 匹配代理的url
             "*": {
                 // 目标服务器地址
-                target: "http://xbm.com/index.php", // 测试环境
+                target: "http://emzyzs.h5.emjiayuan.com", // 测试环境
                 changeOrigin: true
             }
         },

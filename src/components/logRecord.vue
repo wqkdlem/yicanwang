@@ -79,9 +79,9 @@ ul li {
   border-left: 2px solid rgba(51, 51, 51, 0.5);
   text-align: left;
 }
-.package-status .status-list > li:last-child {
-  border-left: 0;
-}
+// .package-status .status-list > li:last-child {
+//   border-left: 0;
+// }
 .package-status .status-list > li:before {
   /* 流程点的样式 */
   content: "";

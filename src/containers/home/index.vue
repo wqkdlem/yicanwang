@@ -267,6 +267,7 @@ export default {
           color: #fff;
           background-color: rgba(143, 148, 251, 1);
           border-radius: 4px;
+          position: relative;
           .content-top-i-top {
             .content-top-i-top-top {
               font-size: 18px;
@@ -286,6 +287,7 @@ export default {
             display: flex;
             justify-content: space-between;
             margin-top: 30px;
+
             .content-top-i-bot-left {
               .content-top-i-bot-left-top {
                 margin-top: 5px;
@@ -302,8 +304,11 @@ export default {
               }
             }
             .content-top-i-bot-right {
-              width: 95px;
-              height: 95px;
+              width: 85px;
+              height: 85px;
+              position: absolute;
+              right: 0;
+              bottom: 0;
             }
           }
         }

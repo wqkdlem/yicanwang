@@ -91,7 +91,7 @@
           </div>
           <div v-if="navLeftId==2">
             <el-table :data="basicInformation.goods" border :height="500" style="width: 100%;">
-              <el-table-column align="goods_name" prop="date" label="商品"></el-table-column>
+              <el-table-column align="center" prop="goods_name" label="商品"></el-table-column>
               <el-table-column align="center" prop="telphone" label="图片">
                 <img
                   slot-scope="solt"

@@ -116,15 +116,12 @@
         <div style="display:flex;">
           <div class="box-img">
             <div class="box-left">视频封面：</div>
-            <uplodImg
-              style="margin-left:10px"
-              :uploadPicUrl="basicInformation.fileimg"
-              @uploadSuccess="uploadSuccess"
-            ></uplodImg>
+            <uplodImg :uploadPicUrl="basicInformation.fileimg" @uploadSuccess="uploadSuccess"></uplodImg>
           </div>
           <div class="box-img">
             <div class="box-left">上传视频：</div>
-            <video style="width:180px;height:180px" :src="basicInformation.fileurl" alt />
+            <!-- <video style="width:180px;height:180px" :src="basicInformation.fileurl" alt /> -->
+            <uplodVideo style="width:180px;height:180px;"></uplodVideo>
           </div>
         </div>
         <div class="box-i">
@@ -157,9 +154,10 @@
 <script>
 import { get, post, del, put, fakeGet } from "@/utils/request.js";
 import uplodImg from "@/components/uplodImg.vue";
+import uplodVideo from "@/components/uplodVideo.vue";
 export default {
   name: "HelloWorld",
-  components: { uplodImg },
+  components: { uplodImg, uplodVideo },
   data() {
     return {
       searchData: {},
@@ -425,6 +423,7 @@ export default {
         text-align: right;
         padding-right: 10px;
         box-sizing: border-box;
+        margin-right: 10px;
       }
       .box--right {
         margin-left: 10px;
@@ -436,21 +435,15 @@ export default {
         line-height: 40px;
         padding: 0 20px;
         box-sizing: border-box;
-        margin-left: 10px;
         background-color: #f1f1f1;
         border: none;
       }
       textarea {
         height: 100px;
       }
-      img,
-      .box-right {
-        margin-left: 10px;
-      }
       .el-select {
         width: 670px;
         height: 40px;
-        margin-left: 10px;
 
         .el-input__inner {
           background-color: #f1f1f1;

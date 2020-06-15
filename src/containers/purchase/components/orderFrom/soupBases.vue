@@ -2,12 +2,12 @@
   <div class="rawMaterial">
     <div class="rawMaterial-top">
       <div class="rawMaterial-top-tit">
-        原料订单列表
+        汤料订单列表
         <!-- <span style="color:#3CB371">(2)</span> -->
       </div>
       <div class="rawMaterial-top-con">
         <div class="rawMaterial-top-con-left">
-          <div class="rawMaterial-top-con-i">
+          <!-- <div class="rawMaterial-top-con-i">
             催单状态：
             <el-select v-model="typeId" placeholder="请选择地址">
               <el-option
@@ -18,7 +18,7 @@
                 :value="item.id"
               ></el-option>
             </el-select>
-          </div>
+          </div>-->
           <div class="rawMaterial-top-con-i">
             关键字：
             <el-input style="width:230px;" v-model="keyword" placeholder="请输入关键字"></el-input>
@@ -59,12 +59,13 @@
       </div>
       <div class="block">
         <span class="demonstration">每页显示</span>
-        <!-- :total="tableData.page.data_count" -->
+        <!--  -->
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :page-sizes="[10, 20, 30, 40]"
           :page-size="100"
+          :total="tableData.page.data_count"
           layout="sizes, prev, pager, next"
         ></el-pagination>
       </div>
@@ -75,7 +76,7 @@
 <script>
 import { get, post, del, put, fakeGet } from "@/utils/request.js";
 import uplodImg from "@/components/uplodImg.vue";
-import table_v from "@/components/table.vue";
+import table_v from "@/components/soupTable.vue";
 export default {
   name: "HelloWorld",
   components: { uplodImg, table_v },
@@ -113,8 +114,7 @@ export default {
         { name: "待付款", id: 2 },
         { name: "待发货", id: 3 },
         { name: "待收货", id: 4 },
-        { name: "已完成", id: 5 },
-        { name: "退款", id: 6 }
+        { name: "已完成", id: 5 }
       ]
     };
   },
@@ -219,8 +219,7 @@ export default {
         { title: "待付款", id: 2 },
         { title: "待发货", id: 3 },
         { title: "待收货", id: 4 },
-        { title: "已完成", id: 5 },
-        { title: "退款", id: 6 }
+        { title: "已完成", id: 5 }
       ];
     },
     onToRawMaterialDetail(id) {

@@ -238,6 +238,7 @@ export default {
         color: #fff;
         background-color: rgba(143, 148, 251, 1);
         border-radius: 4px;
+        position: relative;
         .content-top-i-top {
           .content-top-i-top-top {
             font-size: 18px;
@@ -273,8 +274,11 @@ export default {
             }
           }
           .content-top-i-bot-right {
-            width: 115px;
-            height: 115px;
+            width: 85px;
+            height: 85px;
+            position: absolute;
+            bottom: 0;
+            right: 0;
           }
         }
       }

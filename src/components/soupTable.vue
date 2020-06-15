@@ -7,16 +7,19 @@
       <el-col :span="2">
         <div class="table-title-div">小计</div>
       </el-col>
-      <el-col :span="3">
+      <el-col :span="2">
         <div class="table-title-div">买家</div>
       </el-col>
       <el-col :span="3">
         <div class="table-title-div">快递信息</div>
       </el-col>
+      <el-col :span="2">
+        <div class="table-title-div">加工费</div>
+      </el-col>
       <el-col :span="3">
         <div class="table-title-div">价格/支付</div>
       </el-col>
-      <el-col :span="3">
+      <el-col :span="2">
         <div class="table-title-div">下单时间</div>
       </el-col>
       <el-col :span="4">
@@ -57,7 +60,7 @@
             </div>
           </div>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="2">
           <div class="table-content-content-div">
             <div style="color:#333333">{{item.user.username}}</div>
             <div>{{item.user.telphone}}</div>
@@ -70,13 +73,18 @@
             <div>单号：{{item.expressno}}</div>
           </div>
         </el-col>
+        <el-col :span="2">
+          <div class="table-content-content-div">
+            <div>{{item.working_price}}</div>
+          </div>
+        </el-col>
         <el-col :span="3">
           <div class="table-content-content-div">
             <div>{{item.order_amount}}</div>
             <!-- <div class="payState">取消支付</div> -->
           </div>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="2">
           <div class="table-content-content-div">{{item.create_time}}</div>
         </el-col>
         <el-col :span="4">
@@ -513,7 +521,7 @@ export default {
         cityid: this.addressId[1] || this.addressId[0],
         areaid: this.addressId[2] || this.addressId[0]
       };
-      let url = "/admin/raw_order";
+      let url = "/admin/soup_order";
       let respone = await put({ url, data });
       if (respone.msg) return this.$message(respone.msg);
       this.ifOrderPrice = false;
@@ -521,6 +529,7 @@ export default {
       if (content === "order_amount") return this.$message("订单改价成功");
       if (content === "send_goods") return this.$message("发货成功");
       if (content === "confirm_receipt") return this.$message("收货成功");
+      this.ifChageAddress = false;
     }
   }
 };
@@ -543,16 +552,20 @@ input {
 
 .table-title {
   border-bottom: 1px solid #c0c4cc;
+  .el-col {
+    height: 100%;
+  }
 }
 
 .table-title-div {
   text-align: center;
-  padding: 10px;
+  padding: 10px 5px;
   box-sizing: border-box;
   border-right: 1px solid #c0c4cc;
   font-weight: 500;
   color: rgba(51, 51, 51, 1);
   font-size: 14px;
+  height: 100%;
 }
 .table-content {
   margin-top: 20px;

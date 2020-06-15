@@ -42,8 +42,12 @@
               <div class="userListDetail-bot-rig-i-right">{{basicInformation.integral}}</div>
             </div>
             <div class="userListDetail-bot-rig-i">
-              <div class="userListDetail-bot-rig-i-left">价格详情</div>
-              <div class="userListDetail-bot-rig-i-right">{{basicInformation.goods_amount}}</div>
+              <div class="userListDetail-bot-rig-i-left">价格形成</div>
+              <div class="userListDetail-bot-rig-i-right">
+                <div style="color:#333333;">汤料总价-优惠+加工费=需支付价格</div>
+                <div>1、汤料总价 等于 所有购买汤料产品的总价格</div>
+                <div>2、需支付价格 等于 汤料产品总价“减去”打折优惠的金额“加上”加工费的金额</div>
+              </div>
             </div>
             <!-- -------------------- -->
             <div
@@ -90,8 +94,14 @@
             </div>-->
           </div>
           <div v-if="navLeftId==2">
-            <el-table :data="basicInformation.goods" border :height="500" style="width: 100%;">
-              <el-table-column align="goods_name" prop="date" label="商品"></el-table-column>
+            <el-table
+              :data="basicInformation.goods"
+              border
+              style="width: 100%;"
+              show-summary
+              :summary-method="getSummaries"
+            >
+              <el-table-column align="center" prop="goods_name" label="商品"></el-table-column>
               <el-table-column align="center" prop="telphone" label="图片">
                 <img
                   slot-scope="solt"
@@ -100,8 +110,9 @@
                   alt
                 />
               </el-table-column>
-              <el-table-column align="center" prop="totalPrice" label="价格"></el-table-column>
-              <el-table-column align="center" prop="goods_num" label="数量"></el-table-column>
+              <el-table-column align="center" prop="totalPrice" label="购买价格(每100g)"></el-table-column>
+              <el-table-column align="center" prop="goods_num" label="重量"></el-table-column>
+              <el-table-column align="center" prop="totalPrice" label="小计"></el-table-column>
             </el-table>
           </div>
           <div v-if="navLeftId===3">
@@ -174,7 +185,7 @@ export default {
     },
     //获取用户基本信息
     async getUserinfo() {
-      let url = "/admin/raw_order";
+      let url = "/admin/soup_order";
       let params = {
         order_id: this.rawMaterialData
       };
@@ -184,11 +195,10 @@ export default {
     },
     //获取日志信息
     async getLogData() {
-      alert("qingqiu");
       let params = {
         order_id: this.rawMaterialData
       };
-      let url = "/admin/order_log/";
+      let url = "/admin/order_log";
       let response = await get({ url, params });
       if (response.msg) return this.$message(response.msg);
       this.logData = response;
@@ -210,6 +220,32 @@ export default {
       if (this.navLeftId === 1) {
         this.getUserinfo();
       }
+    },
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = "总计";
+          return;
+        }
+        const values = data.map(item => Number(item[column.property]));
+        if (index === 4) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index] += " 元";
+        } else {
+          sums[index] = "";
+        }
+      });
+
+      return sums;
     }
   }
 };
@@ -222,6 +258,7 @@ export default {
   height: 100%;
   flex-direction: column;
   .userListDetail-top {
+    height: 60px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -247,6 +284,7 @@ export default {
   }
   .userListDetail-bot {
     margin-top: 30px;
+    flex: auto;
     .userListDetail-bot-w {
       display: flex;
       flex-direction: row;
@@ -290,6 +328,11 @@ export default {
             color: #979797;
             font-weight: 400;
             margin-left: 30px;
+            width: 60%;
+            div {
+              word-wrap: break-word;
+              word-break: normal;
+            }
           }
         }
         .submit {

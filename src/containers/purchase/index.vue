@@ -124,8 +124,17 @@
                 </div>
               </div>
             </div>
-            <div v-else-if="currentlySelected[1]==='汤料订单'">
-              <soupBases></soupBases>
+            <div v-else-if="currentlySelected[1]==='汤料订单'" style="height:100%">
+              <div v-if="ifShowRawMaterial">
+                <soupBases @onToRawMaterialDetail="onToRawMaterialDetail"></soupBases>
+              </div>
+              <div v-if="!ifShowRawMaterial" style="height:100%">
+                <soupBasesDetail
+                  style="height:100%"
+                  @onToRawMaterial="onToRawMaterial"
+                  :rawMaterialData="rawMaterialData"
+                ></soupBasesDetail>
+              </div>
             </div>
           </div>
           <div class="content-right-w" v-else-if="currentlySelected&&currentlySelected[0]==='数据'">
@@ -269,6 +278,7 @@ export default {
       this.ifUserList = true;
       this.ifShowProductList = true;
       this.evaluationId = "";
+      this.ifShowRawMaterial = true;
     },
     onToSecondaryPage(data) {},
     //展示用户详情

@@ -9,7 +9,7 @@
         <div class="rawMaterial-top-con-left">
           <div class="rawMaterial-top-con-i">
             催单状态：
-            <el-select v-model="typeId" placeholder="请选择地址">
+            <el-select v-model="typeId" placeholder="请选择催单状态">
               <el-option
                 style="width:380px;"
                 v-for="item in typeDataAll"
