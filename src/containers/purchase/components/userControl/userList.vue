@@ -52,7 +52,7 @@
         <el-button type="primary" style="height:40px" class="el-button" icon="el-icon-search">搜索</el-button>
       </div>
     </div>
-    <div class="userList-bot">
+    <!-- <div class="userList-bot">
       <div class="userList-bot-top">
         <div class="userList-bot-top-i">
           <i class="el-icon-plus"></i>
@@ -108,15 +108,6 @@
         <div class="userList-bot-bot-i" v-for="(item,index) in tableData.data" :key="index">
           <div class="userList-bot-bot-i-top">
             <div class="userList-bot-bot-i-top-lef">id：{{item.id}}</div>
-            <!-- <el-select v-model="value" placeholder="请选择" class="userList-bot-bot-i-top-rig">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>-->
-            <!-- onChangeLabelId= -->
             <div
               class="userList-bot-bot-i-top-rig"
               @click="dialogVisible=true;userId=item.id;modelTitle='修改用户标签';onChangeLabelId=item.label"
@@ -171,8 +162,45 @@
             <div class="userList-bot-bot-i-ceng-ia">发优惠劵</div>
             <div class="userList-bot-bot-i-ceng-ib">{{item.createtime}}</div>
           </div>
-          <!-- <div class="userList-bot-bot-i"></div> -->
         </div>
+      </div>
+    </div>-->
+    <div class="userList-bot">
+      <div class="userList-bot-top">
+        <div class="userList-bot-top-i">
+          <i class="el-icon-plus"></i>
+          <span>新增帮助</span>
+        </div>
+      </div>
+      <div class="userList-bot-bot">
+        <el-table :data="tableData.data" border :height="700" style="width: 100%;">
+          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <el-table-column align="center" prop="date" label="ID" width="180"></el-table-column>
+          <el-table-column align="center" prop="name" label="标题" width="180"></el-table-column>
+          <el-table-column align="center" prop="address" label="回复" width="500"></el-table-column>
+          <el-table-column align="center" prop="address" label="时间"></el-table-column>
+          <el-table-column align="center" prop="value" label="显示">
+            <el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          </el-table-column>
+          <el-table-column align="center" prop="address" label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="block">
+        <span class="demonstration">每页显示</span>
+        <!--  @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"-->
+        <el-pagination
+          :current-page.sync="currentPage2"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="100"
+          layout="sizes, prev, pager, next"
+          :total="tableData.page.data_count"
+        ></el-pagination>
       </div>
     </div>
     <el-dialog :title="modelTitle" :visible.sync="dialogVisible" width="500px">
@@ -393,6 +421,27 @@ export default {
     .userList-bot-top {
       display: flex;
       justify-content: space-between;
+      .userList-bot-top {
+        display: flex;
+        justify-content: start;
+        .userList-bot-top-i {
+          // width: 130px;
+          margin-right: 30px;
+          padding: 0 12px;
+          box-sizing: border-box;
+          background: rgba(60, 179, 113, 1);
+          color: #ffffff;
+          height: 32px;
+          border-radius: 4px;
+          display: flex;
+          justify-content: start;
+          align-items: center;
+          span {
+            display: inline-block;
+            margin-left: 5px;
+          }
+        }
+      }
       .userList-bot-top-i {
         // width: 130px;
         margin-right: 30px;
@@ -628,6 +677,17 @@ export default {
       background: #3cb371;
       color: #ffffff;
     }
+  }
+}
+.purchaseHelp-bot-bot {
+  margin-top: 20px;
+  flex: auto;
+  .block {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 10px;
   }
 }
 </style>
