@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="purchaseHelp-bot-bot">
-        <el-table :data="tableData.data" border :height="700" style="width: 100%;">
+        <el-table :data="tableData" border :height="700" style="width: 100%;">
           <el-table-column align="center" type="selection" width="55"></el-table-column>
           <el-table-column align="center" prop="date" label="ID" width="180"></el-table-column>
           <el-table-column align="center" prop="name" label="标题" width="180"></el-table-column>
@@ -43,13 +43,12 @@
         <div class="block">
           <span class="demonstration">每页显示</span>
           <!--  @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"-->
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage2"-->
           <el-pagination
-            :current-page.sync="currentPage2"
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
-            :total="tableData.page.data_count"
           ></el-pagination>
         </div>
       </div>

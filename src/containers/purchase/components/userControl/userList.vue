@@ -125,7 +125,7 @@
           <img class="userList-bot-bot-i-img" :src="item.headImg" alt />
           <div class="userList-bot-bot-i-imga">
             <img src alt />
-            {{item.level.level_name}}
+            <!-- {{item.level.level_name}} -->
           </div>
 
           <div

@@ -54,7 +54,7 @@
             <img
               slot-scope="scope"
               style="width:100px;height:40px;border-radius:4px;"
-              :src="scope.row.bImg"
+              :src="scope.row.bImgs"
               alt
             />
           </el-table-column>
@@ -122,7 +122,7 @@
           <div class="box-left">图片：</div>
           <uplodImg
             style="margin-left:10px"
-            :uploadPicUrl="basicInformation.bImg"
+            :uploadPicUrl="changeData.bImg"
             @uploadSuccess="uploadSuccess"
           ></uplodImg>
         </div>
@@ -238,7 +238,7 @@ export default {
         let data = {
           id,
           title,
-          bImg: this.modelTitle,
+          bImg: this.uploadPicImg,
           weight,
           is_show: is_show ? 1 : 0,
           type_id,
@@ -249,7 +249,7 @@ export default {
       if (this.modelTitle == "新增轮播图") {
         let data = {
           title,
-          bImg: this.modelTitle,
+          bImg: this.uploadPicImg,
           weight,
           is_show: is_show ? 1 : 0,
           type_id,
@@ -278,9 +278,10 @@ export default {
       this.tableData = respone;
     },
     uploadSuccess(data) {
-      this.basicInformation.bImg = data.uploadPicUrl;
-      console.log(this.basicInformation.bImg, "前端展示图片");
+      this.changeData.bImg = data.uploadPicUrl;
+      console.log(this.changeData.bImg, "前端展示图片");
       this.uploadPicImg = data.uploadPicImg;
+      console.log(this.changeData.bImg, this.uploadPicImg);
     },
     handleSizeChange(data) {
       this.page = 1;
