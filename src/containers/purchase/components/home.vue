@@ -218,7 +218,7 @@ export default {
 <style scoped lang="less">
 .purchaseHome {
   .content-right {
-    padding: 48px;
+    // padding: 48px;
     box-sizing: border-box;
     flex: auto;
     background-color: rgba(242, 242, 242, 1);

@@ -62,20 +62,20 @@
     <div class="block">
       <span class="demonstration">每页显示</span>
       <!-- @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"-->
+      @current-change="handleCurrentChange"
+      :current-page.sync="currentPage2"-->
       <el-pagination
-        :current-page.sync="currentPage2"
         :page-sizes="[10, 20, 30, 40]"
         :page-size="100"
         layout="sizes, prev, pager, next"
-        :total="tableData.page.data_count"
+        :total="newsData.length"
       ></el-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import { get, post, del,put,fakeGet } from "@/utils/request.js";
+import { get, post, del, put, fakeGet } from "@/utils/request.js";
 export default {
   name: "HelloWorld",
   data() {
@@ -108,7 +108,9 @@ export default {
           start: false,
           date: "2019-02-26 19:59:06"
         }
-      ]
+      ],
+      value: "",
+      options: []
     };
   },
   created() {

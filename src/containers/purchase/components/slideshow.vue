@@ -49,18 +49,31 @@
       <div class="purchaseSlideshow-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
           <el-table-column align="center" type="selection" width="55"></el-table-column>
-          <el-table-column align="center" prop="date" label="ID" width="180"></el-table-column>
-          <el-table-column align="center" prop="name" label="标题" width="180"></el-table-column>
-          <el-table-column align="center" prop="address" label="位置"></el-table-column>
-          <el-table-column align="center" prop="address" label="值"></el-table-column>
-          <el-table-column align="center" prop="address" label="排序"></el-table-column>
-          <el-table-column align="center" prop="value" label="启用">
-            <el-switch v-model="value" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-table-column align="center" prop="id" label="ID"></el-table-column>
+          <el-table-column align="center" prop="name" label="图片" width="180">
+            <img
+              slot-scope="scope"
+              style="width:100px;height:40px;border-radius:4px;"
+              :src="scope.row.bImg"
+              alt
+            />
           </el-table-column>
-          <el-table-column align="center" prop="address" label="操作">
+          <el-table-column align="center" prop="title" label="标题"></el-table-column>
+          <el-table-column align="center" prop="weight" label="排序"></el-table-column>
+          <el-table-column align="center" prop="link" label="链接"></el-table-column>
+          <el-table-column align="center" prop="type_id" label="类型"></el-table-column>
+          <el-table-column align="center" label="启用">
+            <el-switch
+              slot-scope="scope"
+              v-model="scope.row.is_show"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+            ></el-switch>
+          </el-table-column>
+          <el-table-column align="center" prop="address" label="操作" width="160">
             <template slot-scope="scope">
-              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              <el-button size="mini" @click="onToChange(scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="ifDeleData(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>

@@ -16,20 +16,30 @@
         <div>{{item.title}}</div>
       </div>
     </div>
-    <div class="nav-rig">
+    <div class="nav-rig" @click="ifQuit = true;">
       <img style src alt />
       <span>111</span>
     </div>
+    <el-dialog title="物流" :visible.sync="ifQuit" width="600px">
+      <div class="box">
+        <div>确认退出当前帐号？</div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="ifChagneUser = false">取 消</el-button>
+          <el-button type="primary" @click="onToQuit">确 定</el-button>
+        </span>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { get, post, del,put,fakeGet } from "@/utils/request.js";
+import { get, post, del, put, fakeGet } from "@/utils/request.js";
 export default {
   name: "navTit",
   props: { vid: {} },
   data() {
     return {
+      ifQuit: false,
       navData: [
         // {
         //   id: 1,
@@ -123,14 +133,18 @@ export default {
     },
     async onGetNavList() {
       let url = "admin/admin_user/level/1";
-      let data={};
-      let response = await get({ url,data});
+      let data = {};
+      let response = await get({ url, data });
       // let response = await fakeGet(this.navData);
       this.navData = response;
       this.navData.map(item => {
         item.icon = require(`@/assets/new_images/navImg/${item.icon}.png`);
         item.icons = require(`@/assets/new_images/navImg/${item.icons}.png`);
       });
+    },
+    onToQuit() {
+      localStorage.clear();
+      this.$router.push("/");
     }
   }
 };
@@ -198,6 +212,15 @@ export default {
       display: inline-block;
       margin-left: 10px;
     }
+  }
+}
+.box {
+  font-size: 14px;
+  .dialog-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 30px;
   }
 }
 </style>
