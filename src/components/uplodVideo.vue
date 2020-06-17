@@ -2,8 +2,8 @@
   <div>
     <el-upload
       class="avatar-uploader"
-      action="上传地址"
-      v-bind:data="{FoldPath:'上传目录',SecretKey:'安全验证'}"
+      action="domain"
+      v-bind:data="QiniuData"
       v-bind:on-progress="uploadVideoProcess"
       v-bind:on-success="handleVideoSuccess"
       v-bind:before-upload="beforeUploadVideo"
@@ -49,7 +49,13 @@ export default {
       videoForm: {
         showVideoPath: ""
       },
-      uplodVideo: require("@/assets/new_images/uplodVideo.png")
+      qiniuaddr: "res.ycw.emjiayuan.com", // 七牛云的图片外链地址 七牛云空间的外链地址
+      uplodVideo: require("@/assets/new_images/uplodVideo.png"),
+      QiniuData: {
+        key: "", //图片名字处理
+        token: "", //七牛云token
+        data: {}
+      }
     };
   },
   created() {},
@@ -88,24 +94,14 @@ export default {
       this.videoUploadPercent = file.percentage.toFixed(0) * 1;
     },
     //上传成功回调
-    handleVideoSuccess(res, file) {
-      this.isShowUploadVideo = true;
-      this.videoFlag = false;
-      this.videoUploadPercent = 0;
-
-      //前台上传地址
-      //if (file.status == 'success' ) {
-      //    this.videoForm.showVideoPath = file.url;
-      //} else {
-      //     layer.msg("上传失败，请重新上传");
-      //}
-
-      //后台上传地址
-      if (res.Code == 0) {
-        this.videoForm.showVideoPath = res.Data;
-      } else {
-        layer.msg(res.Message);
-      }
+    handleVideoSuccess(response, file, fileList) {
+      this.uplodVideo = `http://${this.qiniuaddr}/${response.key}`;
+      console.log(this.uploadPicUrl, "传给后端的视频地址");
+      let data = {
+        uploadPicUrl: this.uploadPicUrl,
+        uploadPicImg: response.key
+      };
+      this.$emit("uploadSuccess", data);
     }
   }
 };

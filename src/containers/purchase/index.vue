@@ -43,69 +43,40 @@
 import { get, post, del, put, fakeGet } from "@/utils/request.js";
 import navTit from "@/components/navTit";
 import home from "./components/home"; //采购首页
-import slideshow from "./components/slideshow"; //轮播管理
-import news from "./components/news"; //消息发布
-import help from "./components/help"; //帮助回答
-import qrCode from "./components/applet/qrCode"; //小程序管理-二维码列表
-import appletSlideshow from "./components/applet/slideshow"; //小程序轮播管理
-import advertising from "./components/applet/advertising"; //小程序管理-小程序广告位
-import Videos from "./components/applet/video"; //小程序管理-小程序视频
-import productList from "./components/management/productList"; //商品管理-产品管理(原料管理)
-import productListDetail from "./components/management/productListDetail"; //商品管理-产品管理(原料管理)详情
-import categoryList from "./components/management/categoryList"; //商品管理-产品分类
-import soupBasesList from "./components/management/soupBasesList"; //商品管理-汤料列表
-import soupBasesListDetail from "./components/management/soupBasesListDetail"; //商品管理-汤料(详情)
-import evaluationList from "./components/management/evaluationList"; //商品管理-评价列表
-// import materialOrder from "./components/management/materialOrder"; //商品管理-原料订单
-// import orderSoup from "./components/management/orderSoup"; //商品管理-汤料订单
-import keyword from "./components/data/keyword"; //数据-关键字统计
-import realtimeConsumption from "./components/data/realtimeConsumption"; //数据-用户消费统计分析
-import dataStatistics from "./components/data/dataStatistics"; //数据-数据整理分析
-import salesStatistics from "./components/data/salesStatistics"; //数据-产品销售统计分析
-import dataOverview from "./components/data/dataOverview"; //数据-数据概览
-import property from "./components/property/index.vue"; //数据-资产
-import userList from "./components/userControl/userList"; //用户管理-用户列表
-import userListDetail from "./components/userControl/userListDetail"; //用户管理-用户列表详情
-import userAddress from "./components/userControl/userAddress"; //用户管理-用户地址
-import userLevel from "./components/userControl/userLevel"; //用户管理-用户等级
-import userLabel from "./components/userControl/userLabel"; //用户管理-用户标签
-import rawMaterial from "./components/orderFrom/rawMaterial"; //订单-原料订单
-import rawMaterialDetail from "./components/orderFrom/rawMaterialDetail"; //订单-原料订单详情
-import soupBases from "./components/orderFrom/soupBases"; //订单-汤料料订单
-import soupBasesDetail from "./components/orderFrom/soupBasesDetail"; //订单-汤料料订单
+// import slideshow from "./components/slideshow"; //轮播管理
+// import news from "./components/news"; //消息发布
+// import help from "./components/help"; //帮助回答
+// import qrCode from "./components/applet/qrCode"; //小程序管理-二维码列表
+// import appletSlideshow from "./components/applet/slideshow"; //小程序轮播管理
+// import advertising from "./components/applet/advertising"; //小程序管理-小程序广告位
+// import Videos from "./components/applet/video"; //小程序管理-小程序视频
+// import productList from "./components/management/productList"; //商品管理-产品管理(原料管理)
+// import productListDetail from "./components/management/productListDetail"; //商品管理-产品管理(原料管理)详情
+// import categoryList from "./components/management/categoryList"; //商品管理-产品分类
+// import soupBasesList from "./components/management/soupBasesList"; //商品管理-汤料列表
+// import soupBasesListDetail from "./components/management/soupBasesListDetail"; //商品管理-汤料(详情)
+// import evaluationList from "./components/management/evaluationList"; //商品管理-评价列表
+// // import materialOrder from "./components/management/materialOrder"; //商品管理-原料订单
+// // import orderSoup from "./components/management/orderSoup"; //商品管理-汤料订单
+// import keyword from "./components/data/keyword"; //数据-关键字统计
+// import realtimeConsumption from "./components/data/realtimeConsumption"; //数据-用户消费统计分析
+// import dataStatistics from "./components/data/dataStatistics"; //数据-数据整理分析
+// import salesStatistics from "./components/data/salesStatistics"; //数据-产品销售统计分析
+// import dataOverview from "./components/data/dataOverview"; //数据-数据概览
+// import property from "./components/property/index.vue"; //数据-资产
+// import userList from "./components/userControl/userList"; //用户管理-用户列表
+// import userListDetail from "./components/userControl/userListDetail"; //用户管理-用户列表详情
+// import userAddress from "./components/userControl/userAddress"; //用户管理-用户地址
+// import userLevel from "./components/userControl/userLevel"; //用户管理-用户等级
+// import userLabel from "./components/userControl/userLabel"; //用户管理-用户标签
+// import rawMaterial from "./components/orderFrom/rawMaterial"; //订单-原料订单
+// import rawMaterialDetail from "./components/orderFrom/rawMaterialDetail"; //订单-原料订单详情
+// import soupBases from "./components/orderFrom/soupBases"; //订单-汤料料订单
+// import soupBasesDetail from "./components/orderFrom/soupBasesDetail"; //订单-汤料料订单
 export default {
   name: "HelloWorld",
   components: {
-    navTit,
-    home,
-    slideshow,
-    news,
-    help,
-    appletSlideshow,
-    qrCode,
-    advertising,
-    Videos,
-    productList,
-    categoryList,
-    soupBasesList,
-    evaluationList,
-    keyword,
-    realtimeConsumption,
-    dataStatistics,
-    salesStatistics,
-    dataOverview,
-    property,
-    userAddress,
-    userList,
-    userListDetail,
-    userLevel,
-    userLabel,
-    productListDetail,
-    soupBasesListDetail,
-    rawMaterial,
-    rawMaterialDetail,
-    soupBases,
-    soupBasesDetail
+    navTit
   },
   data() {
     return {

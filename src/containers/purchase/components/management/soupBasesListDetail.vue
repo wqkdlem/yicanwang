@@ -66,12 +66,11 @@
             </div>-->
             <div class="soupBasesListDetail-bot-rig-i">
               <div class="soupBasesListDetail-bot-rig-i-left">分类图片：</div>
-              <div class="soupBasesListDetail-content-cen-con">
-                <div class="soupBasesListDetail-content-cen-con-w">
-                  <img :src="uplodingImg" alt />
-                  <img src alt />
-                </div>
-              </div>
+              <uplodImg
+                style="margin-left:10px"
+                :uploadPicUrl="detailData.goodImg"
+                @uploadSuccess="uploadSuccess"
+              ></uplodImg>
             </div>
             <!-- <div class="soupBasesListDetail-bot-rig-i">
               <div class="soupBasesListDetail-bot-rig-i-left">赠送积分：</div>
@@ -168,10 +167,10 @@
 <script>
 import { get, post, del, put, fakeGet } from "@/utils/request.js";
 import vueQuillEditor from "@/components/vueQuillEditor"; //富文本编辑器
+import uplodImg from "@/components/uplodImg.vue";
 export default {
   name: "HelloWorld",
-  props: ["productListDetailData"],
-  components: { vueQuillEditor },
+  components: { vueQuillEditor, uplodImg },
   data() {
     return {
       value: "",
@@ -180,6 +179,7 @@ export default {
         { title: "基本信息", id: 1 },
         { title: "附加信息", id: 2 }
       ],
+      uploadPicImg: "",
       userinfo: "",
       addressList: [],
       navLeftId: 1,
@@ -216,11 +216,14 @@ export default {
         goods_size: "",
         goods_mark_price: "",
         goods_integral: "",
-        cates: ""
+        cates: "",
+        productListDetailData: ""
       }
     };
   },
   created() {
+    let { query } = this.$route;
+    this.productListDetailData = query;
     this.initGetClassify();
     this.getFreight();
     if (this.productListDetailData && this.productListDetailData.id) {
@@ -310,7 +313,7 @@ export default {
           goods_storage,
           goods_new,
           goods_sign,
-          goodImg,
+          goodImg: this.uploadPicImg,
           is_on_sale,
           goods_content,
           specs,
@@ -333,9 +336,7 @@ export default {
           goods_storage,
           goods_new,
           goods_sign,
-          goodImg: [
-            "https://gss0.baidu.com/-vo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/5882b2b7d0a20cf434a2a0bf77094b36acaf999b.jpg"
-          ],
+          goodImg: this.uploadPicImg,
           is_on_sale,
           goods_content,
           specs,
@@ -353,11 +354,8 @@ export default {
       }
       console.log(response);
     },
-    onShowUserList() {
-      this.$emit("onShowUserList");
-    },
     onShowProductList() {
-      this.$emit("onShowProductList");
+      this.$router.go(-1);
     },
     handleSizeChange(data) {
       this.page = 1;
@@ -374,6 +372,11 @@ export default {
     },
     change(data) {
       this.detailData.goods_content = data;
+    },
+    uploadSuccess(data) {
+      this.detailData.goodImg = data.uploadPicUrl;
+      console.log(this.detailData.goodImg, "前端展示图片");
+      this.uploadPicImg = data.uploadPicImg;
     }
   }
 };

@@ -80,12 +80,11 @@
         <div class="block">
           <span class="demonstration">每页显示</span>
           <!-- -->
-          <!-- :current-page.sync="currentPage2" -->
+          <!-- :current-page.sync="currentPage2"  :total="tableData.page.data_count" -->
           <el-pagination
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
-            :total="tableData.page.data_count"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
           ></el-pagination>

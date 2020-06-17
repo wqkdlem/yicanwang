@@ -125,7 +125,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
-            :total="tableData.page.data_count"
+            :total="10"
           ></el-pagination>
         </div>
       </div>
@@ -217,7 +217,7 @@ export default {
     },
     //产品管理编辑
     onToProductListDetail(data = "") {
-      this.$emit("onToProductListDetail", data);
+      this.$router.push({ path: "/soupBasesListDetail", query: data });
     },
     // async onSureChangeLable() {
     //   this.ifChanlable = false;

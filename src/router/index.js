@@ -82,6 +82,14 @@ export default new Router({
                     name: "productList",
                     component: () =>
                         import ("@/containers/purchase/components/management/productList")
+                }, ,
+                {
+                    path: "/productListDetail",
+                    name: "productListDetail",
+                    component: () =>
+                        import (
+                            "@/containers/purchase/components/management/productListDetail"
+                        )
                 },
                 {
                     path: "/categoryList",
@@ -94,6 +102,14 @@ export default new Router({
                     name: "soupBasesList",
                     component: () =>
                         import ("@/containers/purchase/components/management/soupBasesList")
+                },
+                {
+                    path: "/soupBasesListDetail",
+                    name: "soupBasesListDetail",
+                    component: () =>
+                        import (
+                            "@/containers/purchase/components/management/soupBasesListDetail"
+                        )
                 },
                 {
                     path: "/evaluationList",
@@ -142,6 +158,14 @@ export default new Router({
                     name: "userList",
                     component: () =>
                         import ("@/containers/purchase/components/userControl/userList")
+                },
+                {
+                    path: "/userListDetail",
+                    name: "userListDetail",
+                    component: () =>
+                        import (
+                            "@/containers/purchase/components/userControl/userListDetail"
+                        )
                 },
                 {
                     path: "/userAddress",

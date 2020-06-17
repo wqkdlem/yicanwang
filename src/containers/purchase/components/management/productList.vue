@@ -137,7 +137,7 @@
           <el-table-column align="center" prop="specs" label="规格"></el-table-column>
           <el-table-column align="center" prop="cate.name" label="分类"></el-table-column>
           <el-table-column align="center" prop="group" label="图片">
-            <img slot-scope="slot" style="width:120px;height:120px" src alt />
+            <img slot-scope="slot" style="width:120px;height:120px" :src="slot.row.goodImg" alt />
           </el-table-column>
           <el-table-column align="center" prop="goods_cost" label="价格/成本价">
             <div slot-scope="solt">{{solt.row.goods_price}}/{{solt.row.goods_cost}}</div>
@@ -233,7 +233,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
-            :total="tableData.page.data_count"
+            :total="10"
           ></el-pagination>
         </div>
       </div>
@@ -377,7 +377,7 @@ export default {
     },
     //产品管理编辑
     onToProductListDetail(data = "") {
-      this.$emit("onToProductListDetail", data);
+      this.$router.push({ path: "/productListDetail", query: data });
     },
     //评论
     onTOComment(id) {

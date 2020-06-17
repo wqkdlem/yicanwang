@@ -37,7 +37,7 @@
             </div>
             <div class="userListDetail-bot-rig-i">
               <div class="userListDetail-bot-rig-i-left">头像</div>
-              <img style="border:1px solid red;" :src="basicInformation.headImg" alt />
+              <img :src="basicInformation.headImg" alt />
             </div>
             <div class="userListDetail-bot-rig-i">
               <div class="userListDetail-bot-rig-i-left">余额</div>
@@ -91,7 +91,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
-            :total="tableData.page.data_count"
+            :total="10"
           ></el-pagination>
         </div>
       </div>
@@ -103,7 +103,6 @@
 import { get, post, del, put, fakeGet } from "@/utils/request.js";
 export default {
   name: "HelloWorld",
-  props: ["userDetailData"],
   data() {
     return {
       value: "",
@@ -119,10 +118,14 @@ export default {
       navLeftId: 1,
       basicInformation: {},
       page: 1,
-      limit: 10
+      limit: 10,
+      userDetailData: ""
     };
   },
   created() {
+    let { query } = this.$route;
+    this.userDetailData = query;
+    console.log(query);
     this.getUserinfo();
     this.getAddress();
   },
@@ -154,7 +157,7 @@ export default {
       this.$message("修改成功");
     },
     onShowUserList() {
-      this.$emit("onShowUserList");
+      this.$router.push("/userList");
     },
     async getAddress() {
       let url = "/admin/address";

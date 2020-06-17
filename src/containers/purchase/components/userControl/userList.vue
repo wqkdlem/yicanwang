@@ -41,23 +41,36 @@
             </el-select>
           </div>
           <div class="userList-top-con-i">
-            用户等级：
-            <el-date-picker v-model="date" type="date" placeholder="选择日期"></el-date-picker>
+            注册时间：
+            <el-date-picker
+              v-model="date"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
           </div>
           <div class="userList-top-con-i">
             关键字：
             <el-input style="width:230px;" v-model="keyword" placeholder="请输入关键字"></el-input>
           </div>
         </div>
-        <el-button type="primary" style="height:40px" class="el-button" icon="el-icon-search">搜索</el-button>
+        <el-button
+          type="primary"
+          style="height:40px"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="userList-bot">
       <div class="userList-bot-top">
-        <div class="userList-bot-top-i">
+        <!-- <div class="userList-bot-top-i">
           <i class="el-icon-plus"></i>
           <span>新增用户</span>
-        </div>
+        </div>-->
         <div class="userList-bot-top-r">
           <div class="userList-bot-top-r-w">
             Id：
@@ -120,12 +133,14 @@
             <div
               class="userList-bot-bot-i-top-rig"
               @click="dialogVisible=true;userId=item.id;modelTitle='修改用户标签';onChangeLabelId=item.label"
-            >修改用户标签</div>
+            >{{item.label||'修改用户标签'}}</div>
           </div>
           <img class="userList-bot-bot-i-img" :src="item.headImg" alt />
-          <div class="userList-bot-bot-i-imga">
-            <img src alt />
-            <!-- {{item.level.level_name}} -->
+          <div class="userList-bot-bot-i-imga" v-if="item.level&&item.level.level_id">
+            <img v-if="item.level.level_id===3" :src="vip1" alt />
+            <img v-if="item.level.level_id===2" :src="vip2" alt />
+            <img v-if="item.level.level_id===1" :src="vip3" alt />
+            {{item.level.level_name}}
           </div>
 
           <div
@@ -179,10 +194,10 @@
       <div class="box" v-if="modelTitle=='修改用户标签'">
         <div
           class="box-i"
-          :class="onChangeLabelId==item.id?'box-ia':''"
+          :class="onChangeLabelId==item.name?'box-ia':''"
           v-for="(item,index) in tableData.label"
           :key="index"
-          @click="onChangeLabelId=item.id;"
+          @click="onChangeLabelId=item.name;"
         >{{item.name}}</div>
       </div>
       <div class="box" v-if="modelTitle=='调整等级'">
@@ -224,6 +239,9 @@ export default {
       dingdanIcon: require("@/assets/new_images/dingdanIcon.png"),
       yonghu: require("@/assets/new_images/yonghu.png"),
       jifen: require("@/assets/new_images/jifen.png"),
+      vip1: require("@/assets/new_images/vip1.png"),
+      vip2: require("@/assets/new_images/vip2.png"),
+      vip3: require("@/assets/new_images/vip3.png"),
       id: "",
       createtime: "",
       balance: "",
@@ -284,8 +302,8 @@ export default {
         level: this.levelId,
         label: this.labelId,
         is_vip: this.isVipId,
-        start_time: "",
-        end_time: ""
+        start_time: this.date[0] || "",
+        end_time: this.date[1] || ""
       };
       let response = await get({ url, params });
       this.tableData = response;
@@ -337,7 +355,8 @@ export default {
       this.$message("修改成功");
     },
     onToUserDetail(data) {
-      this.$emit("onToUserDetail", data);
+      console.log(data);
+      this.$router.push({ path: "/userListDetail", query: data });
     }
   }
 };
@@ -392,7 +411,7 @@ export default {
     flex-direction: column;
     .userList-bot-top {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       .userList-bot-top-i {
         // width: 130px;
         margin-right: 30px;
@@ -488,18 +507,20 @@ export default {
         .userList-bot-bot-i-imga {
           width: 100px;
           height: 27px;
-          border: 1px solid red;
           display: block;
           margin: -20px auto;
           position: relative;
           z-index: 999;
           text-align: center;
           line-height: 27px;
+          color: #fff;
           img {
             width: 100%;
             height: 100%;
             position: absolute;
             z-index: -1;
+            top: 0;
+            left: 0;
           }
         }
         .userList-bot-bot-i-cena {

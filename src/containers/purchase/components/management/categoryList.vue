@@ -113,7 +113,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
-            :total="tableData.page.data_count"
+            :total="10"
           ></el-pagination>
         </div>
       </div>
