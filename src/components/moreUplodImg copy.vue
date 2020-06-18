@@ -1,34 +1,43 @@
+
 <template>
   <div class="moreUplodImg">
-    <el-upload
+    <!-- <el-upload
       class="upload-pic"
       :action="domain"
       :data="QiniuData"
       :on-remove="handleRemove"
+      :before-upload="beforeAvatarUpload"
       :on-error="uploadError"
       :on-success="uploadSuccess"
       :before-remove="beforeRemove"
-      :before-upload="beforeAvatarUpload"
       :show-file-list="false"
       :limit="9"
       multiple
       :on-exceed="handleExceed"
       :file-list="data.uploadPicUrl"
-      ref="foreignPersonUploadItem"
+      list-type="picture-card"
     >
-      <!-- <div>
-        <img :src="uplodingImg" style="margin-right:10px;margin-top:8px;" />
-      </div>-->
-      <!-- <el-button size="small" type="primary">选择图片</el-button> -->
+      <i class="el-icon-plus"></i>
+    </el-upload>-->
 
-      <img style="margin:10px 10px 0 0;" :src="uplodingImg" />
+    <el-upload
+      :action="domain"
+      :data="QiniuData"
+      list-type="picture-card"
+      :on-change="hidChange"
+      :on-remove="handleRemove"
+      :before-remove="beforeRemove"
+      multiple
+      :file-list="data.uploadPicUrl"
+    >
+      <i class="el-icon-plus"></i>
     </el-upload>
-    <div class="moreUplodImg-content" v-if="uploadPicUrl&&uploadPicUrl.length">
+    <!-- <div class="moreUplodImg-content" v-if="uploadPicUrl&&uploadPicUrl.length">
       <div class="moreUplodImg-content-i" v-for="(item,index) in data.uploadPicUrl" :key="index">
         <img class="moreUplodImg-content-i-del" :src="deleIcon" alt @click="onDele(index)" />
-        <img :src="item.url" class="avatar" />
+        <img :src="item" class="avatar" />
       </div>
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -82,15 +91,18 @@ export default {
       console.log(this.QiniuData.key);
     },
     uploadSuccess(response, file, fileList) {
-      console.log(fileList, "111111111111111111");
-      this.data.uploadPicUrl = [];
-      this.data.uploadPicImg = [];
-      fileList.map(item => {
-        this.data.uploadPicUrl.push(`http://${this.qiniuaddr}/${item.name}`);
-        this.data.uploadPicImg.push(item.name);
-      });
-      this.uploadPicUrl = this.data.uploadPicUrl;
-      this.$emit("uploadSuccess", this.data);
+      console.log(response, file, fileList);
+      this.data.uploadPicUrl = fileList;
+      // this.data.uploadPicUrl = [];
+      // this.data.uploadPicImg = [];
+      // fileList.map(item => {
+      //   this.data.uploadPicUrl.push(
+      //     `http://${this.qiniuaddr}/${item.response.key}`
+      //   );
+      //   this.data.uploadPicImg.push(item.response.key);
+      // });
+      // this.uploadPicUrl = this.data.uploadPicUrl;
+      // this.$emit("uploadSuccess", this.data);
     },
     uploadError(err, file, fileList) {
       console.log(err);
@@ -111,7 +123,8 @@ export default {
         : this.formAdd.brandLogo;
     },
     handleRemove(file, fileList) {
-      this.uploadPicUrl = [];
+      // this.uploadPicUrl = [];
+      console.log(file, fileList);
     },
     handleExceed(files, fileList) {
       this.$message.warning(
@@ -122,9 +135,8 @@ export default {
       console.log(index);
       this.data.uploadPicUrl.splice(index, 1);
       this.data.uploadPicImg.splice(index, 1);
-      this.$refs.uploadItem.uploadFiles.splice(index, 1);
     },
-    beforeRemove(file, fileList) {
+    hidChange(file, fileList) {
       console.log(file, fileList);
     }
   }

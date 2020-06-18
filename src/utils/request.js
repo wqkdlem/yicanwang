@@ -103,7 +103,7 @@ export const post = ({
                 const response = rs.data;
                 console.log(response);
                 if (response.code === 400001) return (window.location = "#/login");
-                if (!response.code || response.code !== 200) return;
+                if (!response.code || response.code !== 200) return resolve(response);
                 resolve(response.data);
             })
             .catch(error => {

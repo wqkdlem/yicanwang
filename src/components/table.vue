@@ -107,7 +107,11 @@
               @click="getAddressList(item)"
               v-if="item.order_state===0||item.order_state===1"
             >修改收货地址</div>
-            <div class="payState" @click="ifRefund = true" v-if="item.order_state===5">退款</div>
+            <div
+              class="payState"
+              @click="ifRefund = true;changeOrderPriceData=item"
+              v-if="item.order_state===5"
+            >退款</div>
           </div>
           <!-- <div class="table-content-content-div border0 table-content-content-div-change">
             <div class="payState" @click="onToRawMaterialDetail(item.id)">详情</div>
@@ -368,9 +372,9 @@
         </span>
       </div>
     </el-dialog>
-    <el-dialog title="物流" :visible.sync="ifRefund" width="600px">
+    <el-dialog title="退款" :visible.sync="ifRefund" width="600px">
       <div class="box">
-        <div style="margin-left:60px;">买家申请退款金额：12.00元</div>
+        <div style="margin-left:60px;">买家申请退款金额：{{changeOrderPriceData.order_amount}}元</div>
         <div style="margin-left:60px;">退款金额将优先退还到月，剩余部分将会按您选择的退款方式退还</div>
         <div class="box-i">
           <div class="box-left" style="width:140px;">退款金额：</div>
@@ -378,11 +382,11 @@
             width
             type="text"
             style="width:380px;"
-            v-model="changeOrderPriceData.title"
+            v-model="changeOrderPriceData.order_amount"
             placeholder="请输入"
           />
         </div>
-        <div class="box-i">
+        <!-- <div class="box-i">
           <div class="box-left" style="width:140px;">退款方式：</div>
           <el-select v-model="value" placeholder="请选择地址">
             <el-option
@@ -393,10 +397,10 @@
               :value="item.id"
             ></el-option>
           </el-select>
-        </div>
+        </div>-->
         <span slot="footer" class="dialog-footer">
-          <el-button @click="ifChagneUser = false">取 消</el-button>
-          <el-button type="primary" @click>确 定</el-button>
+          <el-button @click="ifRefund = false">取 消</el-button>
+          <el-button type="primary" @click="onChangeRefund('agree')">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -496,6 +500,16 @@ export default {
           if (!this.changeOrderPriceData.order_address.address_short)
             return this.$message("请输入详细地址");
         }
+        if (this.changeOrderPriceData.address_type == 2) {
+          if (!this.changeOrderPriceData.order_address.username)
+            return this.$message("请输入收货人名称");
+          if (!this.changeOrderPriceData.order_address.telphone)
+            return this.$message("请输入收货人手机号");
+          if (!this.changeOrderPriceData.order_address.city_id)
+            return this.$message("请选择省市区");
+          if (!this.changeOrderPriceData.order_address.address_short)
+            return this.$message("请输入详细地址");
+        }
       }
 
       let data = {
@@ -521,6 +535,21 @@ export default {
       if (content === "order_amount") return this.$message("订单改价成功");
       if (content === "send_goods") return this.$message("发货成功");
       if (content === "confirm_receipt") return this.$message("收货成功");
+    },
+    async onChangeRefund(content) {
+      if (!this.changeOrderPriceData.order_amount)
+        return this.$message("请输入退款金额");
+      let data = {
+        edit_type: content,
+        order_id: this.changeOrderPriceData.id,
+        refund_money: this.changeOrderPriceData.order_amount
+      };
+      let url = "/admin/raw_order";
+      let respone = await post({ url, data });
+      console.log(respone);
+      this.ifRefund = false;
+      if (respone.msg) return this.$message(respone.msg);
+      // this.$message("退款成功");
     }
   }
 };
