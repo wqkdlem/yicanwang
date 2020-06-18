@@ -56,11 +56,8 @@ export default {
     async getQiniuToken() {
       let url = "/admin/qiniu_token";
       let response = await get({ url });
-      console.log(response, "获取七牛云token");
-      //赋值保存在本地
-      localSave("uploadtoken", response.data);
-      this.QiniuData.token = response;
-      // localRead("username")
+      this.QiniuData = response;
+      console.log(this.QiniuData);
     },
     beforeAvatarUpload(file) {
       this.QiniuData.data = file;

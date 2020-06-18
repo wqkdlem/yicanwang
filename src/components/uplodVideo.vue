@@ -2,8 +2,8 @@
   <div>
     <el-upload
       class="avatar-uploader"
-      action="domain"
-      v-bind:data="QiniuData"
+      :action="domain"
+      :data="QiniuData"
       v-bind:on-progress="uploadVideoProcess"
       v-bind:on-success="handleVideoSuccess"
       v-bind:before-upload="beforeUploadVideo"
@@ -40,6 +40,7 @@ export default {
   props: ["uploadPicUrl"],
   data() {
     return {
+      domain: "https://up-z2.qiniup.com",
       videoFlag: false,
       //是否显示进度条
       videoUploadPercent: "",
@@ -58,13 +59,22 @@ export default {
       }
     };
   },
-  created() {},
+  created() {
+    this.getQiniuToken();
+  },
   watch: {
     uploadPicUrl(news, old) {
       console.log(news, old);
     }
   },
   methods: {
+    async getQiniuToken() {
+      let url = "/admin/qiniu_token";
+      let response = await get({ url });
+      console.log(response);
+      this.QiniuData.token = response;
+      console.log(this.QiniuData);
+    },
     //上传前回调
     beforeUploadVideo(file) {
       var fileSize = file.size / 1024 / 1024 < 50;
