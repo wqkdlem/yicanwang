@@ -6,6 +6,8 @@
 
 <script>
 import { localSave, localRead } from "@/lib/local.js";
+import "video.js/dist/video-js.css";
+import "vue-video-player/src/custom-theme.css";
 export default {
   name: "App",
   mounted() {
@@ -68,6 +70,7 @@ export default {
 
 <style>
 @import "./stylus/index.less";
+
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

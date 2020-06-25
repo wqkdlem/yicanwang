@@ -86,6 +86,7 @@ export default {
         keyword: this.keyword
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       console.log(response);
       this.tableData = response;
     },
@@ -153,7 +154,7 @@ export default {
       display: flex;
       justify-content: start;
       .adminLog-bot-top-i {
-        // width: 130px;
+       cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;

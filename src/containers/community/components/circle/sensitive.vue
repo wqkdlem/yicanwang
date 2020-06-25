@@ -12,7 +12,13 @@
             <el-input style="width:230px;" v-model="keyword" placeholder="请输入关键字"></el-input>
           </div>
         </div>
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="categoryList-bot">
@@ -22,10 +28,10 @@
             <i class="el-icon-plus"></i>
             <span>新增过滤词</span>
           </div>
-          <div class="categoryList-bot-top-i">
+          <!-- <div class="categoryList-bot-top-i">
             <i class="el-icon-delete"></i>
             <span>批量删除</span>
-          </div>
+          </div>-->
         </div>
       </div>
       <div class="categoryList-bot-bot">
@@ -80,7 +86,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="ifChanCate" width="600px">
+    <el-dialog :title="modelTitle" class="abow_dialog" :visible.sync="ifChanCate" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">敏感词：</div>
@@ -93,15 +99,15 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanCate= false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLable">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除过滤词" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除过滤词" class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除过滤词？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelCate">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelCate">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -153,6 +159,7 @@ export default {
         limit: this.limit
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
     },
     onChangeCate(data) {
@@ -178,6 +185,7 @@ export default {
       } = this.basicInformation;
       let url = "/admin/filter_words";
       if (!title_new) return this.$message("请先输入过滤词名称");
+      if (!repeat) return this.$message("请先输入过滤符");
       let data = {};
       if (this.modelTitle == "修改过滤词") {
         let data = {
@@ -186,6 +194,7 @@ export default {
           repeat
         };
         let response = await put({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       if (this.modelTitle == "新增过滤词") {
         let data = {
@@ -193,6 +202,7 @@ export default {
           repeat
         };
         let response = await post({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       this.$message(this.modelTitle + "成功");
       this.getTableData();
@@ -204,6 +214,8 @@ export default {
       };
       let response = await del({ url, data });
       this.ifShowDele = false;
+      if (response.msg) return this.$message(response.msg);
+
       this.$message("删除成功");
       this.getTableData();
     },
@@ -287,7 +299,7 @@ export default {
         display: flex;
         justify-content: start;
         .categoryList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;
@@ -339,7 +351,7 @@ export default {
       }
       input,
       textarea {
-        width: 470px;
+        width: 680px;
         height: 40px;
         line-height: 40px;
         padding: 0 20px;
@@ -356,7 +368,7 @@ export default {
         margin-left: 10px;
       }
       .el-select {
-        width: 470px;
+        width: 680px;
         height: 40px;
         margin-left: 10px;
 
@@ -409,6 +421,10 @@ export default {
     border-radius: 50%;
     display: inline-block;
     border: 1px solid red;
+  }
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>

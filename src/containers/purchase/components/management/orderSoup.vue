@@ -260,7 +260,7 @@ export default {
       display: flex;
       justify-content: start;
       .materialOrder-bot-top-i {
-        // width: 130px;
+       cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;

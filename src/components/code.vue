@@ -53,11 +53,11 @@ export default {
     },
     contentWidth: {
       type: Number,
-      default: 190
+      default: 180
     },
     contentHeight: {
       type: Number,
-      default: 69
+      default: 68
     }
   },
   methods: {

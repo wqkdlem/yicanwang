@@ -13,7 +13,13 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="categoryList-bot">
@@ -23,10 +29,10 @@
             <i class="el-icon-plus"></i>
             <span>新增轮播图</span>
           </div>
-          <div class="categoryList-bot-top-i">
+          <!-- <div class="categoryList-bot-top-i">
             <i class="el-icon-delete"></i>
             <span>批量删除</span>
-          </div>
+          </div>-->
         </div>
       </div>
       <div class="categoryList-bot-bot">
@@ -34,12 +40,12 @@
           <el-table-column align="center" type="selection" width="55"></el-table-column>
           <el-table-column align="center" prop="id" label="ID"></el-table-column>
           <el-table-column align="center" prop="title" label="名称"></el-table-column>
-          <el-table-column align="center" prop="count" label="图片" width="300">
+          <el-table-column align="center" prop="count" label="图片" width="200">
             <img
               slot-scope="slot"
-              :src="slot.row.bImg"
+              :src="slot.row.bImgs"
               alt
-              style="width:240px;height:100px;display:inline-block;"
+              style="width:180px;height:70px;display:inline-block;"
             />
           </el-table-column>
           <el-table-column align="center" prop="type_text" label="位置"></el-table-column>
@@ -91,7 +97,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="ifChanCate" width="900px">
+    <el-dialog :title="modelTitle" class="abow_dialog" :visible.sync="ifChanCate" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">轮播图名称：</div>
@@ -105,7 +111,7 @@
           <div class="box-left">背景图片：</div>
           <uplodImg
             style="margin-left:10px"
-            :uploadPicUrl="basicInformationTwo.bImg"
+            :uploadPicUrl="basicInformationTwo.bImgs"
             @uploadSuccess="uploadSuccess"
           ></uplodImg>
         </div>
@@ -117,6 +123,7 @@
               v-model="basicInformationTwo.weight"
               class="box-right"
               placeholder="请输入排序"
+              min="0"
             />
           </div>
           <div class="box-a">
@@ -135,15 +142,15 @@
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanCate= false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLable">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除等级" class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除当前轮播图？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelCate">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelCate">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -204,6 +211,7 @@ export default {
         limit: this.limit
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
     },
     onChangeCate(data) {
@@ -213,6 +221,7 @@ export default {
         JSON.stringify(this.basicInformation)
       );
       this.basicInformationTwo = data;
+      this.uploadPicImg = basicInformationTwo.bImg;
     },
     onAddCate() {
       this.ifChanCate = true;
@@ -238,6 +247,9 @@ export default {
       } = this.basicInformationTwo;
       let url = "/admin/banner_sq";
       if (!title) return this.$message("请先输入轮播图名称");
+      if (!link) return this.$message("请先输入跳转链接");
+      if (!this.uploadPicImg) return this.$message("请上传图片");
+      if (!weight) return this.$message("请先输入排序");
       let data = {};
       if (this.modelTitle == "修改轮播图") {
         let data = {
@@ -249,6 +261,7 @@ export default {
           id
         };
         let response = await put({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       if (this.modelTitle == "新增轮播图") {
         let data = {
@@ -259,6 +272,7 @@ export default {
           type
         };
         let response = await post({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       this.$message(this.modelTitle + "成功");
       this.getTableData();
@@ -381,7 +395,7 @@ export default {
         display: flex;
         justify-content: start;
         .categoryList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;
@@ -492,6 +506,10 @@ export default {
     .box-img {
       align-items: flex-start;
     }
+  }
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>

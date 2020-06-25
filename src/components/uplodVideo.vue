@@ -8,11 +8,12 @@
       v-bind:on-success="handleVideoSuccess"
       v-bind:before-upload="beforeUploadVideo"
       v-bind:show-file-list="false"
+      :limit="1"
     >
       <video
         style="width:180px;height:180px;"
-        v-if="videoForm.showVideoPath !='' && !videoFlag"
-        v-bind:src="videoForm.showVideoPath"
+        v-if="uploadVideos && !videoFlag"
+        v-bind:src="uploadVideos"
         class="avatar video-avatar"
         controls="controls"
       >您的浏览器不支持视频播放</video>
@@ -23,7 +24,7 @@
         style="margin-top:7px;"
       ></el-progress>
       <img
-        v-else-if="videoForm.showVideoPath =='' && !videoFlag"
+        v-if="!uploadVideos && !videoFlag"
         :src="uplodVideo"
         alt
         style="width:180px;height:180px;"
@@ -37,7 +38,7 @@ import { get, post, del, put, fakeGet } from "@/utils/request.js";
 import { localSave, localRead } from "@/lib/local.js";
 export default {
   name: "HelloWorld",
-  props: ["uploadPicUrl"],
+  props: ["uploadVideo"],
   data() {
     return {
       domain: "https://up-z2.qiniup.com",
@@ -56,15 +57,18 @@ export default {
         key: "", //图片名字处理
         token: "", //七牛云token
         data: {}
-      }
+      },
+      uploadVideos: ""
     };
   },
   created() {
+    this.uploadVideos = this.uploadVideo || "";
+    console.log(this.uploadVideos, "初始化获取视频");
     this.getQiniuToken();
   },
   watch: {
-    uploadPicUrl(news, old) {
-      console.log(news, old);
+    uploadVideo(news, old) {
+      this.uploadVideos = news;
     }
   },
   methods: {
@@ -78,25 +82,25 @@ export default {
     //上传前回调
     beforeUploadVideo(file) {
       var fileSize = file.size / 1024 / 1024 < 50;
-      if (
-        [
-          "video/mp4",
-          "video/ogg",
-          "video/flv",
-          "video/avi",
-          "video/wmv",
-          "video/rmvb",
-          "video/mov"
-        ].indexOf(file.type) == -1
-      ) {
-        layer.msg("请上传正确的视频格式");
+      //  "video/ogg",
+      // "video/flv",
+      // "video/avi",
+      // "video/wmv",
+      // "video/rmvb",
+      // "video/mov"
+      if (["video/mp4"].indexOf(file.type) == -1) {
+        this.$message("请上传mp4格式的");
         return false;
       }
       if (!fileSize) {
-        layer.msg("视频大小不能超过50MB");
+        this.$message("视频大小不能超过50MB");
         return false;
       }
       this.isShowUploadVideo = false;
+      this.QiniuData.data = file;
+      this.QiniuData.key = `${file.uid}${file.name}`;
+      // console.log(this.QiniuData);
+      console.log(file, "file");
     },
     //进度条
     uploadVideoProcess(event, file, fileList) {
@@ -105,13 +109,16 @@ export default {
     },
     //上传成功回调
     handleVideoSuccess(response, file, fileList) {
-      this.uplodVideo = `http://${this.qiniuaddr}/${response.key}`;
-      console.log(this.uploadPicUrl, "传给后端的视频地址");
+      console.log(response, file, fileList);
+      this.videoFlag = false;
+      this.uploadVideos = `http://${this.qiniuaddr}/${file.name}`;
+      console.log(this.uploadVideos, "传给后端的视频地址");
       let data = {
-        uploadPicUrl: this.uploadPicUrl,
-        uploadPicImg: response.key
+        uploadVideo: this.uploadVideos,
+        uploadPicImg: file.name
       };
-      this.$emit("uploadSuccess", data);
+
+      this.$emit("uploadVideoA", data);
     }
   }
 };

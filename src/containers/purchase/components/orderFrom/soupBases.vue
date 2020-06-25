@@ -37,7 +37,13 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="rawMaterial-bot">
@@ -51,11 +57,7 @@
         >{{item.title}}</div>
       </div>
       <div class="rawMaterial-bot-bot">
-        <table_v
-          @onToRawMaterialDetail="onToRawMaterialDetail"
-          :tableData="tableData"
-          @onchange="onchange"
-        ></table_v>
+        <table_v :tableData="tableData" @onchange="onchange"></table_v>
       </div>
       <div class="block">
         <span class="demonstration">每页显示</span>
@@ -119,6 +121,8 @@ export default {
     };
   },
   created() {
+    let query = this.$route;
+    this.uid = query.id;
     this.getTableData();
     this.getClassify();
     this.getClassifyAll();
@@ -148,12 +152,13 @@ export default {
     async getTableData() {
       let url = "/admin/raw_order";
       let params = {
-        type: this.typeId,
-        start_time: this.date[0],
-        end_time: this.date[1],
+        type: this.orderStatusId,
+        start_time: this.date[0] || "",
+        end_time: this.date[1] || "",
         keyword: this.keyword,
         page: this.page,
-        limit: this.limit
+        limit: this.limit,
+        uid: this.uid || ""
       };
       let response = await get({ url, params });
       this.tableData = response;
@@ -173,45 +178,9 @@ export default {
     getRowKeys(row) {
       return row.id;
     },
-    async onSureChangeLable() {
-      this.ifChanCate = false;
-      let {
-        title = "",
-        weight = "",
-        fileimg = "",
-        fileurl = "",
-        cate = [],
-        id = ""
-      } = this.basicInformation;
-      let url = "/admin/college_video";
-      if (!title) return this.$message("请先输入视频名称");
-      let data = {};
-      if (this.modelTitle == "修改视频") {
-        let data = {
-          title,
-          weight,
-          fileimg,
-          fileurl,
-          cate,
-          id
-        };
-        let response = await put({ url, data });
-      }
-      if (this.modelTitle == "新增视频") {
-        let data = {
-          title,
-          weight,
-          fileimg,
-          fileurl: "http://qiniu.emjiayuan.com//aaa1.mp4",
-          cate
-        };
-        let response = await post({ url, data });
-      }
-      this.$message(this.modelTitle + "成功");
-      this.getTableData();
-    },
     onChangeOrderStatus(id) {
       this.orderStatusId = id;
+      this.getTableData();
     },
     getOrderStatusList() {
       return [
@@ -221,9 +190,6 @@ export default {
         { title: "待收货", id: 4 },
         { title: "已完成", id: 5 }
       ];
-    },
-    onToRawMaterialDetail(id) {
-      this.$emit("onToRawMaterialDetail", id);
     },
     handleSizeChange(data) {
       this.page = 1;

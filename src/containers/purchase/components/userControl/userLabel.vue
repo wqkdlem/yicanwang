@@ -13,7 +13,13 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="userLabel-bot">
@@ -22,10 +28,10 @@
           <i class="el-icon-plus"></i>
           <span>新增标签</span>
         </div>
-        <div class="userLabel-bot-top-i">
+        <!-- <div class="userLabel-bot-top-i">
           <i class="el-icon-delete"></i>
           <span>批量删除</span>
-        </div>
+        </div>-->
       </div>
       <div class="userLabel-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
@@ -48,10 +54,16 @@
           <el-table-column align="center" prop="time" label="时间"></el-table-column>
           <el-table-column align="center" label="操作" width="160">
             <template slot-scope="scope">
-              <el-button size="mini" @click="onChangeLable(scope.row)">编辑</el-button>
+              <el-button
+                type="text"
+                style="color:#3CB371"
+                size="mini"
+                @click="onChangeLable(scope.row)"
+              >编辑</el-button>
               <el-button
                 size="mini"
-                type="danger"
+                type="text"
+                style="color:#FB6534"
                 @click="delLableId=scope.row.gid;ifShowDele=true;"
               >删除</el-button>
             </template>
@@ -70,7 +82,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="ifChanlable" width="900px">
+    <el-dialog :title="modelTitle" class="abow_dialog" :visible.sync="ifChanlable" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">标签名称：</div>
@@ -86,15 +98,15 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanlable = false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLable">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除标签" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除标签" class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除当前标签？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelLable">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelLable">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -249,7 +261,7 @@ export default {
       display: flex;
       justify-content: start;
       .userLabel-bot-top-i {
-        // width: 130px;
+        cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;
@@ -282,7 +294,7 @@ export default {
     .box-con {
       height: 40px;
       line-height: 40px;
-      text-align: left;
+      text-align: center;
       padding: 30px 0;
     }
     .box-i {
@@ -332,6 +344,10 @@ export default {
           background-color: #f1f1f1;
         }
       }
+    }
+    .dialog-footer {
+      display: flex;
+      justify-content: flex-end;
     }
   }
 }

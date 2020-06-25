@@ -13,8 +13,11 @@
         <input type="password" placeholder="请输入密码" v-model="passWord" />
       </div>
       <div class="long-content-code">
-        <img class="long-content-code-left" :src="codeIconImg" alt />
-        <input class="long-content-code-cen" placeholder="请输入验证码" type="text" v-model="code" />
+        <div class="long-content-code-left">
+          <img :src="codeIconImg" alt />
+          <input class="long-content-code-cen" placeholder="请输入验证码" type="text" v-model="code" />
+        </div>
+
         <div class="long-content-code-rig">
           <!-- <img
             v-if="showCode"
@@ -23,11 +26,11 @@
             alt
           />-->
           <div @click="initGetCode">
-            <SIdentify :identifyCode="identifyCode" :width="200" :height="68"></SIdentify>
+            <SIdentify :identifyCode="identifyCode" :width="180" :height="70"></SIdentify>
           </div>
         </div>
       </div>
-      <div class="long-content-remeber">
+      <!-- <div class="long-content-remeber">
         <img
           class="long-content-remeber-img"
           :src="ifChecked?checked:unchecked"
@@ -35,14 +38,14 @@
           @click="onChecked"
         />
         <div class="long-content-remeber-con" @click="onChecked">记住用户名和密码</div>
-      </div>
+      </div>-->
       <div class="long-content-login" @click="onLogin">登 录</div>
     </div>
   </div>
 </template>
 
 <script>
-import { get, post, del,put,fakeGet } from "@/utils/request.js";
+import { get, post, del, put, fakeGet } from "@/utils/request.js";
 import { localSave, localRead } from "@/lib/local.js";
 import SIdentify from "@/components/code.vue";
 export default {
@@ -67,9 +70,9 @@ export default {
   },
   created() {
     if (localRead("username")) {
-      this.userName = localRead("username");
-      this.passWord = localRead("password");
-      this.ifChecked = true;
+      this.$router.push({ path: "/home" });
+      // this.userName = localRead("username");
+      // this.ifChecked = true;
     }
     if (localRead("token")) return this.initGetCode();
     this.initGetToken();
@@ -97,9 +100,21 @@ export default {
     },
     async onLogin() {
       let url = "/admin/login";
-      if (!this.userName) return this.$message("请先输入账号");
-      if (!this.passWord) return this.$message("请先输入密码");
-      if (!this.code) return this.$message("请先输入验证码");
+      if (!this.userName)
+        return this.$message({
+          message: "用户名不能为空",
+          type: "warning"
+        });
+      if (!this.passWord)
+        return this.$message({
+          message: "密码不能为空",
+          type: "warning"
+        });
+      if (!this.code)
+        return this.$message({
+          message: "验证码不能为空",
+          type: "warning"
+        });
       let data = {
         username: this.userName,
         password: this.passWord,
@@ -107,15 +122,20 @@ export default {
       };
       let response = await post({ url, data });
       console.log(response);
-      this.$router.push({ path: "/home" });
+      if (response.msg) return this.$message(response.msg);
+      this.$message({
+        message: "登录成功",
+        type: "success"
+      });
+      setTimeout(() => {
+        this.$router.push({ path: "/home" });
+      }, 1500);
       if (!this.ifChecked) {
         this.ifChecked = false;
         localSave("username", "");
-        localSave("password", "");
         return;
       } else {
         localSave("username", this.userName);
-        localSave("password", this.passWord);
       }
     }
   }
@@ -131,7 +151,7 @@ body {
   width: 100% !important;
   height: 100% !important;
   min-width: 1240px !important;
-  min-height: 960px !important;
+  min-height: 800px !important;
   input::-webkit-input-placeholder {
     color: rgba(93, 93, 93, 0.5);
     font-size: 20px;
@@ -152,18 +172,18 @@ body {
     left: 0;
     z-index: -1;
     min-width: 1240px !important;
-    min-height: 960px !important;
+    min-height: 800px !important;
   }
   .long-content {
-    width: 675px;
-    height: 715px;
+    width: 600px;
+    height: 650px;
     background: #fff;
     box-shadow: 0px 14px 18px 4px rgba(0, 0, 0, 0.35);
     position: absolute;
     top: 50%;
     right: 190px;
     margin-top: -362px;
-    padding: 65px;
+    padding: 55px;
     box-sizing: border-box;
     text-align: left;
     .long-content-tita {
@@ -180,14 +200,14 @@ body {
     .long-content-user,
     .long-content-pass,
     .long-content-code {
-      width: 550px;
+      width: 490px;
       height: 70px;
       border: 1px solid rgba(223, 223, 223, 1);
       display: flex;
       align-items: center;
       padding: 0 30px;
       box-sizing: border-box;
-      margin-top: 50px;
+      margin-top: 30px;
       img {
         width: 32px;
         height: 33px;
@@ -195,29 +215,45 @@ body {
       input {
         padding: 0 30px;
         box-sizing: border-box;
-        border: none;
+        border: 0 !important;
         outline: medium;
         height: 30px;
         font-size: 20px;
       }
     }
     .long-content-code {
+      width: 490px;
+      display: flex;
+      flex-direction: row;
       .long-content-code-rig {
-        width: 200px;
-        height: 68px;
+        width: 180px;
+        height: 50px;
+        // margin-top: -1px;
         img {
           width: 100%;
           height: 100%;
         }
-        // .s-canvas {
-        //   width: 190px !important;
-        //   height: 68px !important;
-        //   canvas {
-        //     width: 200px !important;
-        //     height: 68px !important;
-        //   }
-        // }
       }
+      .long-content-code-left {
+        flex: auto;
+        display: flex;
+        img {
+          width: 32px;
+          height: 33px;
+        }
+        input {
+          padding: 0 30px;
+          box-sizing: border-box;
+          border: none;
+          outline: medium;
+          width: 150px;
+          flex: auto;
+
+          height: 30px;
+          font-size: 20px;
+        }
+      }
+
       padding: 0 0 0 30px;
     }
     .long-content-remeber {
@@ -238,14 +274,14 @@ body {
       }
     }
     .long-content-login {
-      width: 550px;
-      height: 80px;
+      width: 450px;
+      height: 60px;
       background: rgba(60, 179, 113, 1);
-      line-height: 80px;
+      line-height: 60px;
       text-align: center;
       color: #ffffff;
-      font-size: 34px;
-      margin-top: 40px;
+      font-size: 30px;
+      margin: 40px auto 0;
     }
   }
 }

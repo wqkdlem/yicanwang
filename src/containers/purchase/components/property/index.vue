@@ -2,47 +2,54 @@
   <div class="property">
     <div class="property-top">
       <div class="property-top-tit">
-        {{title}}
+        充值记录
         <!-- <span style="color:#999999">+运费减-所有优惠,实付金额的计算</span> -->
       </div>
       <div class="property-top-con">
         <div class="property-top-con-left">
           <div class="property-top-con-i">
-            关键字：
-            <el-input style="width:230px;" placeholder="请输入关键字"></el-input>
-          </div>
-          <div class="property-top-con-i">
-            {{title==='积分记录'?'类型':'状态'}}：
-            <el-select v-model="value" placeholder="请选择">
-              <!-- <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>-->
+            状态：
+            <el-select v-model="tradeStatusId" placeholder="请选择">
+              <el-option
+                v-for="item in tradeStatus"
+                :key="item.title"
+                :label="item.title"
+                :value="item.id"
+              ></el-option>
             </el-select>
           </div>
           <div class="property-top-con-i">
+            关键字：
+            <el-input style="width:230px;" placeholder="请输入关键字" v-model="keyword"></el-input>
+          </div>
+          <div class="property-top-con-i">
             时间搜索：
-            <!-- v-model="value1" -->
             <el-date-picker
+              v-model="date"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
             ></el-date-picker>
           </div>
         </div>
 
-        <el-button style="height:40px;" type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
+        <el-button
+          style="height:40px;"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="property-bot">
       <div class="property-bot-top">
-        <div class="property-bot-top-i">
+        <!-- <div class="property-bot-top-i">
           <i class="el-icon-plus"></i>
           <span>汤料统计</span>
-        </div>
+        </div>-->
         <!-- <div class="property-bot-top-r">
           <div>销量：</div>
           <div>总销：</div>
@@ -51,97 +58,30 @@
       </div>
       <div class="property-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
-          <!-- <el-table-column align="center" type="selection" width="55"></el-table-column> -->
-
-          <div v-if="title==='支付流水'">
-            <el-table-column align="center" prop="date" label="id"></el-table-column>
-            <el-table-column align="center" prop="date" label="流水号" width="120"></el-table-column>
-            <el-table-column align="center" prop="name" label="类型"></el-table-column>
-            <el-table-column align="center" prop="name" label="外部号（支付平台）" width="180"></el-table-column>
-            <el-table-column align="center" prop="name" label="已支付" width="180"></el-table-column>
-            <el-table-column align="center" prop="name" label="备注" width="180"></el-table-column>
-            <el-table-column align="center" prop="name" label="创建时间" width="180"></el-table-column>
-            <el-table-column align="center" prop="name" label="操作" width="120"></el-table-column>
-          </div>
-          <div v-else>
-            <el-table-column align="center" prop="date" label="id" width="180"></el-table-column>
-            <el-table-column
-              align="center"
-              v-if="title==='充值记录'||title==='消费记录'||title==='积分记录'"
-              prop="date"
-              label="用户"
-              width="180"
-            ></el-table-column>
-
-            <el-table-column
-              align="center"
-              v-if="title==='充值记录'"
-              prop="name"
-              label="充值金额"
-              width="180"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              v-if="title==='消费记录'"
-              prop="name"
-              label="消费金额"
-              width="180"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              v-if="title==='积分记录'"
-              prop="name"
-              label="积分"
-              width="180"
-            ></el-table-column>
-            <!-- <el-table-column align="center" prop="address" label="产品">
-            <div slot-scope="scope">{{scope.row.name}}</div>
-            </el-table-column>-->
-            <el-table-column
-              align="center"
-              v-if="title==='充值记录'||title==='消费记录'"
-              prop="name"
-              label="平台"
-              width="180"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              v-if="title==='积分记录'"
-              prop="name"
-              label="备注"
-              width="180"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              v-if="title==='充值记录'||title==='消费记录'||title==='积分记录'"
-              prop="address"
-              label="时间"
-            ></el-table-column>
-            <el-table-column align="center" v-if="title==='消费记录'" prop="address" label="关联状态"></el-table-column>
-            <el-table-column
-              align="center"
-              v-if="title==='充值记录'||title==='消费记录'"
-              prop="address"
-              label="状态"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              v-if="title==='关联订单'"
-              prop="name"
-              label="积分"
-              width="180"
-            ></el-table-column>
-          </div>
+          <el-table-column align="center" prop="id" label="id"></el-table-column>
+          <el-table-column align="center" prop="user.nickname" label="用户" width="180">
+            <div slot-scope="solt">{{solt.row.user.nickname}}</div>
+            <div slot-scope="solt">{{solt.row.user.mobilePhone}}</div>
+          </el-table-column>
+          <el-table-column align="center" prop="mount" label="充值金额" width="180"></el-table-column>
+          <el-table-column align="center" prop="pay_type" label="支付方式" width="180"></el-table-column>
+          <el-table-column align="center" prop="trade_time" label="时间"></el-table-column>
+          <el-table-column align="center" prop="trade_status" label="状态"></el-table-column>
         </el-table>
         <div class="block">
           <span class="demonstration">每页显示</span>
           <!-- @size-change="handleSizeChange"
           @current-change="handleCurrentChange"-->
-          <!-- :current-page.sync="currentPage2" -->
+          <!-- :current-page.sync="currentPage2
+         
+          -->
+
           <el-pagination
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
             :total="tableData.page.data_count"
           ></el-pagination>
         </div>
@@ -157,91 +97,46 @@ export default {
   props: ["title"],
   data() {
     return {
-      tableData: this.getTableData(),
-      value: ""
+      tableData: "",
+      value: "",
+      page: 1,
+      limit: 10,
+      date: "",
+      keyword: "",
+      tradeStatus: [
+        { title: "全部", id: "0" },
+        { title: "成功", id: "1" },
+        { title: "失败", id: "2" }
+      ],
+      tradeStatusId: ""
     };
   },
-  created() {},
+  created() {
+    this.getTableData();
+  },
   methods: {
-    getTableData() {
-      return [
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          value: true
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        }
-      ];
+    async getTableData() {
+      let url = "/admin/recharge";
+      let params = {
+        trade_status: this.tradeStatusId,
+        keyword: this.keyword,
+        start_time: this.date[0],
+        end_time: this.date[1],
+        page: this.page,
+        limit: this.limit
+      };
+      let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
+      this.tableData = response;
+    },
+    handleSizeChange(data) {
+      this.page = 1;
+      this.limit = data;
+      this.getTableData();
+    },
+    handleCurrentChange(data) {
+      this.page = data;
+      this.getTableData();
     }
   }
 };
@@ -300,7 +195,7 @@ export default {
       display: flex;
       justify-content: space-between;
       .property-bot-top-i {
-        // width: 130px;
+        cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;

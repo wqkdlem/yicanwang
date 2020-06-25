@@ -13,7 +13,7 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
       </div>
     </div>
     <div class="fileGroupManagement-bot">
@@ -22,10 +22,10 @@
           <i class="el-icon-plus"></i>
           <span>新增文件组</span>
         </div>
-        <div class="fileGroupManagement-bot-top-i">
+        <!-- <div class="fileGroupManagement-bot-top-i">
           <i class="el-icon-delete"></i>
           <span>批量删除</span>
-        </div>
+        </div> -->
       </div>
       <div class="fileGroupManagement-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
@@ -69,7 +69,7 @@
     </div>
     <el-dialog
       title="修改管理员"
-      :visible.sync="dialogVisible"
+       class="abow_dialog" :visible.sync="dialogVisible"
       width="900px"
       :before-close="handleClose"
     >
@@ -88,7 +88,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -252,6 +252,7 @@ export default {
       display: flex;
       justify-content: start;
       .fileGroupManagement-bot-top-i {
+        cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;

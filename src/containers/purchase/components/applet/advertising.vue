@@ -13,7 +13,7 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
       </div>
     </div>
     <div class="keyword-bot">
@@ -22,17 +22,20 @@
           <i class="el-icon-plus"></i>
           <span>新增轮播图</span>
         </div>
-        <div class="keyword-bot-top-i">
+        <!-- <div class="keyword-bot-top-i">
           <i class="el-icon-delete"></i>
           <span>批量删除</span>
-        </div>
+        </div>-->
       </div>
       <div class="keyword-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
           <el-table-column align="center" type="selection" width="55"></el-table-column>
           <el-table-column align="center" prop="date" label="ID" width="180"></el-table-column>
-          <el-table-column align="center" prop="address" label="图片">
-            <div slot-scope="scope">{{scope.row.name}}</div>
+          <el-table-column align="center" prop="address" label="图片" width="200">
+            <div
+              slot-scope="scope"
+              style="width:180px;height:70px;display:inline-block;"
+            >{{scope.row.name}}</div>
           </el-table-column>
           <el-table-column align="center" prop="name" label="标题" width="180"></el-table-column>
           <el-table-column align="center" prop="address" label="位置"></el-table-column>
@@ -211,7 +214,7 @@ export default {
       display: flex;
       justify-content: start;
       .keyword-bot-top-i {
-        // width: 130px;
+        cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;

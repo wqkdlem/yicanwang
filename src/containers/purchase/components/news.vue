@@ -24,7 +24,7 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
       </div>
     </div>
     <div class="purchaseSlideshow-bot">

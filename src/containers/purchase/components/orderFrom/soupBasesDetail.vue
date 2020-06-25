@@ -27,11 +27,17 @@
             </div>
             <div class="userListDetail-bot-rig-i">
               <div class="userListDetail-bot-rig-i-left">下单用户</div>
-              <div class="userListDetail-bot-rig-i-right">{{basicInformation.user.username}}</div>
+              <div
+                class="userListDetail-bot-rig-i-right"
+                v-if="basicInformation.user&&basicInformation.user.username"
+              >{{basicInformation.user.username}}</div>
             </div>
             <div class="userListDetail-bot-rig-i">
               <div class="userListDetail-bot-rig-i-left">手机号</div>
-              <div class="userListDetail-bot-rig-i-right">{{basicInformation.user.mobilePhone}}</div>
+              <div
+                class="userListDetail-bot-rig-i-right"
+                v-if="basicInformation.user&&basicInformation.user.mobilePhone"
+              >{{basicInformation.user.mobilePhone}}</div>
             </div>
             <div class="userListDetail-bot-rig-i">
               <div class="userListDetail-bot-rig-i-left">支付价格</div>
@@ -57,6 +63,7 @@
               <div class="userListDetail-bot-rig-i-left">收货人</div>
               <div
                 class="userListDetail-bot-rig-i-right"
+                v-if="basicInformation.order_address&&basicInformation.order_address.username"
               >{{basicInformation.order_address.username}}</div>
             </div>
             <div class="userListDetail-bot-rig-i">
@@ -102,11 +109,11 @@
               :summary-method="getSummaries"
             >
               <el-table-column align="center" prop="goods_name" label="商品"></el-table-column>
-              <el-table-column align="center" prop="telphone" label="图片">
+              <el-table-column align="center" prop="telphone" label="图片" width="200">
                 <img
                   slot-scope="solt"
                   :src="solt.row.goods_image"
-                  style="width:50px;height:50px"
+                  style="width:180px;height:70px;display:inline-block;"
                   alt
                 />
               </el-table-column>
@@ -116,7 +123,10 @@
             </el-table>
           </div>
           <div v-if="navLeftId===3">
-            <logistics></logistics>
+            <div v-if="logisticsInformation.length">
+              <logistics :logisticsInformation="logisticsInformation"></logistics>
+            </div>
+            <div>暂无物流信息!</div>
             <!-- <el-table :data="userinfo" border :height="500" style="width: 100%;">
               <el-table-column align="center" prop="date" label="充值金额" width="180"></el-table-column>
               <el-table-column align="center" prop="address" label="充值平台"></el-table-column>
@@ -125,11 +135,14 @@
             </el-table>-->
           </div>
           <div v-if="navLeftId===4&&logData">
-            <logRecord :logData="logData"></logRecord>
+            <div v-if="logData.length">
+              <logRecord :logData="logData"></logRecord>
+            </div>
+            <div>暂无日志记录！</div>
           </div>
         </div>
       </div>
-      <div class="userListDetail-bot-bot" v-if="navLeftId!==1">
+      <div class="userListDetail-bot-bot" v-if="navLeftId===2">
         <div class="block">
           <span class="demonstration">每页显示</span>
           <!-- @size-change="handleSizeChange"
@@ -153,7 +166,6 @@ import logistics from "@/components/logistics.vue";
 import logRecord from "@/components/logRecord.vue";
 export default {
   name: "HelloWorld",
-  props: ["rawMaterialData"],
   components: { logistics, logRecord },
   data() {
     return {
@@ -171,12 +183,17 @@ export default {
       basicInformation: {},
       logData: "",
       page: 1,
-      limit: 10
+      limit: 10,
+      rawMaterialData: ""
     };
   },
   created() {
+    let { query } = this.$route;
+    console.log(query, "query");
+    this.rawMaterialData = query.id;
     this.getUserinfo();
     this.getLogData();
+    this.getLogistics();
   },
   methods: {
     getNavLeftId(id) {
@@ -203,6 +220,16 @@ export default {
       if (response.msg) return this.$message(response.msg);
       this.logData = response;
       console.log(this.logData);
+    },
+    //获取物流信息
+    async getLogistics() {
+      let url = "/admin/logistics";
+      let params = {
+        order_id: this.rawMaterialData
+      };
+      let response = await get({ url, params });
+      this.logisticsInformation = response;
+      console.log(this.basicInformation, "物流信息");
     },
     //返回
     onToRawMaterial() {

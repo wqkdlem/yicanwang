@@ -28,8 +28,14 @@ export default new Router({
             path: "/purchase",
             name: "purchase",
             component: purchase,
-            redirect: "/purchaseHome",
+            redirect: "/storeList",
             children: [{
+                    path: "/storeList",
+                    name: "storeList",
+                    component: () =>
+                        import ("@/containers/purchase/components/storeList") //店铺列表
+                },
+                {
                     path: "/purchaseHome",
                     name: "purchaseHome",
                     component: () =>
@@ -154,6 +160,18 @@ export default new Router({
                         import ("@/containers/purchase/components/property/index")
                 },
                 {
+                    path: "/integral",
+                    name: "integral",
+                    component: () =>
+                        import ("@/containers/purchase/components/property/integral")
+                },
+                {
+                    path: "/consumption",
+                    name: "consumption",
+                    component: () =>
+                        import ("@/containers/purchase/components/property/consumption")
+                },
+                {
                     path: "/userList",
                     name: "userList",
                     component: () =>
@@ -192,10 +210,24 @@ export default new Router({
                         import ("@/containers/purchase/components/orderFrom/rawMaterial")
                 },
                 {
+                    path: "/rawMaterialDetail",
+                    name: "rawMaterialDetail",
+                    component: () =>
+                        import (
+                            "@/containers/purchase/components/orderFrom/rawMaterialDetail"
+                        )
+                },
+                {
                     path: "/soupBases",
                     name: "soupBases",
                     component: () =>
                         import ("@/containers/purchase/components/orderFrom/soupBases")
+                },
+                {
+                    path: "/soupBasesDetail",
+                    name: "soupBasesDetail",
+                    component: () =>
+                        import ("@/containers/purchase/components/orderFrom/soupBasesDetail")
                 }
             ]
         },
@@ -207,7 +239,39 @@ export default new Router({
         {
             path: "/bigData",
             name: "bigData",
-            component: bigData
+            component: bigData,
+            redirect: "/dataGrid",
+            children: [{
+                    path: "/dataGrid",
+                    name: "dataGrid",
+                    component: () =>
+                        import ("@/containers/bigData/dataGrid") //数据概览
+                },
+                {
+                    path: "/dataReduction",
+                    name: "dataReduction",
+                    component: () =>
+                        import ("@/containers/bigData/dataReduction") //数据整理分析
+                },
+                {
+                    path: "/productSale",
+                    name: "productSale",
+                    component: () =>
+                        import ("@/containers/bigData/productSale") //产品销售统计分析
+                },
+                {
+                    path: "/soupSales",
+                    name: "soupSales",
+                    component: () =>
+                        import ("@/containers/bigData/soupSales") //汤料销售统计分析
+                },
+                {
+                    path: "/userConsumption",
+                    name: "userConsumption",
+                    component: () =>
+                        import ("@/containers/bigData/userConsumption") //用户消费统计分析
+                }
+            ]
         },
         {
             path: "/generalize",
@@ -225,6 +289,14 @@ export default new Router({
                     component: () =>
                         import ("@/containers/community/components/circle/communityBy")
                 },
+                // import communityBy from "./components/circle/communityBy"; //系统-社区轮播
+                // import lable from "./components/circle/lable"; //系统-标签管理
+                // import postHtml from "./components/circle/post"; //系统-发帖管理
+                // import sensitive from "./components/circle/sensitive"; //系统-敏感词过滤
+                // import blacklist from "./components/circle/blacklist"; //系统-黑名单管理
+                // import videomessage from "./components/college/video"; //系统-学习视频管理
+                // import classify from "./components/college/classify"; //系统-学习视频分类
+                // import comment from "./components/college/comment"; //系统-视频评论管理
                 {
                     path: "/lable",
                     name: "lable",
@@ -232,7 +304,13 @@ export default new Router({
                         import ("@/containers/community/components/circle/lable")
                 },
                 {
-                    path: "/deit",
+                    path: "/blacklist",
+                    name: "blacklist",
+                    component: () =>
+                        import ("@/containers/community/components/circle/blacklist")
+                },
+                {
+                    path: "/postHtml",
                     name: "postHtml",
                     component: () =>
                         import ("@/containers/community/components/circle/post")
@@ -278,7 +356,7 @@ export default new Router({
             path: "/set",
             name: "set",
             component: set,
-            redirect: "/administrator",
+            redirect: "/freight",
             children: [{
                     path: "/administrator",
                     name: "administrator",
@@ -328,6 +406,12 @@ export default new Router({
                     name: "provinces",
                     component: () =>
                         import ("@/containers/set/components/basicSetting/provinces")
+                },
+                {
+                    path: "/rechargeSet",
+                    name: "rechargeSet",
+                    component: () =>
+                        import ("@/containers/set/components/basicSetting/rechargeSet")
                 },
                 {
                     path: "/background",

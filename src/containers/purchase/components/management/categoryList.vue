@@ -24,7 +24,13 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="categoryList-bot">
@@ -34,10 +40,10 @@
             <i class="el-icon-plus"></i>
             <span>新增分类</span>
           </div>
-          <div class="categoryList-bot-top-i">
+          <!-- <div class="categoryList-bot-top-i">
             <i class="el-icon-delete"></i>
             <span>批量删除</span>
-          </div>
+          </div>-->
         </div>
       </div>
       <div class="categoryList-bot-bot">
@@ -48,7 +54,7 @@
           <el-table-column align="center" prop="title" label="标题"></el-table-column>
           <el-table-column align="center" prop="subtitle" label="短标题"></el-table-column>
           <el-table-column align="center" prop="subtitle" label="分类图片" width="180">
-            <img style="width:140px;height:140px" slot-scope="solt" :src="solt.row.cate_url" alt />
+            <img style="width:140px;height:140px" slot-scope="solt" :src="solt.row.cate_urls" alt />
           </el-table-column>
           <el-table-column align="center" prop="weight" label="排序"></el-table-column>
           <!-- <el-table-column align="center" prop="goods_price" label="首页排列"></el-table-column>
@@ -80,7 +86,7 @@
               ></i>
             </div>
           </el-table-column>
-          <el-table-column label="操作" width="160">
+          <el-table-column label="操作" width="160" align="center">
             <!--  @click="onShowJurisdiction(scope.row)" @click="onToCompile(scope.row)"  @click="ifDeleData(scope.row.id)"-->
             <template slot-scope="scope">
               <!-- <el-button
@@ -113,12 +119,12 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
-            :total="10"
+            :total="tableData.page.data_count"
           ></el-pagination>
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="ifChanCate" width="900px">
+    <el-dialog :title="modelTitle" class="abow_dialog" :visible.sync="ifChanCate" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">分类名称：</div>
@@ -137,13 +143,13 @@
           <!-- <img style="width:180px;height:180px" :src="basicInformation.cate_url||uplodingImg" alt /> -->
           <uplodImg
             style="margin-left:10px"
-            :uploadPicUrl="basicInformation.cate_url"
+            :uploadPicUrl="basicInformation.cate_urls"
             @uploadSuccess="uploadSuccess"
           ></uplodImg>
         </div>
         <div class="box-i">
           <div class="box-left">排序：</div>
-          <input width type="number" v-model="basicInformation.weight" placeholder="请输入分类名称" />
+          <input width type="number" min="0" v-model="basicInformation.weight" placeholder="请输入排序" />
         </div>
         <div class="box-i">
           <div class="box-left">汤料分类：</div>
@@ -153,7 +159,7 @@
           </div>
         </div>
         <div class="box-i">
-          <div class="box-left">首页显示</div>
+          <div class="box-left">首页显示：</div>
           <div class="box-right">
             <el-radio v-model="basicInformation.status" :label="1">是</el-radio>
             <el-radio v-model="basicInformation.status" :label="2">否</el-radio>
@@ -162,15 +168,15 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanCate= false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLable">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除等级" class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除当前分类？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelCate">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelCate">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -245,6 +251,7 @@ export default {
       this.ifChanCate = true;
       this.modelTitle = "修改分类";
       this.basicInformation = data;
+      this.uploadPicImg = this.basicInformation.cate_url;
     },
     onAddCate() {
       this.ifChanCate = true;
@@ -260,6 +267,7 @@ export default {
         status: 1,
         weight: ""
       };
+      this.uploadPicImg = cate_url;
     },
     async onSureChangeLable() {
       this.ifChanCate = false;
@@ -276,9 +284,12 @@ export default {
       } = this.basicInformation;
       let url = "admin/cate";
       if (!name) return this.$message("请先输入分类名称");
+      if (!title) return this.$message("请先输入主标题");
+      if (!subtitle) return this.$message("请先输入短标题");
+      if (!this.uploadPicImg) return this.$message("请先上传图片");
+      if (!weight) return this.$message("请先输入排序");
       let data = {};
       if (this.modelTitle == "修改分类") {
-        this.uploadPicImg = cate_url;
         let data = {
           name,
           title,
@@ -310,7 +321,7 @@ export default {
     },
     uploadSuccess(data) {
       this.basicInformation.cate_url = data.uploadPicUrl;
-      console.log(this.basicInformation.cate_url, "前端展示图片");
+      console.log(data.uploadPicImg, "前端展示图片");
       this.uploadPicImg = data.uploadPicImg;
     },
     async onDelCate() {
@@ -403,7 +414,7 @@ export default {
         display: flex;
         justify-content: start;
         .categoryList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;
@@ -487,6 +498,10 @@ export default {
     .box-img {
       align-items: flex-start;
     }
+  }
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>

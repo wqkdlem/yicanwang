@@ -79,32 +79,39 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="productList-bot">
       <div class="productList-bot-top">
         <div class="productList-bot-top-w">
-          <div class="productList-bot-top-i" @click="onToProductListDetail">
+          <div class="productList-bot-top-i" @click="onToProductListDetailAdd">
             <i class="el-icon-plus"></i>
             <span>新增原料</span>
           </div>
-          <div class="productList-bot-top-i">
+          <!-- <div class="productList-bot-top-i">
             <i class="el-icon-delete"></i>
             <span>回收站</span>
-          </div>
+          </div>-->
         </div>
-        <div class="productList-bot-top-r">
+        <!-- <div class="productList-bot-top-r">
           <div class="productList-bot-top-r-w">
             Id：
             <div>
               <img
                 @click="searchDataidArry.id=1;searchDataidArry.createtime=''"
                 :src="searchDataidArry.id===1?onUp:up"
+                style="cursor: pointer;"
                 alt
               />
               <img
-                style="margin-top:5px"
+                style="margin-top:5px;cursor: pointer;"
                 @click="searchDataidArry.id=2;searchDataidArry.createtime=''"
                 :src="searchDataidArry.id==2?onDown:down"
                 alt
@@ -117,27 +124,33 @@
               <img
                 @click="searchDataidArry.createtime=1;searchDataidArry.id=''"
                 :src="searchDataidArry.createtime===1?onUp:up"
+                style="cursor: pointer;"
                 alt
               />
               <img
-                style="margin-top:5px"
+                style="margin-top:5px;cursor: pointer;"
                 @click="searchDataidArry.createtime=2;searchDataidArry.id=''"
                 :src="searchDataidArry.createtime==2?onDown:down"
                 alt
               />
             </div>
           </div>
-        </div>
+        </div>-->
       </div>
       <div class="productList-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
           <el-table-column align="center" type="selection" width="55"></el-table-column>
-          <el-table-column align="center" prop="id" label="ID"></el-table-column>
+          <el-table-column align="center" prop="id" label="ID" sortable></el-table-column>
           <el-table-column align="center" prop="goods_name" label="名称"></el-table-column>
           <el-table-column align="center" prop="specs" label="规格"></el-table-column>
           <el-table-column align="center" prop="cate.name" label="分类"></el-table-column>
-          <el-table-column align="center" prop="group" label="图片">
-            <img slot-scope="slot" style="width:120px;height:120px" :src="slot.row.goodImg" alt />
+          <el-table-column align="center" prop="group" label="图片" width="200">
+            <img
+              slot-scope="slot"
+              style="width:180px;height:70px;display:inline-block;"
+              :src="slot.row.goodImgs"
+              alt
+            />
           </el-table-column>
           <el-table-column align="center" prop="goods_cost" label="价格/成本价">
             <div slot-scope="solt">{{solt.row.goods_price}}/{{solt.row.goods_cost}}</div>
@@ -200,7 +213,8 @@
               ></i>
             </div>
           </el-table-column>
-          <el-table-column align="center" label="操作" width="160">
+          <el-table-column align="center" prop="weight" label="时间" sortable></el-table-column>
+          <el-table-column align="center" label="操作" width="160" fixed="right">
             <!--  @click="onShowJurisdiction(scope.row)" @click="onToCompile(scope.row)"  @click="ifDeleData(scope.row.id)"-->
             <template slot-scope="scope">
               <el-button
@@ -233,17 +247,17 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
-            :total="10"
+            :total="tableData.page.data_count"
           ></el-pagination>
         </div>
       </div>
     </div>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除产品" class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除当前产品？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelProduct">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelProduct">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -327,20 +341,6 @@ export default {
       let response = await get({ url, params });
       this.tableData = response;
     },
-    onChangeLable(data) {
-      this.ifChanlable = true;
-      this.modelTitle = "修改标签";
-      this.changeDataContent = data;
-    },
-    onAddLable() {
-      this.ifChanlable = true;
-      this.modelTitle = "新增标签";
-      this.changeDataContent = {
-        group: "",
-        status: 1,
-        gid: ""
-      };
-    },
     // async onSureChangeLable() {
     //   this.ifChanlable = false;
     //   let url = "/admin/product_yl";
@@ -375,13 +375,23 @@ export default {
       this.$message("删除成功");
       this.getTableData();
     },
+    // 产品管理新增
+    onToProductListDetailAdd() {
+      this.$router.push({ path: "/productListDetail" });
+    },
     //产品管理编辑
     onToProductListDetail(data = "") {
+      console.log(data);
       this.$router.push({ path: "/productListDetail", query: data });
     },
     //评论
     onTOComment(id) {
-      this.$emit("onTOComment", id);
+      // this.$emit("onTOComment", id);
+      console.log(id);
+      let data = {
+        id
+      };
+      this.$router.push({ path: "/evaluationList", query: data });
     },
     handleSizeChange(data) {
       this.page = 1;
@@ -459,7 +469,7 @@ export default {
         display: flex;
         justify-content: start;
         .productList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;
@@ -506,13 +516,13 @@ export default {
   .userLabel-bot-bot {
     margin-top: 20px;
     flex: auto;
-    .block {
-      display: flex;
-      align-items: center;
-      flex-direction: row;
-      justify-content: flex-end;
-      margin-top: 10px;
-    }
+  }
+  .block {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 10px;
   }
   .box {
     .box-i {
@@ -563,6 +573,10 @@ export default {
     .box-img {
       align-items: flex-start;
     }
+  }
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>

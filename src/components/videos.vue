@@ -11,8 +11,6 @@
 
 <script>
 import videojs from "video.js";
-import "video.js/dist/video-js.css";
-import "vue-video-player/src/custom-theme.css";
 import { videoPlayer } from "vue-video-player";
 import "videojs-flash";
 // import SWF_URL from "videojs-swf/dist/video-js.swf";

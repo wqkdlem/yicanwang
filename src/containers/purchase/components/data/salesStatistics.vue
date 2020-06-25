@@ -43,7 +43,9 @@
       <div class="salesStatistics-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
           <!-- <el-table-column align="center" type="selection" width="55"></el-table-column> -->
-          <el-table-column align="center" prop="date" label="图片" width="180"></el-table-column>
+          <el-table-column align="center" prop="date" label="图片" width="180">
+            <img src alt style="width:180px;height:70px;display:inline-block;" />
+          </el-table-column>
           <el-table-column align="center" prop="address" label="产品">
             <div slot-scope="scope">{{scope.row.name}}</div>
           </el-table-column>
@@ -217,7 +219,7 @@ export default {
       display: flex;
       justify-content: space-between;
       .salesStatistics-bot-top-i {
-        // width: 130px;
+        cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;

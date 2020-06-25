@@ -24,7 +24,7 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
       </div>
     </div>
     <div class="categoryList-bot">
@@ -34,42 +34,25 @@
             <i class="el-icon-plus"></i>
             <span>新增模板</span>
           </div>
-          <div class="categoryList-bot-top-i">
+          <!-- <div class="categoryList-bot-top-i">
             <i class="el-icon-delete"></i>
             <span>批量删除</span>
-          </div>
+          </div>-->
         </div>
       </div>
       <div class="categoryList-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
-          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <!-- <el-table-column align="center" type="selection" width="55"></el-table-column> -->
           <el-table-column align="center" prop="id" label="ID"></el-table-column>
           <el-table-column align="center" prop="template_name" label="名称"></el-table-column>
           <el-table-column align="center" prop="count" label="产品使用数"></el-table-column>
           <el-table-column align="center" prop="template_name" label="类型"></el-table-column>
-          <!-- <el-table-column align="center" prop="status" label="启用">
-            <div slot-scope="scope">
-              <i
-                v-if="scope.row.status"
-                class="el-icon-check"
-                style="font-size:22px;color:#3CB371;"
-              ></i>
-              <i
-                v-if="!scope.row.status"
-                class="el-icon-close"
-                style="font-size:22px;color:#FB6534;"
-              ></i>
-            </div>
-          </el-table-column>-->
-          <el-table-column align="center" label="操作" width="160">
-            <!--  @click="onShowJurisdiction(scope.row)" @click="onToCompile(scope.row)"  @click="ifDeleData(scope.row.id)"-->
+          <el-table-column align="center" prop="first_weight" label="首重/首件"></el-table-column>
+          <el-table-column align="center" prop="first_price" label="首费"></el-table-column>
+          <el-table-column align="center" prop="continue_weight" label="续重/续件"></el-table-column>
+          <el-table-column align="center" prop="continue_price" label="续费"></el-table-column>
+          <el-table-column align="center" label="操作" width="160" fixed="right">
             <template slot-scope="scope">
-              <!-- <el-button
-                type="text"
-                size="small"
-                style="color:#3CB371"
-                @click="onTOComment(scope.row.id)"
-              >详情</el-button>-->
               <el-button
                 type="text"
                 size="small"
@@ -88,6 +71,7 @@
         </el-table>
         <div class="block">
           <span class="demonstration">每页显示</span>
+          <!-- :total="tableData.page.data_count" -->
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -99,7 +83,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="ifChanCate" width="900px">
+    <el-dialog :title="modelTitle"  class="abow_dialog" :visible.sync="ifChanCate" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">名称：</div>
@@ -107,31 +91,80 @@
         </div>
         <div class="box-a">
           <div class="box-left">类型：</div>
-          <div class="box-right">
-            <div>
+          <div class="box-right" style="display:flex;justify-content: space-between;">
+            <div class="box-right-text">
               <el-radio v-model="basicInformation.type" :label="1">是</el-radio>
               <div
-                style="width:500px;text-align: left;"
+                style="width:90%;text-align: left;"
               >按重计费：单笔订单首N 千克，运费M元，每增加n千克，续费m元； 如，首1kg，运费10元，每续1kg，续费5元，则买家购买了2kg 的商品，第1kg按10元收取，第2kg，按5元收取，合计15元；</div>
             </div>
-            <div>
+            <div class="box-right-text">
               <el-radio v-model="basicInformation.type" :label="2">否</el-radio>
-              <div style="width:500px;text-align: left;">按件计费：单笔订单首N件，运费M元，每增加n件（不足n件，按照n件计算），续费m元；</div>
+              <div style="90%;text-align: left;">按件计费：单笔订单首N件，运费M元，每增加n件（不足n件，按照n件计算），续费m元；</div>
+            </div>
+          </div>
+        </div>
+        <div class="box-i">
+          <div class="box-left">模板：</div>
+          <div class="addGroup-content">
+            <el-row class="table-title">
+              <el-col :span="6">
+                <div
+                  class="table-title-div"
+                  style="background:#f6f6f6;"
+                >{{basicInformation.type===1?'首重':"首件"}}</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="table-title-div" style="background:#f6f6f6;">首费</div>
+              </el-col>
+              <el-col :span="6">
+                <div
+                  class="table-title-div"
+                  style="background:#f6f6f6;"
+                >{{basicInformation.type===1?'续重':"续件"}}</div>
+              </el-col>
+              <el-col :span="6">
+                <div class="table-title-div" style="background:#f6f6f6;">续费</div>
+              </el-col>
+            </el-row>
+            <div>
+              <el-row class="table-title">
+                <el-col :span="6">
+                  <div class="table-title-div">
+                    <input min="0" v-model="basicInformation.first_weight" type="number" />
+                  </div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="table-title-div">
+                    <input min="0" v-model="basicInformation.first_price" type="number" />
+                  </div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="table-title-div">
+                    <input min="0" v-model="basicInformation.continue_weight" type="number" />
+                  </div>
+                </el-col>
+                <el-col :span="6">
+                  <div class="table-title-div">
+                    <input min="0" v-model="basicInformation.continue_price" type="number" />
+                  </div>
+                </el-col>
+              </el-row>
             </div>
           </div>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanCate= false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLable">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除等级"  class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除当前运费模板？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelCate">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelCate">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -150,7 +183,11 @@ export default {
       typeId: "",
       basicInformation: {
         template_name: "",
-        type: 1
+        type: 1,
+        first_weight: "0.00",
+        first_price: "0.00",
+        continue_weight: "0.00",
+        continue_price: "0.00"
       },
       value: "",
       shensuo: require("@/assets/new_images/shensuo.png"),
@@ -178,6 +215,7 @@ export default {
         type: "freight_template_type"
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.searchData = response;
     },
     async getTableData() {
@@ -190,42 +228,68 @@ export default {
         limit: this.limit
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
     },
     onChangeCate(data) {
       this.ifChanCate = true;
       this.modelTitle = "修改运费模板";
       this.basicInformation = data;
+      this.basicInformation.type = data.type ? 1 : 2;
     },
     onAddCate() {
       this.ifChanCate = true;
       this.modelTitle = "新增运费模板";
       this.basicInformation = {
         template_name: "",
-        type: 1
+        type: 1,
+        first_weight: "0.00",
+        first_price: "0.00",
+        continue_weight: "0.00",
+        continue_price: "0.00"
       };
     },
     async onSureChangeLable() {
       this.ifChanCate = false;
-      let { template_name = "", type = "", id = "" } = this.basicInformation;
+      let {
+        template_name = "",
+        type = "",
+        id = "",
+        first_weight = "0.00",
+        first_price = "0.00",
+        continue_weight = "0.00",
+        continue_price = "0.00"
+      } = this.basicInformation;
       let url = "/admin/freight_template";
       if (!template_name) return this.$message("请先输入运费模板名称");
+      if (!type) return this.$message("请先选择类型");
       let data = {};
       if (this.modelTitle == "修改运费模板") {
         let data = {
           template_name,
           type,
-          id
+          id,
+          first_weight,
+          first_price,
+          continue_weight,
+          continue_price
         };
         let response = await put({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       if (this.modelTitle == "新增运费模板") {
         let data = {
           template_name,
-          type
+          type,
+          first_weight,
+          first_price,
+          continue_weight,
+          continue_price
         };
         let response = await post({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
+
       this.$message(this.modelTitle + "成功");
       this.getTableData();
     },
@@ -236,6 +300,7 @@ export default {
       };
       let response = await del({ url, data });
       this.ifShowDele = false;
+      if (response.msg) return this.$message(response.msg);
       this.$message("删除成功");
       this.getTableData();
     },
@@ -319,7 +384,7 @@ export default {
         display: flex;
         justify-content: start;
         .categoryList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;
@@ -366,9 +431,6 @@ export default {
         padding-right: 10px;
         box-sizing: border-box;
       }
-      .box--right {
-        margin-left: 10px;
-      }
       input {
         width: 670px;
         height: 40px;
@@ -378,19 +440,6 @@ export default {
         margin-left: 10px;
         background-color: #f1f1f1;
         border: none;
-      }
-      img,
-      .box-right {
-        margin-left: 10px;
-      }
-      .el-select {
-        width: 670px;
-        height: 40px;
-        margin-left: 10px;
-
-        .el-input__inner {
-          background-color: #f1f1f1;
-        }
       }
     }
     .box-a {
@@ -405,11 +454,19 @@ export default {
         padding-right: 10px;
         box-sizing: border-box;
       }
-      .box-right > div:nth-child(2) {
-        margin-top: 20px;
-      }
-      .box-right > div > div {
-        margin-left: 20px;
+      .box-right {
+        margin-left: 10px;
+        .box-right-text {
+          width: 45%;
+          el-radio {
+            font-size: 14px;
+            color: rgba(51, 51, 51, 0.5);
+          }
+          div {
+            color: rgba(51, 51, 51, 0.5);
+            font-size: 12px;
+          }
+        }
       }
     }
     .box-right {
@@ -431,6 +488,34 @@ export default {
     }
     .box-img {
       align-items: flex-start;
+    }
+  }
+  .addGroup-content {
+    width: 670px;
+    margin-top: 30px;
+    margin: 20px;
+    border: 1px solid #979797;
+    border-right: 0;
+    border-bottom: 0;
+    .table-title {
+      border-bottom: 1px solid #979797;
+      .table-title-div {
+        border-right: 1px solid #979797;
+        text-align: center;
+        height: 100%;
+        padding: 10px;
+      }
+      input {
+        width: 140px;
+        height: 40px;
+        line-height: 40px;
+        padding: 0 0 0 20px;
+        box-sizing: border-box;
+        margin-left: 0px;
+        background-color: #fff;
+        border: 1px solid #979797;
+        border-radius: 4px;
+      }
     }
   }
 }

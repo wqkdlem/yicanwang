@@ -13,7 +13,7 @@
       :limit="9"
       multiple
       :on-exceed="handleExceed"
-      :file-list="data.uploadPicUrl"
+      :file-list="uploadPicUrla"
       ref="foreignPersonUploadItem"
     >
       <!-- <div>
@@ -23,8 +23,8 @@
 
       <img style="margin:10px 10px 0 0;" :src="uplodingImg" />
     </el-upload>
-    <div class="moreUplodImg-content" v-if="uploadPicUrl&&uploadPicUrl.length">
-      <div class="moreUplodImg-content-i" v-for="(item,index) in data.uploadPicUrl" :key="index">
+    <div class="moreUplodImg-content" v-if="uploadPicUrla&&uploadPicUrla.length">
+      <div class="moreUplodImg-content-i" v-for="(item,index) in uploadPicUrla" :key="index">
         <img class="moreUplodImg-content-i-del" :src="deleIcon" alt @click="onDele(index)" />
         <img :src="item.url" class="avatar" />
       </div>
@@ -55,16 +55,19 @@ export default {
       data: {
         uploadPicUrl: [],
         uploadPicImg: []
-      }
+      },
+      uploadPicUrla: []
     };
   },
   created() {
     this.getQiniuToken();
-    this.data.uploadPicUrl = this.uploadPicUrl;
+    if (!this.uploadPicUrl || !this.uploadPicUrl.length) return;
+    this.uploadPicUrla = this.uploadPicUrl;
+    console.log(this.uploadPicUrla, this.uploadPicUrl, "this.uploadPicUrla");
   },
   watch: {
     uploadPicUrl(news, old) {
-      // this.data.uploadPicUrl = news;
+      this.uploadPicUrla = news;
     }
   },
   methods: {
@@ -78,18 +81,53 @@ export default {
     },
     beforeAvatarUpload(file) {
       this.QiniuData.data = file;
-      this.QiniuData.key = `${file.name}`;
-      console.log(this.QiniuData.key);
+      console.log(this.QiniuData.data);
+      this.QiniuData.key = `${file.uid}${file.name}`;
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension =
+        testmsg === "jpg" ||
+        testmsg === "JPG" ||
+        testmsg === "jpeg" ||
+        testmsg === "JPEG" ||
+        testmsg === "png" ||
+        testmsg === "PNG" ||
+        testmsg === "bmp" ||
+        testmsg === "BMP";
+      const isLt50M = file.size / 1024 / 1024 < 10;
+      if (!extension) {
+        this.$message({
+          message: "上传图片只能是jpg / jpeg / png / bmp格式!",
+          type: "error"
+        });
+        return false; //必须加上return false; 才能阻止
+      }
+      if (!isLt50M) {
+        this.$message({
+          message: "上传文件大小不能超过 10MB!",
+          type: "error"
+        });
+        return false;
+      }
+      return extension || isLt50M;
     },
     uploadSuccess(response, file, fileList) {
-      console.log(fileList, "111111111111111111");
+      console.log(file, fileList);
       this.data.uploadPicUrl = [];
       this.data.uploadPicImg = [];
+      this.uploadPicUrla = [];
+      if (!fileList.length) return false;
+      console.log(fileList);
       fileList.map(item => {
         this.data.uploadPicUrl.push(`http://${this.qiniuaddr}/${item.name}`);
         this.data.uploadPicImg.push(item.name);
+        this.uploadPicUrla.push({
+          name: item.name,
+          url: `http://${this.qiniuaddr}/${item.name}`,
+          uid: item.uid,
+          status: item.status
+        });
       });
-      this.uploadPicUrl = this.data.uploadPicUrl;
+      console.log(this.uploadPicUrla);
       this.$emit("uploadSuccess", this.data);
     },
     uploadError(err, file, fileList) {
@@ -122,10 +160,9 @@ export default {
       console.log(index);
       this.data.uploadPicUrl.splice(index, 1);
       this.data.uploadPicImg.splice(index, 1);
-      this.$refs.uploadItem.uploadFiles.splice(index, 1);
-    },
-    beforeRemove(file, fileList) {
-      console.log(file, fileList);
+      this.uploadPicUrla.splice(index, 1);
+      console.log(this.$refs);
+      this.$refs.foreignPersonUploadItem.uploadFiles.splice(index, 1);
     }
   }
 };
@@ -138,8 +175,8 @@ export default {
   flex-wrap: wrap;
 }
 img {
-  width: 160px;
-  height: 160px;
+  width: 180px;
+  height: 180px;
 }
 .moreUplodImg-content {
   display: flex;

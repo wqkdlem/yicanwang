@@ -13,7 +13,7 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
       </div>
     </div>
     <div class="fileManagement-bot">
@@ -72,7 +72,7 @@
     </div>
     <el-dialog
       title="修改管理员"
-      :visible.sync="dialogVisible"
+       class="abow_dialog" :visible.sync="dialogVisible"
       width="900px"
       :before-close="handleClose"
     >
@@ -88,15 +88,15 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="dialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="修改管理员" :visible.sync="ifShowDele" width="900px" :before-close="handleClose">
+    <el-dialog title="修改管理员"  class="abow_dialog" :visible.sync="ifShowDele" width="900px" :before-close="handleClose">
       <div class="box">
         <div class="box-con">确认删除这10张图片吗</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="ifShowDele = false">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="ifShowDele = false">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -192,6 +192,7 @@ export default {
       box-sizing: border-box;
       .fileManagement-bot-top-a,
       .fileManagement-bot-top-i {
+        cursor: pointer;
         width: 100%;
         padding: 0 12px;
         box-sizing: border-box;

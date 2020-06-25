@@ -13,7 +13,13 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="categoryList-bot">
@@ -36,18 +42,18 @@
           <el-table-column align="center" prop="name" label="分类名称"></el-table-column>
           <el-table-column align="center" prop="title" label="分类标题"></el-table-column>
           <el-table-column align="center" prop="title" label="分类icon">
-            <img class="el-table-column-img" slot-scope="solt" src alt />
+            <img class="el-table-column-img" slot-scope="solt" :src="solt.row.icons" alt />
           </el-table-column>
           <el-table-column align="center" prop="weight" label="排序"></el-table-column>
           <el-table-column align="center" prop="is_show" label="显示">
             <div slot-scope="scope">
               <i
-                v-if="scope.row.is_show"
+                v-if="scope.row.status"
                 class="el-icon-check"
                 style="font-size:22px;color:#3CB371;"
               ></i>
               <i
-                v-if="!scope.row.is_show"
+                v-if="!scope.row.status"
                 class="el-icon-close"
                 style="font-size:22px;color:#FB6534;"
               ></i>
@@ -74,19 +80,18 @@
         </el-table>
         <div class="block">
           <span class="demonstration">每页显示</span>
-
+          <!-- :total="tableData.page.data_count" -->
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
-            :total="tableData.page.data_count"
           ></el-pagination>
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="ifChanCate" width="900px">
+    <el-dialog :title="modelTitle" class="abow_dialog" :visible.sync="ifChanCate" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">分类名称：</div>
@@ -100,27 +105,34 @@
           <div class="box-left">分类图片：</div>
           <uplodImg
             style="margin-left:10px"
-            :uploadPicUrl="basicInformation.icon"
+            :uploadPicUrl="basicInformation.icons"
             @uploadSuccess="uploadSuccess"
           ></uplodImg>
         </div>
         <div class="box-i">
           <div class="box-left">排序：</div>
-          <input width type="number" v-model="basicInformation.weight" placeholder="请输入排序" />
+          <input width type="number" min="0" v-model="basicInformation.weight" placeholder="请输入排序" />
+        </div>
+        <div class="box-i">
+          <div class="box-left">是否显示：</div>
+          <div class="box-right">
+            <el-radio v-model="basicInformation.status" :label="1">是</el-radio>
+            <el-radio v-model="basicInformation.status" :label="0">否</el-radio>
+          </div>
         </div>
       </div>
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanCate= false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLable">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除等级" class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除分类？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelCate">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelCate">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -143,7 +155,8 @@ export default {
         name: "",
         icon: "",
         weight: "",
-        title: ""
+        title: "",
+        status: 1
       },
       value: "",
       shensuo: require("@/assets/new_images/shensuo.png"),
@@ -173,12 +186,14 @@ export default {
         limit: this.limit
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
     },
     onChangeCate(data) {
       this.ifChanCate = true;
       this.modelTitle = "修改分类";
       this.basicInformation = data;
+      this.uploadPicImg = data.icon;
     },
     onAddCate() {
       this.ifChanCate = true;
@@ -187,7 +202,8 @@ export default {
         name: "",
         icon: "",
         weight: "",
-        title: ""
+        title: "",
+        status: 1
       };
     },
     async onSureChangeLable() {
@@ -197,11 +213,14 @@ export default {
         icon = "",
         weight = "",
         id = "",
-        title = ""
+        title = "",
+        status = ""
       } = this.basicInformation;
-      this.uploadPicImg = icon;
       let url = "/admin/college_type";
       if (!name) return this.$message("请先输入分类名称");
+      if (!title) return this.$message("请先输入分类标题");
+      if (!this.uploadPicImg) return this.$message("请先上传图片");
+      if (!weight) return this.$message("请先输入排序");
       let data = {};
       if (this.modelTitle == "修改分类") {
         let data = {
@@ -209,18 +228,22 @@ export default {
           icon: this.uploadPicImg,
           weight,
           id,
-          title
+          title,
+          status
         };
         let response = await put({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       if (this.modelTitle == "新增分类") {
         let data = {
           name,
           icon: this.uploadPicImg,
           weight,
-          title
+          title,
+          status
         };
         let response = await post({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       this.$message(this.modelTitle + "成功");
       this.getTableData();
@@ -232,6 +255,7 @@ export default {
       };
       let response = await del({ url, data });
       this.ifShowDele = false;
+      if (response.msg) return this.$message(response.msg);
       this.$message("删除成功");
       this.getTableData();
     },
@@ -239,10 +263,6 @@ export default {
       this.basicInformation.icon = data.uploadPicUrl;
       console.log(this.basicInformation.icon, "前端展示图片");
       this.uploadPicImg = data.uploadPicImg;
-    },
-    //评论
-    onTOComment(id) {
-      this.$emit("onTOComment", id);
     },
     handleSizeChange(data) {
       this.page = 1;
@@ -320,7 +340,7 @@ export default {
         display: flex;
         justify-content: start;
         .categoryList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;
@@ -436,6 +456,10 @@ export default {
     width: 60px;
     height: 60px;
     border-radius: 50%;
+  }
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>

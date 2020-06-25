@@ -19,13 +19,13 @@
           <div v-if="navLeftId===1">
             <div class="soupBasesListDetail-bot-rig-i">
               <div class="soupBasesListDetail-bot-rig-i-left">汤料名称：</div>
-              <input v-model="detailData.goods_name" type="text" />
+              <input v-model="detailData.goods_name" placeholder="请输入产品名称" type="text" />
             </div>
             <div class="soupBasesListDetail-bot-rig-i">
               <div class="soupBasesListDetail-bot-rig-i-left">汤料售价：</div>
               <div class="soupBasesListDetail-bot-rig-i-right">
                 <span>每100g</span>
-                <input type="text" v-model="detailData.goods_price" />
+                <input type="text" placeholder="请输入汤料售价" v-model="detailData.goods_price" />
                 <span>元</span>
               </div>
             </div>
@@ -33,59 +33,44 @@
               <div class="soupBasesListDetail-bot-rig-i-left">产品成本价：</div>
               <div class="soupBasesListDetail-bot-rig-i-right">
                 <span>每100g</span>
-                <input type="text" v-model="detailData.goods_cost" />
+                <input type="text" placeholder="产品成长价" v-model="detailData.goods_cost" />
                 <span>元</span>
               </div>
             </div>
             <div class="soupBasesListDetail-bot-rig-i">
               <div class="soupBasesListDetail-bot-rig-i-left">汤料库存：</div>
-              <input type="number" v-model="detailData.goods_storage" />
+              <input type="number" placeholder="请输入汤料库存" v-model="detailData.goods_storage" />
             </div>
             <div class="soupBasesListDetail-bot-rig-i">
               <div class="soupBasesListDetail-bot-rig-i-left">商品规格：</div>
-              <input type="text" v-model="detailData.specs" />
+              <input type="text" placeholder="请输入商品规格" v-model="detailData.specs" />
             </div>
-            <!-- <div class="soupBasesListDetail-bot-rig-i">
-              <div class="soupBasesListDetail-bot-rig-i-left">商品体积：</div>
-              <input type="number" v-model="detailData.goods_size" />
-            </div>-->
             <div class="soupBasesListDetail-bot-rig-i">
               <div class="soupBasesListDetail-bot-rig-i-left">品牌：</div>
               <div class="soupBasesListDetail-bot-rig-i-right">
-                <input type="text" v-model="detailData.brand" />
-                <!-- <span>元</span> -->
+                <input type="text" placeholder="请输入品牌" v-model="detailData.brand" />
               </div>
             </div>
             <div class="soupBasesListDetail-bot-rig-i">
               <div class="soupBasesListDetail-bot-rig-i-left">产品排序：</div>
-              <input type="number" v-model="detailData.weight" />
+              <input type="number" placeholder="请输入排序" min="0" v-model="detailData.weight" />
             </div>
-            <!-- <div class="soupBasesListDetail-bot-rig-i">
-              <div class="soupBasesListDetail-bot-rig-i-left">市场价：</div>
-              <input type="number" v-model="detailData.goods_mark_price" />
-            </div>-->
-            <div class="soupBasesListDetail-bot-rig-i">
-              <div class="soupBasesListDetail-bot-rig-i-left">分类图片：</div>
-              <uplodImg
-                style="margin-left:10px"
-                :uploadPicUrl="detailData.goodImg"
-                @uploadSuccess="uploadSuccess"
-              ></uplodImg>
-            </div>
-            <!-- <div class="soupBasesListDetail-bot-rig-i">
-              <div class="soupBasesListDetail-bot-rig-i-left">赠送积分：</div>
-              <input type="number" v-model="detailData.goods_integral" />
-            </div>-->
             <div class="soupBasesListDetail-bot-rig-i">
               <div class="soupBasesListDetail-bot-rig-i-left">产品分类：</div>
               <div v-if="ifClassify">
-                <el-cascader
+                <el-select
+                  placeholder="请选择分类"
+                  v-model="detailData.gc_id"
+                  width="630px"
                   class="soupBasesListDetail-bot-rig-i-right"
-                  v-model="detailData.cates"
-                  :options="classifyData"
-                  @change="onGetClassifyId"
-                  leafOnly="true"
-                ></el-cascader>
+                >
+                  <el-option
+                    v-for="item in classifyData"
+                    :key="item.label"
+                    :label="item.label"
+                    :value="item.id"
+                  ></el-option>
+                </el-select>
               </div>
             </div>
             <div class="soupBasesListDetail-bot-rig-i">
@@ -118,46 +103,40 @@
           <div v-if="navLeftId===1">
             <div class="submit" @click="changeContent">提交</div>
           </div>
-          <div v-if="navLeftId==2">
-            <!-- <div class="soupBasesListDetail-content">
-              <div class="soupBasesListDetail-content-title">
-                <i class="el-icon-delete"></i>
-                <span>批量删除</span>
+          <div v-show="navLeftId==2">
+            <div class="soupBasesListDetail-bot-rig-i">
+              <span>上传封面图（单图）：</span>
+              <div class="soupBasesListDetail-bot-rig-i-left">
+                <uplodImg
+                  style="margin-left:10px"
+                  :uploadPicUrl="detailData.goodImgs"
+                  @uploadSuccess="uploadMastermap"
+                ></uplodImg>
               </div>
-              <div class="soupBasesListDetail-content-cen">
-                <span>上传图片：</span>
-                <div class="soupBasesListDetail-content-cen-con">
-                  <div class="soupBasesListDetail-content-cen-con-w">
-                    <img :src="uplodingImg" alt />
-                    <img src alt />
-                  </div>
-                </div>
+            </div>
+            <div class="soupBasesListDetail-bot-rig-i">
+              <span>上传详情图（单图）：</span>
+              <div class="soupBasesListDetail-bot-rig-i-left">
+                <uplodImg
+                  style="margin-left:10px"
+                  :uploadPicUrl="detailData.goodImgs"
+                  @uploadSuccess="uploadDetail"
+                ></uplodImg>
               </div>
-            </div>-->
-            <vueQuillEditor @change="change" :goods_content="detailData.goods_content"></vueQuillEditor>
+            </div>
           </div>
           <div v-if="navLeftId===3">
-            <el-table :data="userinfo" border :height="500" style="width: 100%;">
+            <!-- <el-table :data="userinfo" border :height="500" style="width: 100%;">
               <el-table-column align="center" prop="date" label="充值金额" width="180"></el-table-column>
               <el-table-column align="center" prop="address" label="充值平台"></el-table-column>
               <el-table-column align="center" prop="name" label="充值时间" width="180"></el-table-column>
               <el-table-column align="center" prop="address" label="状态"></el-table-column>
-            </el-table>
+            </el-table>-->
+            <div v-if="userinfo.length">
+              <logRecord :logData="userinfo"></logRecord>
+            </div>
+            <div v-else>暂无日志记录！</div>
           </div>
-        </div>
-      </div>
-      <div class="soupBasesListDetail-bot-bot" v-if="navLeftId==3">
-        <div class="block">
-          <span class="demonstration">每页显示</span>
-          <!-- @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage2"-->
-          <el-pagination
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="100"
-            layout="sizes, prev, pager, next"
-            :total="tableData.page.data_count"
-          ></el-pagination>
         </div>
       </div>
     </div>
@@ -167,10 +146,12 @@
 <script>
 import { get, post, del, put, fakeGet } from "@/utils/request.js";
 import vueQuillEditor from "@/components/vueQuillEditor"; //富文本编辑器
+import moreUplodImg from "@/components/moreUplodImg.vue";
 import uplodImg from "@/components/uplodImg.vue";
+import logRecord from "@/components/logRecord.vue";
 export default {
   name: "HelloWorld",
-  components: { vueQuillEditor, uplodImg },
+  components: { vueQuillEditor, moreUplodImg, uplodImg, logRecord },
   data() {
     return {
       value: "",
@@ -179,7 +160,7 @@ export default {
         { title: "基本信息", id: 1 },
         { title: "附加信息", id: 2 }
       ],
-      uploadPicImg: "",
+      uploadPicImg: [],
       userinfo: "",
       addressList: [],
       navLeftId: 1,
@@ -218,7 +199,9 @@ export default {
         goods_integral: "",
         cates: "",
         productListDetailData: ""
-      }
+      },
+      goodImg: "",
+      goods_content: ""
     };
   },
   created() {
@@ -226,6 +209,7 @@ export default {
     this.productListDetailData = query;
     this.initGetClassify();
     this.getFreight();
+
     if (this.productListDetailData && this.productListDetailData.id) {
       this.navLeft = [
         { title: "基本信息", id: 1 },
@@ -233,6 +217,7 @@ export default {
         { title: "日志记录", id: 3 }
       ];
       this.getEssential();
+      // this.getOrderLog();
     }
   },
   methods: {
@@ -256,7 +241,22 @@ export default {
       };
       let url = "/admin/product_de";
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.detailData = response;
+      // this.uploadPicImg = this.detailData.goodImgMany;
+      this.goodImg = this.detailData.goodImg;
+      this.goods_content = this.detailData.goodImg;
+      this.userinfo = this.detailData.goods_log;
+    },
+    //获取日志记录
+    async getOrderLog() {
+      let params = {
+        order_id: this.productListDetailData.id
+      };
+      let url = "/admin/order_log";
+      let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
+      this.orderLog = response;
     },
     //获取商品分类
     async initGetClassify() {
@@ -309,13 +309,14 @@ export default {
           id,
           goods_name,
           goods_price,
-          gc_id: 1,
+          gc_id,
           goods_storage,
           goods_new,
           goods_sign,
-          goodImg: this.uploadPicImg,
+          goodImg: this.goodImg,
+          goodImgMany: this.uploadPicImg,
           is_on_sale,
-          goods_content,
+          goods_content: this.goods_content,
           specs,
           brand,
           template_id,
@@ -324,21 +325,22 @@ export default {
           is_free_shopping,
           goods_mark_price,
           goods_integral,
-          cates,
           goods_cost
         };
         response = await put({ url, data });
+        if (response.msg) return this.$message(response.msg);
       } else {
         let data = {
           goods_name,
           goods_price,
-          gc_id: 1,
+          gc_id,
           goods_storage,
           goods_new,
           goods_sign,
-          goodImg: this.uploadPicImg,
+          goodImg: this.goodImg,
+          goodImgMany: this.uploadPicImg,
           is_on_sale,
-          goods_content,
+          goods_content: this.goods_content,
           specs,
           brand,
           template_id,
@@ -347,12 +349,18 @@ export default {
           is_free_shopping,
           goods_mark_price,
           goods_integral,
-          cates,
           goods_cost
         };
         response = await post({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
-      console.log(response);
+      if (this.productListDetailData && this.productListDetailData.id) {
+        this.$message("修改成功");
+        this.$router.go(-1);
+        return;
+      }
+      this.$message("添加成功");
+      this.$router.go(-1);
     },
     onShowProductList() {
       this.$router.go(-1);
@@ -360,23 +368,21 @@ export default {
     handleSizeChange(data) {
       this.page = 1;
       this.limit = data;
-      if (this.navLeftId === 1) {
-        this.getUserinfo();
-      }
     },
     handleCurrentChange(data) {
       this.page = data;
-      if (this.navLeftId === 1) {
-        this.getUserinfo();
-      }
     },
     change(data) {
       this.detailData.goods_content = data;
     },
     uploadSuccess(data) {
-      this.detailData.goodImg = data.uploadPicUrl;
-      console.log(this.detailData.goodImg, "前端展示图片");
       this.uploadPicImg = data.uploadPicImg;
+    },
+    uploadMastermap(data) {
+      this.goodImg = data.uploadPicImg;
+    },
+    uploadDetail(data) {
+      this.goods_content = data.uploadPicImg;
     }
   }
 };

@@ -29,7 +29,13 @@
             <el-input style="width:230px;" v-model="keyword" placeholder="请输入关键字"></el-input>
           </div>
         </div>
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="categoryList-bot">
@@ -76,7 +82,7 @@
               ></i>
             </div>
           </el-table-column>
-          <el-table-column align="center" label="操作" width="160">
+          <el-table-column align="center" label="操作" width="160" fixed="right">
             <!--  @click="onShowJurisdiction(scope.row)" @click="onToCompile(scope.row)"  @click="ifDeleData(scope.row.id)"-->
             <template slot-scope="scope">
               <el-button
@@ -97,7 +103,6 @@
         </el-table>
         <div class="block">
           <span class="demonstration">每页显示</span>
-          {{tableData.page}}
           <!-- :total="tableData.page.data_count" -->
           <el-pagination
             @size-change="handleSizeChange"
@@ -105,11 +110,12 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="100"
             layout="sizes, prev, pager, next"
+            :total="tableData.page.data_count"
           ></el-pagination>
         </div>
       </div>
     </div>
-    <!-- <el-dialog title="发帖编辑" :visible.sync="ifChanCate" width="600px">
+    <!-- <el-dialog title="发帖编辑"  class="abow_dialog" :visible.sync="ifChanCate" width="600px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">禁言期限：</div>
@@ -136,10 +142,10 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanCate= false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLable">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLable">确 定</el-button>
       </span>
     </el-dialog>-->
-    <el-dialog title="发帖详情" :visible.sync="ifChanCate" width="600px">
+    <el-dialog title="发帖详情" class="abow_dialog" :visible.sync="ifChanCate" width="600px">
       <div class="box">
         <div class="box-content">
           <div class="box-content-title">
@@ -163,12 +169,12 @@
         </div>
       </div>
     </el-dialog>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除等级" class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认{{status?'封贴':"取消封贴"}}？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelCate">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelCate">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -217,6 +223,7 @@ export default {
         type: "card_label_all"
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.searchData.lable = response.card_label_all;
       this.ifShowLable = true;
     },
@@ -233,6 +240,7 @@ export default {
         limit: this.limit
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
     },
     async onDelCate() {
@@ -243,6 +251,7 @@ export default {
         status: this.status == 1 ? 0 : 1
       };
       let response = await put({ url, data });
+      if (response.msg) return this.$message(response.msg);
       this.ifShowDele = false;
       this.$message("操作成功");
       this.getTableData();
@@ -327,7 +336,7 @@ export default {
         display: flex;
         justify-content: start;
         .categoryList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;
@@ -467,6 +476,10 @@ export default {
     height: 40px;
     border-radius: 50%;
     display: inline-block;
+  }
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>

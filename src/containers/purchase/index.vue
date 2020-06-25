@@ -5,13 +5,7 @@
     <div class="content">
       <el-container style="height: 100%; border: 1px solid #eee">
         <el-aside width="245px">
-          <el-menu
-            @close="handleClose"
-            @open="handleOpen"
-            @select="onGetItem"
-            default-active="/purchaseHome"
-            router
-          >
+          <el-menu :default-active="routerA" router>
             <el-submenu v-for="(item,index) in navLeft" :key="index" :index="item.title">
               <template slot="title">
                 <!-- <i class="el-icon-location"></i> -->
@@ -22,8 +16,7 @@
                 <el-menu-item
                   v-for="(data,index) in item.grandson"
                   :key="index"
-                  :index="'/'+data.url?data.url:'purchaseHome'"
-                  @click="onToSecondaryPage(item)"
+                  :index="'/'+data.url"
                 >{{data.title}}</el-menu-item>
                 <!-- <el-menu-item index="/purchaseHome">aaa</el-menu-item>
                 <el-menu-item index="/purchaseNews">bbb</el-menu-item>-->
@@ -89,13 +82,15 @@ export default {
       productListDetailData: "",
       ifShowProductList: true,
       ifShowRawMaterial: true,
-      rawMaterialData: ""
+      rawMaterialData: "",
+      routerA: "/storeList"
     };
   },
   created() {
     let { query } = this.$route;
     this.currentContent = query;
     this.initGetSecondNav();
+    this.getUrl();
   },
   methods: {
     //获取二三级侧边栏
@@ -103,56 +98,20 @@ export default {
       let url = "admin/admin_user/level/2/id/2";
       let data = {};
       let response = await get({ url });
+      if (response.msg) return this.$message(response.msg);
       this.navLeft = response.child;
     },
-    handleOpen(key, keyPath) {
-      // console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      // console.log(key, keyPath);
-    },
-    onGetItem(key, keyPath) {
-      console.log(key, keyPath);
-      this.currentlySelected = keyPath;
-      this.ifUserList = true;
-      this.ifShowProductList = true;
-      this.evaluationId = "";
-      this.ifShowRawMaterial = true;
-    },
-    onToSecondaryPage(data) {},
-    //展示用户详情
-    onToUserDetail(data) {
-      this.ifUserList = false;
-      this.userDetailData = data;
-    },
-    onShowUserListDetail() {
-      this.ifUserList = false;
-    },
-    onShowUserList() {
-      this.ifUserList = true;
-    },
-    //产品管理-评论
-    onTOComment(id) {
-      this.evaluationId = id;
-      this.currentlySelected = ["商品管理", "产品评论"];
-      console.log(this.currentlySelected, "onTOComment");
-    },
-    //产品管理-编辑
-    onToProductListDetail(data = "") {
-      this.ifShowProductList = false;
-      this.productListDetailData = data;
-    },
-    onShowProductList() {
-      this.ifShowProductList = true;
-    },
-    //原料订单跳转到原料详情
-    onToRawMaterialDetail(data = "") {
-      this.ifShowRawMaterial = false;
-      this.rawMaterialData = data;
-    },
-    // 原料详情跳转回原料订单
-    onToRawMaterial() {
-      this.ifShowRawMaterial = true;
+    getUrl() {
+      let self = this;
+      let currentUrl = window.location.href;
+      let aa = currentUrl.split("#")[1];
+      self.routerA = aa.substring(0, aa.indexOf("?"));
+      if (self.routerA) {
+        console.log(currentUrl, self.routerA, "刷新后路由");
+      } else {
+        self.routerA = currentUrl.split("#")[1];
+        console.log(self.routerA, "刷新后路由11111111111");
+      }
     }
   }
 };

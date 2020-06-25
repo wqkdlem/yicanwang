@@ -23,7 +23,7 @@
             <el-input style="width:230px;" v-model="keyword" placeholder="请输入关键字"></el-input>
           </div>
         </div>
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
       </div>
     </div>
     <div class="categoryList-bot">
@@ -33,10 +33,10 @@
             <i class="el-icon-plus"></i>
             <span>新增轮播图</span>
           </div>
-          <div class="categoryList-bot-top-i">
+          <!-- <div class="categoryList-bot-top-i">
             <i class="el-icon-delete"></i>
             <span>批量删除</span>
-          </div>
+          </div>-->
         </div>
       </div>
       <div class="categoryList-bot-bot">
@@ -45,8 +45,8 @@
           <el-table-column align="center" prop="id" label="ID"></el-table-column>
           <el-table-column align="center" prop="name" label="标题"></el-table-column>
           <el-table-column align="center" prop="name" label="位置"></el-table-column>
-          <el-table-column align="center" prop="title" label="图片" width="240">
-            <img slot-scope="solt" src alt style="width:140px;height:80px;display:blocck;" />
+          <el-table-column align="center" prop="title" label="图片" width="200">
+            <img slot-scope="solt" src alt style="width:180px;height:70px;display:inline-block;" />
           </el-table-column>
           <el-table-column align="center" prop="title" label="覆盖图" width="240">
             <img
@@ -103,7 +103,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="ifChanCate" width="600px">
+    <el-dialog :title="modelTitle"  class="abow_dialog" :visible.sync="ifChanCate" width="600px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">轮播图名称：</div>
@@ -140,7 +140,7 @@
         </div>
         <div class="box-i">
           <div class="box-left">排序：</div>
-          <input type="number" placeholder="请输入排序" />
+          <input type="number" min="0" placeholder="请输入排序" />
         </div>
         <div class="box-i">
           <div class="box-left">首页显示：</div>
@@ -152,15 +152,15 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanCate= false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLable">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除等级"  class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除轮播图？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelCate">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelCate">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -349,7 +349,7 @@ export default {
         display: flex;
         justify-content: start;
         .categoryList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;

@@ -138,9 +138,10 @@ export default {
     async getUserinfo() {
       let url = "/admin/member/";
       let params = {
-        id: this.userDetailData.id
+        uid: this.userDetailData.id
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.basicInformation = response;
     },
     //用户基本信息修改
@@ -151,7 +152,6 @@ export default {
       };
       let url = "/admin/member/";
       let response = await put({ url, data });
-      console.log(response.msg);
       if (response.msg) return this.$message(response.msg);
       this.getUserinfo();
       this.$message("修改成功");
@@ -162,11 +162,12 @@ export default {
     async getAddress() {
       let url = "/admin/address";
       let params = {
-        id: this.userDetailData.id,
+        uid: this.userDetailData.id,
         page: this.page,
         limit: this.limit
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.addressList = response.data;
     },
     handleSizeChange(data) {

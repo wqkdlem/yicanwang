@@ -23,27 +23,29 @@
             <el-input style="width:230px;" v-model="keyword" placeholder="请输入关键字"></el-input>
           </div>
         </div>
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="categoryList-bot">
       <div class="categoryList-bot-top">
         <div class="categoryList-bot-top-w">
-          <!-- <div class="categoryList-bot-top-i" @click="onAddCate">
-            <i class="el-icon-plus"></i>
-            <span>新增评论</span>
-          </div>-->
-          <div class="categoryList-bot-top-i">
+          <!-- <div class="categoryList-bot-top-i">
             <i class="el-icon-delete"></i>
             <span>批量删除</span>
-          </div>
+          </div>-->
         </div>
       </div>
       <div class="categoryList-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
           <!-- <el-table-column align="center" type="selection" width="55"></el-table-column> -->
           <el-table-column align="center" prop="id" label="ID"></el-table-column>
-          <el-table-column align="center" prop="name" label="评论用户">
+          <el-table-column align="center" prop="name" label="评论用户" width="160">
             <div slot-scope="solt">
               <img class="el-table-column-img" :src="solt.row.user.headImg" alt />
               <div>{{solt.row.user.nickname}}</div>
@@ -52,16 +54,19 @@
           <el-table-column align="center" prop="content" label="评论内容"></el-table-column>
           <el-table-column align="center" prop="reful_content" label="评论回复"></el-table-column>
           <el-table-column align="center" prop="title" label="视频封面" width="240">
-            <img
-              slot-scope="solt"
-              :src="solt.row.video.fileimg"
-              alt
-              style="width:200px;height:80px;display:blocck;"
-            />
+            <div slot-scope="solt" v-if="solt.row.video&&solt.row.video.fileimg">
+              <img
+                :src="solt.row.video.fileimg"
+                alt
+                style="width:200px;height:80px;display:blocck;"
+              />
+            </div>
           </el-table-column>
-          <el-table-column align="center" prop="video.fileurl" label="url"></el-table-column>
+          <el-table-column align="center" prop="video.fileurl" label="url" width="180">
+            <div class="urlStyle" slot-scope="solt">{{solt.row.video.fileurl}}</div>
+          </el-table-column>
           <el-table-column align="center" prop="create_time" label="时间"></el-table-column>
-          <el-table-column align="center" label="操作" width="120">
+          <el-table-column align="center" label="操作" width="120" fixed="right">
             <!--  @click="onShowJurisdiction(scope.row)" @click="onToCompile(scope.row)"  @click="ifDeleData(scope.row.id)"-->
             <template slot-scope="scope">
               <el-button
@@ -93,11 +98,11 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="ifChanCate" width="600px">
+    <el-dialog :title="modelTitle" class="abow_dialog" :visible.sync="ifChanCate" width="900px">
       <div class="box">
         <div>
-          <img src alt class="el-table-column-img" />
-          <div>名侦探柯南</div>
+          <img :src="basicInformation.user.headImg" alt class="el-table-column-img" />
+          <div>{{basicInformation.user.nickname}}</div>
         </div>
         <div class="box-i">
           <div class="box-left">评论内容：</div>
@@ -117,15 +122,15 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanCate= false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLable">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除等级" class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除评论？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelCate">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelCate">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -145,7 +150,8 @@ export default {
       basicInformation: {
         id: "",
         content: "",
-        commentWith: ""
+        commentWith: "",
+        user: ""
       },
       value: "",
       shensuo: require("@/assets/new_images/shensuo.png"),
@@ -180,6 +186,7 @@ export default {
         limit: this.limit
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
     },
     onChangeCate(data) {
@@ -188,29 +195,21 @@ export default {
       this.basicInformation.id = data.id;
       this.basicInformation.content = "";
       this.basicInformation.commentWith = data.content;
-    },
-    onAddCate() {
-      this.ifChanCate = true;
-      this.modelTitle = "新增评论";
-      this.basicInformation = {
-        id: "",
-        content: "",
-        commentWith: ""
-      };
+      this.basicInformation.user = data.user;
     },
     async onSureChangeLable() {
       this.ifChanCate = false;
       let { id = "", content = "" } = this.basicInformation;
       let url = "/admin/college_video_review";
       if (!content) return this.$message("请先输入评论内容");
-      let data = {};
-      if (this.modelTitle == "回复评论") {
-        let data = {
-          id,
-          content
-        };
-        let response = await put({ url, data });
-      }
+      // if (this.modelTitle == "回复评论") {
+      let data = {
+        id,
+        content
+      };
+      let response = await put({ url, data });
+      if (response.msg) return this.$message(response.msg);
+      // }
       //   if (this.modelTitle == "新增评论") {
       //     let data = {
       //       name,
@@ -229,6 +228,7 @@ export default {
       };
       let response = await del({ url, data });
       this.ifShowDele = false;
+      if (response.msg) return this.$message(response.msg);
       this.$message("删除成功");
       this.getTableData();
     },
@@ -312,7 +312,7 @@ export default {
         display: flex;
         justify-content: start;
         .categoryList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;
@@ -364,7 +364,7 @@ export default {
       }
       input,
       textarea {
-        width: 470px;
+        width: 680px;
         height: 40px;
         line-height: 40px;
         padding: 0 20px;
@@ -381,7 +381,7 @@ export default {
         margin-left: 10px;
       }
       .el-select {
-        width: 470px;
+        width: 680px;
         height: 40px;
         margin-left: 10px;
 
@@ -433,6 +433,16 @@ export default {
     height: 40px;
     border-radius: 50%;
     display: inline-block;
+  }
+  .urlStyle {
+    width: 160px;
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 }
 </style>

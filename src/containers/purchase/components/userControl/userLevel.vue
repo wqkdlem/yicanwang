@@ -13,7 +13,7 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
       </div>
     </div>
     <div class="userLevel-bot">
@@ -22,10 +22,10 @@
           <i class="el-icon-plus"></i>
           <span>新增等级</span>
         </div>
-        <div class="userLevel-bot-top-i">
+        <!-- <div class="userLevel-bot-top-i">
           <i class="el-icon-delete"></i>
           <span>批量删除</span>
-        </div>
+        </div>-->
       </div>
       <div class="userLevel-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
@@ -38,10 +38,16 @@
           <!-- <el-table-column align="center" prop="address" label="状态"></el-table-column> -->
           <el-table-column align="center" prop label="操作" width="160">
             <template slot-scope="scope">
-              <el-button size="mini" @click="onChangeLevel(scope.row)">编辑</el-button>
               <el-button
-                size="mini"
-                type="danger"
+                type="text"
+                size="small"
+                style="color:#3CB371"
+                @click="onChangeLevel(scope.row)"
+              >编辑</el-button>
+              <el-button
+                size="small"
+                type="text"
+                style="color:#FB6534"
                 @click="delLevelId = scope.row.level_id;ifShowDele=true;"
               >删除</el-button>
             </template>
@@ -62,7 +68,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="ifChanlevel" width="900px">
+    <el-dialog :title="modelTitle"  class="abow_dialog" :visible.sync="ifChanlevel" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">等级名称：</div>
@@ -72,39 +78,48 @@
           <div class="box-left">等级说明：</div>
           <textarea width type="text" v-model="changeDataContent.desc" placeholder="请输入等级说明" />
         </div>
-        <!-- <div class="box-i box-img">
-          <div class="box-left">背景图片：</div>
-          <img
-            class="box-right"
-            style="width:180px;height:180px"
-            :src="changeDataContent.image||uplodingImg"
-            alt
-          />
-        </div>-->
         <div class="box-i">
           <div class="box-left">价值金额：</div>
-          <input width type="number" v-model="changeDataContent.price" placeholder="请输入价值金额" />
+          <input
+            width
+            type="number"
+            min="0"
+            v-model="changeDataContent.price"
+            placeholder="请输入价值金额"
+          />
         </div>
         <div class="box-i">
           <div class="box-left">消费累计：</div>
-          <input width type="number" v-model="changeDataContent.amount" placeholder="请输入消费累计" />
+          <input
+            width
+            type="number"
+            min="0"
+            v-model="changeDataContent.amount"
+            placeholder="请输入消费累计"
+          />
         </div>
         <div class="box-i">
           <div class="box-left">优惠折扣：</div>
-          <input width type="number" v-model="changeDataContent.discount" placeholder="请输入优惠折扣" />
+          <input
+            width
+            type="number"
+            min="0"
+            v-model="changeDataContent.discount"
+            placeholder="请输入优惠折扣"
+          />
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanlevel = false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLevel">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLevel">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除等级"  class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除当前等级？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelLevel">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelLevel">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -150,6 +165,7 @@ export default {
         limit: this.limit
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
     },
     onChangeLevel(data) {
@@ -180,7 +196,11 @@ export default {
         level_id = "",
         desc = ""
       } = this.changeDataContent;
-      if (!level_name) return this.$message("等级名称");
+      if (!level_name) return this.$message("请输入等级名称");
+      if (!desc) return this.$message("请输入等级说明");
+      if (!price) return this.$message("请输入价值金额");
+      if (!amount) return this.$message("请输入累计消费");
+      if (!discount) return this.$message("请输入优惠折扣");
       let data = {};
       if (this.modelTitle == "修改等级") {
         let data = {
@@ -202,6 +222,7 @@ export default {
           desc
         };
         let response = await post({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       this.$message(this.modelTitle + "成功");
       this.getTableData();
@@ -212,6 +233,7 @@ export default {
         id: this.delLevelId
       };
       let response = await del({ url, data });
+      if (response.msg) return this.$message(response.msg);
       this.ifShowDele = false;
       this.$message("删除成功");
       this.getTableData();
@@ -280,7 +302,7 @@ export default {
       display: flex;
       justify-content: start;
       .userLevel-bot-top-i {
-        // width: 130px;
+        cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;
@@ -313,7 +335,7 @@ export default {
     .box-con {
       height: 40px;
       line-height: 40px;
-      text-align: left;
+      text-align: center;
       padding: 30px 0;
     }
     .box-i {

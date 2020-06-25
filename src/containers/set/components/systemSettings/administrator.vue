@@ -18,7 +18,13 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="onSearch">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="onSearch"
+        >搜索</el-button>
       </div>
     </div>
     <div class="administrator-bot">
@@ -31,7 +37,7 @@
       <div class="administrator-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
           <el-table-column align="center" prop="id" label="ID" width="60"></el-table-column>
-          <el-table-column align="center" prop="is_super" label="是否超级管理员" width="120"></el-table-column>
+          <el-table-column align="center" prop="is_super_text" label="是否超级管理员" width="120"></el-table-column>
           <el-table-column align="center" prop="username" label="用户名称">
             <div slot-scope="scope">{{scope.row.username}}</div>
           </el-table-column>
@@ -87,6 +93,7 @@
     </div>
     <el-dialog
       :title="modelTitle"
+      class="abow_dialog"
       :visible.sync="dialogVisible"
       width="900px"
       :before-close="handleClose"
@@ -133,15 +140,15 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="ifChangeuser">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="ifChangeuser">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除管理员" :visible.sync="ifDele" width="300px">
+    <el-dialog title="删除管理员" class="abow_dialog" :visible.sync="ifDele" width="900px">
       确定删除管理员？
       <div class="box"></div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifDele = false">取 消</el-button>
-        <el-button type="primary" @click="onDeleData">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onDeleData">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -220,6 +227,7 @@ export default {
           id
         };
         let response = await put({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       if (this.modelTitle == "新增管理员") {
         let data = {
@@ -230,7 +238,9 @@ export default {
           status
         };
         let response = await post({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
+
       this.getTableData();
       // this.$message(this.modelTitle + "成功");
     },
@@ -240,6 +250,7 @@ export default {
       let url = "/admin/admin/";
       let data = { id: this.ondeleDataID };
       let response = await del({ url, data });
+      if (response.msg) return this.$message(response.msg);
       this.getTableData();
       this.$message("删除成功");
     },
@@ -340,6 +351,7 @@ export default {
       display: flex;
       justify-content: start;
       .administrator-bot-top-i {
+        cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;
@@ -410,6 +422,10 @@ export default {
         }
       }
     }
+  }
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>

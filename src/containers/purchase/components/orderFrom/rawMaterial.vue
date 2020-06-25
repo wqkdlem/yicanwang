@@ -7,7 +7,7 @@
       </div>
       <div class="rawMaterial-top-con">
         <div class="rawMaterial-top-con-left">
-          <div class="rawMaterial-top-con-i">
+          <!-- <div class="rawMaterial-top-con-i">
             催单状态：
             <el-select v-model="typeId" placeholder="请选择催单状态">
               <el-option
@@ -18,7 +18,7 @@
                 :value="item.id"
               ></el-option>
             </el-select>
-          </div>
+          </div>-->
           <div class="rawMaterial-top-con-i">
             关键字：
             <el-input style="width:230px;" v-model="keyword" placeholder="请输入关键字"></el-input>
@@ -37,7 +37,7 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
       </div>
     </div>
     <div class="rawMaterial-bot">
@@ -51,11 +51,7 @@
         >{{item.title}}</div>
       </div>
       <div class="rawMaterial-bot-bot">
-        <table_v
-          @onToRawMaterialDetail="onToRawMaterialDetail"
-          :tableData="tableData"
-          @onchange="onchange"
-        ></table_v>
+        <table_v :tableData="tableData" @onchange="onchange"></table_v>
       </div>
       <div class="block">
         <span class="demonstration">每页显示</span>
@@ -115,10 +111,14 @@ export default {
         { name: "待收货", id: 4 },
         { name: "已完成", id: 5 },
         { name: "退款", id: 6 }
-      ]
+      ],
+      typeDataId: "",
+      uid: "" //用户id
     };
   },
   created() {
+    let query = this.$route;
+    this.uid = query.id;
     this.getTableData();
     this.getClassify();
     this.getClassifyAll();
@@ -148,10 +148,11 @@ export default {
     async getTableData() {
       let url = "/admin/raw_order";
       let params = {
-        type: this.typeId,
-        start_time: this.date[0],
-        end_time: this.date[1],
+        type: this.orderStatusId,
+        start_time: this.date[0] || "",
+        end_time: this.date[1] || "",
         keyword: this.keyword,
+        uid: this.uid || "",
         page: this.page,
         limit: this.limit
       };
@@ -212,6 +213,7 @@ export default {
     },
     onChangeOrderStatus(id) {
       this.orderStatusId = id;
+      this.getTableData();
     },
     getOrderStatusList() {
       return [
@@ -222,9 +224,6 @@ export default {
         { title: "已完成", id: 5 },
         { title: "退款", id: 6 }
       ];
-    },
-    onToRawMaterialDetail(id) {
-      this.$emit("onToRawMaterialDetail", id);
     },
     handleSizeChange(data) {
       this.page = 1;

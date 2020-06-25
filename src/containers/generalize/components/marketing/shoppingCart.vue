@@ -24,7 +24,7 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
       </div>
     </div>
     <div class="shoppingCart-bot">
@@ -244,7 +244,7 @@ export default {
       display: flex;
       justify-content: start;
       .shoppingCart-bot-top-i {
-        // width: 130px;
+        cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;

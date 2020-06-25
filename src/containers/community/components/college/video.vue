@@ -28,7 +28,7 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
       </div>
     </div>
     <div class="categoryList-bot">
@@ -38,10 +38,10 @@
             <i class="el-icon-plus"></i>
             <span>新增视频</span>
           </div>
-          <div class="categoryList-bot-top-i">
+          <!-- <div class="categoryList-bot-top-i">
             <i class="el-icon-delete"></i>
             <span>批量删除</span>
-          </div>
+          </div>-->
         </div>
       </div>
       <div class="categoryList-bot-bot">
@@ -53,12 +53,14 @@
           <el-table-column align="center" prop="fileimg" label="视频封面" width="240">
             <img
               slot-scope="solt"
-              :src="solt.row.fileimg"
+              :src="solt.row.fileimgs"
               alt
               style="width:200px;height:80px;display:blocck;"
             />
           </el-table-column>
-          <el-table-column align="center" prop="fileurl" label="url"></el-table-column>
+          <el-table-column align="center" prop="fileurls" label="url">
+            <div class="urlStyle" slot-scope="solt">{{solt.row.fileurls}}</div>
+          </el-table-column>
           <el-table-column align="center" prop="create_time" label="时间"></el-table-column>
           <el-table-column align="center" prop="weight" label="点赞/评论">
             <div slot-scope="solt">{{solt.row.like}}/{{solt.row.reply}}</div>
@@ -96,12 +98,26 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="ifChanCate" width="900px">
+    <el-dialog :title="modelTitle"  class="abow_dialog" :visible.sync="ifChanCate" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">视频分类：</div>
-          <el-cascader :options="typeData" :show-all-levels="false" v-model="basicInformation.cate"></el-cascader>
+          <el-cascader
+            style="width: 670px;"
+            :options="typeData"
+            :show-all-levels="false"
+            v-model="basicInformation.cids"
+          ></el-cascader>
+          <!-- <el-select class="box-right" v-model="basicInformation.cate" placeholder="请选择轮播图位置">
+              <el-option
+                v-for="item in typeData"
+                :key="item.label"
+                :label="item.label"
+                :value="item.id"
+              ></el-option>
+          </el-select>-->
         </div>
+
         <div class="box-i">
           <div class="box-left">视频标题：</div>
           <textarea
@@ -109,25 +125,38 @@
             id
             cols="200"
             rows="10"
+            style="color:rgba(51,51,51,0.5)"
             v-model="basicInformation.title"
             placeholder="请输入视频标题"
           ></textarea>
         </div>
+        <div class="box-i">
+          <div class="box-left">排序：</div>
+          <input
+            style="color:rgba(51,51,51,0.5)"
+            width
+            type="number"
+            min="0"
+            v-model="basicInformation.weight"
+            placeholder="请输入排序"
+          />
+        </div>
         <div style="display:flex;">
           <div class="box-img">
             <div class="box-left">视频封面：</div>
-            <uplodImg :uploadPicUrl="basicInformation.fileimg" @uploadSuccess="uploadSuccess"></uplodImg>
+            <uplodImg :uploadPicUrl="basicInformation.fileimgs" @uploadSuccess="uploadSuccess"></uplodImg>
           </div>
           <div class="box-img">
             <div class="box-left">上传视频：</div>
             <!-- <video style="width:180px;height:180px" :src="basicInformation.fileurl" alt /> -->
-            <uplodVideo style="width:180px;height:180px;"></uplodVideo>
+            <uplodVideo
+              :uploadVideo="basicInformation.fileurls"
+              style="width:180px;height:180px;"
+              @uploadVideoA="uploadVideoA"
+            ></uplodVideo>
           </div>
         </div>
-        <div class="box-i">
-          <div class="box-left">排序：</div>
-          <input width type="text" v-model="basicInformation.weight" placeholder="请输入排序" />
-        </div>
+
         <!-- <div class="box-i">
           <div class="box-left">URL：</div>
           <input width type="text" v-model="basicInformation.name" placeholder="请输入url" />
@@ -136,15 +165,15 @@
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanCate= false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLable">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除等级"  class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除视频？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelCate">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelCate">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -171,7 +200,7 @@ export default {
         weight: "",
         fileimg: "",
         fileurl: "",
-        cate: [],
+        cids: [],
         id: ""
       },
       value: "",
@@ -187,8 +216,8 @@ export default {
       limit: 10,
       ifChanCate: false,
       ifShowDele: false,
-      uploadPicImg: "",
-      date: ""
+      date: "",
+      uploadVideo: ""
     };
   },
   created() {
@@ -199,11 +228,11 @@ export default {
   methods: {
     async getClassifyAll() {
       let url = "/admin/screen/";
-      // let { type = "" } = this.searchDataidArry;
       let params = {
         type: "video_type_all"
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.typeDataAll = response.video_type_all;
     },
     async getClassify() {
@@ -213,6 +242,7 @@ export default {
         type: "video_type"
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.typeData = response.video_type;
     },
     async getTableData() {
@@ -226,12 +256,15 @@ export default {
         limit: this.limit
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
     },
     onChangeCate(data) {
       this.ifChanCate = true;
       this.modelTitle = "修改视频";
       this.basicInformation = data;
+      this.uploadPicImg = data.fileimg;
+      this.uploadVideo = data.fileurl;
     },
     onAddCate() {
       this.ifChanCate = true;
@@ -241,7 +274,7 @@ export default {
         weight: "",
         fileimg: "",
         fileurl: "",
-        cate: [],
+        cids: [],
         id: ""
       };
     },
@@ -252,32 +285,38 @@ export default {
         weight = "",
         fileimg = "",
         fileurl = "",
-        cate = [],
+        cids = [],
         id = ""
       } = this.basicInformation;
       let url = "/admin/college_video";
+      if (!cids) return this.$message("请先选择分类");
       if (!title) return this.$message("请先输入视频名称");
+      if (!this.uploadPicImg) return this.$message("请先输上传视频封面");
+      if (!this.uploadVideo) return this.$message("请先上传视频");
+      if (!weight) return this.$message("请先输入排序");
       let data = {};
       if (this.modelTitle == "修改视频") {
         let data = {
           title,
           weight,
-          fileimg,
-          fileurl,
-          cate,
+          fileimg: this.uploadPicImg,
+          fileurl: this.uploadVideo,
+          cate: cids,
           id
         };
         let response = await put({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       if (this.modelTitle == "新增视频") {
         let data = {
           title,
           weight,
-          fileimg,
-          fileurl: "http://qiniu.emjiayuan.com//aaa1.mp4",
-          cate
+          fileimg: this.uploadPicImg,
+          fileurl: this.uploadVideo,
+          cate: cids
         };
         let response = await post({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       this.$message(this.modelTitle + "成功");
       this.getTableData();
@@ -289,6 +328,7 @@ export default {
       };
       let response = await del({ url, data });
       this.ifShowDele = false;
+      if (response.msg) return this.$message(response.msg);
       this.$message("删除成功");
       this.getTableData();
     },
@@ -306,9 +346,10 @@ export default {
       this.getTableData();
     },
     uploadSuccess(data) {
-      this.basicInformation.fileimg = data.uploadPicUrl;
-      console.log(this.basicInformation.fileimg, "前端展示图片");
       this.uploadPicImg = data.uploadPicImg;
+    },
+    uploadVideoA(data) {
+      this.uploadVideo = data.uploadPicImg;
     }
   }
 };
@@ -377,7 +418,7 @@ export default {
         display: flex;
         justify-content: start;
         .categoryList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;
@@ -487,6 +528,16 @@ export default {
     .box-img {
       align-items: flex-start;
     }
+  }
+  .urlStyle {
+    width: 160px;
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 }
 </style>

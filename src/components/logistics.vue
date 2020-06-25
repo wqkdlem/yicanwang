@@ -3,44 +3,25 @@
     <div class="logistics-title">
       <img class="logistics-title-lef" :src="kuaidigongsi" alt />
       <div class="logistics-title-rig">
-        <div class="logistics-title-rig-top">快递单号：374686814693333</div>
-        <div class="logistics-title-rig-bot">配送公司：顺丰速运</div>
+        <div class="logistics-title-rig-top">快递单号：{{logisticsInformationa.nu}}</div>
+        <div class="logistics-title-rig-bot">配送公司：{{logisticsInformationa.com}}</div>
       </div>
     </div>
-    <div class="package-status">
-      <div class="status-box">
-        <ul class="status-list">
-          <li>
-            <div class="status-content-before">您的订单开始处理</div>
-            <div class="status-time-before">2017-08-17 23:31 周四</div>
-            <div class="status-line"></div>
-          </li>
-          <li>
-            <div class="status-content-before">卖家发货</div>
-            <div class="status-time-before">2017-08-18 09:11 周五</div>
-            <div class="status-line"></div>
-          </li>
-          <li>
-            <div class="status-content-before">发往深圳中转站</div>
-            <div class="status-time-before">2017-08-19 01:21 周六</div>
-            <div class="status-line"></div>
-          </li>
-          <li>
-            <div class="status-content-before">到达深圳</div>
-            <div class="status-time-before">2017-08-19 06:21 周六</div>
-            <div class="status-line"></div>
-          </li>
-          <li>
-            <div class="status-content-before">发往潮汕中心</div>
-            <div class="status-time-before">2017-08-19 09:21 周六</div>
-            <div class="status-line"></div>
-          </li>
-          <li class="latest">
-            <div class="status-content-latest">快件到达 潮汕中心</div>
-            <div class="status-time-latest">2017-08-20 14:16 周日</div>
-            <div class="status-line"></div>
-          </li>
-        </ul>
+    <div class="package-status" style="margin-top: 30px;">
+      <div class="status-box" v-for="(item,index) in logisticsInformationa.data" :key="index">
+        <div class="status-box-icon">
+          <img v-if="item.status==='揽收'" style :src="index+1===1?yilanshou:lanshou" alt />
+          <img v-if="item.status==='派件'" style :src="index+1===1?yipaidong:paisong" alt />
+          <img v-if="item.status==='签收'" style :src="index+1===1?yiqianshou:qianshou" alt />
+          <span
+            v-if="item.status==='在途'"
+            :style="index+1===1?'background-color:#3CB371;top: 0;':''"
+          ></span>
+        </div>
+        <div class="status-box-content">
+          <div class="status-content-before" :style="index===0?'color:#1B9B3F':''">{{item.context}}</div>
+          <div class="status-time-before">{{item.ftime}}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -50,20 +31,31 @@
 import { get, post, del, put, fakeGet } from "@/utils/request.js";
 export default {
   name: "HelloWorld",
+  props: ["logisticsInformation"],
   data() {
-    return { kuaidigongsi: require("@/assets/new_images/kuaidigongsi.png") };
+    return {
+      kuaidigongsi: require("@/assets/new_images/kuaidigongsi.png"),
+      qianshou: require("@/assets/new_images/qianshou.png"),
+      yiqianshou: require("@/assets/new_images/yiqianshou.png"),
+      lanshou: require("@/assets/new_images/lanshou.png"),
+      yilanshou: require("@/assets/new_images/yilanshou.png"),
+      paisong: require("@/assets/new_images/paisong.png"),
+      yipaidong: require("@/assets/new_images/yipaidong.png"),
+      qujian: require("@/assets/new_images/qujian.png"),
+      yiqujian: require("@/assets/new_images/yiqujian.png"),
+      logisticsInformationa: {}
+    };
   },
   created() {
-    this.aaa();
+    this.logisticsInformationa = this.logisticsInformation;
+    console.log(this.logisticsInformationa);
   },
-  methods: {
-    async aaa() {
-      let url = "/ssp/sheet/api/getSheetList";
-      let data = "11111111111";
-      let response = await fakeGet("111111111111");
-      console.log(response);
+  watch: {
+    logisticsInformation(nw, old) {
+      this.logisticsInformationa = nw;
     }
-  }
+  },
+  methods: {}
 };
 </script>
 
@@ -91,102 +83,43 @@ export default {
     }
   }
 }
-ul li {
-  list-style: none;
-}
 .package-status {
-  padding: 18px 0 50px;
-  box-sizing: border-box;
-}
-.package-status .status-list {
-  margin: 0;
-  padding: 0;
-  margin-top: -5px;
-  padding-left: 8px;
-  list-style: none;
-}
-.package-status .status-list > li {
-  border-left: 2px solid #3cb371;
-  text-align: left;
-}
-.package-status .status-list > li:before {
-  /* 流程点的样式 */
-  content: "";
-  border: 3px solid #3cb371;
-  background-color: #3cb371;
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 10px;
-  margin-left: -7px;
-  margin-right: 10px;
-}
-.package-status .status-box {
-  overflow: hidden;
-}
-.package-status .status-list > li {
-  height: auto;
-  width: 95%;
-}
-.package-status .status-list {
-  margin-top: -8px;
-}
-.package-status .status-box {
-  position: relative;
-}
-.package-status .status-box:before {
-  content: " ";
-  background-color: #f3f3f3;
-  display: block;
-  position: absolute;
-  top: -8px;
-  left: 20px;
-  width: 10px;
-  height: 4px;
-}
-.package-status .status-list {
-  margin-top: 0px;
-}
-.status-list > li:not(:first-child) {
-  padding-top: 10px;
-}
-.status-content-before {
-  text-align: left;
-  margin-left: 25px;
-  margin-top: -20px;
-}
-.status-content-latest {
-  text-align: left;
-  margin-left: 25px;
-  color: #3cb371;
-  margin-top: -20px;
-}
-.status-time-before {
-  text-align: left;
-  margin-left: 25px;
-  font-size: 10px;
-  margin-top: 5px;
-}
-.status-time-latest {
-  text-align: left;
-  margin-left: 25px;
-  color: #3cb371;
-  font-size: 10px;
-  margin-top: 5px;
-}
-.status-line {
-  border-bottom: 1px solid #ccc;
-  margin-left: 25px;
-  margin-top: 10px;
-}
-.list {
-  padding: 0 20px;
-  background-color: #f8f8f8;
-  margin: 10px 0 0 25px;
-  border: 1px solid #ebebeb;
-}
-.list li {
-  line-height: 30px;
-  color: #616161;
+  .status-box {
+    border-left: 1px solid #d8d8d8;
+    min-height: 80px;
+    .status-box-icon {
+      position: relative;
+      img {
+        position: absolute;
+        top: 0;
+        left: -15px;
+        z-index: 99999;
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+      }
+      span {
+        position: absolute;
+        top: 10px;
+        left: -3px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #d8d8d8;
+        display: inline-block;
+      }
+    }
+  }
+  .status-box:last-child {
+    border-left: 0;
+  }
+  .status-box-content {
+    padding: 0px 30px 20px;
+    box-sizing: border-box;
+    color: #999999;
+    .status-time-before {
+      margin-top: 10px;
+    }
+  }
 }
 </style>

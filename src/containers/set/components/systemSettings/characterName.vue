@@ -13,7 +13,7 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" icon="el-icon-search">搜索</el-button>
       </div>
     </div>
     <div class="charcterName-bot">
@@ -22,25 +22,25 @@
           <i class="el-icon-plus"></i>
           <span>新建角色名称</span>
         </div>
-        <div class="charcterName-bot-top-i">
+        <!-- <div class="charcterName-bot-top-i">
           <i class="el-icon-delete"></i>
           <span>批量删除</span>
-        </div>
+        </div>-->
       </div>
       <div class="charcterName-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
           <el-table-column align="center" type="selection" width="75"></el-table-column>
           <el-table-column align="center" prop="id" label="ID"></el-table-column>
           <el-table-column align="center" prop="role_name" label="角色名称" width="180"></el-table-column>
-          <el-table-column align="center" prop="status" label="显示">
+          <el-table-column align="center" prop="is_display" label="显示">
             <div slot-scope="scope">
               <i
-                v-if="scope.row.status"
+                v-if="scope.row.is_display"
                 class="el-icon-check"
                 style="font-size:22px;color:#3CB371;"
               ></i>
               <i
-                v-if="!scope.row.status"
+                v-if="!scope.row.is_display"
                 class="el-icon-close"
                 style="font-size:22px;color:#FB6534;"
               ></i>
@@ -84,7 +84,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="dialogVisible" width="900px">
+    <el-dialog :title="modelTitle"  class="abow_dialog" :visible.sync="dialogVisible" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">用户名称：</div>
@@ -93,22 +93,22 @@
         <div class="box-i">
           <div class="box-left">是否显示：</div>
           <div class="box--right">
-            <el-radio v-model="changeDataContent.status" :label="1">是</el-radio>
-            <el-radio v-model="changeDataContent.status" :label="0">否</el-radio>
+            <el-radio v-model="changeDataContent.is_display" :label="1">是</el-radio>
+            <el-radio v-model="changeDataContent.is_display" :label="2">否</el-radio>
           </div>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="ifChangeuser">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="ifChangeuser">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除角色" :visible.sync="ifDele" width="300px">
+    <el-dialog title="删除角色"  class="abow_dialog" :visible.sync="ifDele" width="900px">
       确定删除角色？
       <div class="box"></div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifDele = false">取 消</el-button>
-        <el-button type="primary" @click="onDeleData">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onDeleData">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -132,7 +132,7 @@ export default {
       changeDataContent: {
         //角色内容
         role_name: "",
-        status: 0,
+        is_display: 1,
         id: ""
       },
       dialogVisible: false //是否展示编辑角色弹出框
@@ -151,6 +151,7 @@ export default {
         charcterName: this.charcterName
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
     },
     handleSizeChange(data) {
@@ -168,7 +169,8 @@ export default {
     },
     // 权限
     onShowJurisdiction(data) {
-      this.$emit("onShowJurisdiction", data);
+      console.log(data);
+      this.$router.push({ path: "/deit", query: data });
     },
     // 编辑
     onToCompile(data) {
@@ -183,32 +185,36 @@ export default {
       this.modelTitle = "新增角色";
       this.changeDataContent = {
         role_name: "",
-        status: 0,
+        is_display: 1,
         id: ""
       };
     },
     async ifChangeuser() {
-      this.dialogVisible = false;
       let url = "/admin/role/";
-      let { role_name = "", status = 0, id = "" } = this.changeDataContent;
+      let { role_name = "", is_display = 1, id = "" } = this.changeDataContent;
       if (!role_name) return this.$message("请先输入角色名");
+      if (!is_display) return this.$message("请先选择是否展示");
       let data = {};
       if (this.modelTitle == "修改角色") {
         let data = {
           role_name,
-          status,
+          status: is_display === 1 ? 1 : 0,
           id
         };
         let response = await put({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       if (this.modelTitle == "新增角色") {
         let data = {
           role_name,
-          status
+          status: is_display === 1 ? 1 : 0
         };
         let response = await post({ url, data });
         this.$message(this.modelTitle + "成功");
+        if (response.msg) return this.$message(response.msg);
       }
+      this.dialogVisible = false;
+
       this.$message(this.modelTitle + "成功");
       this.initGetTableData();
     },
@@ -218,9 +224,9 @@ export default {
       let url = "/admin/role/";
       let data = { id: this.ondeleDataID };
       let response = await del({ url, data });
-      if (response.code != 200) return this.$message(response.msg);
-      this.initGetTableData();
+      if (response.msg) return this.$message(response.msg);
       this.$message("删除成功");
+      this.initGetTableData();
     }
   }
 };
@@ -277,7 +283,7 @@ export default {
       display: flex;
       justify-content: start;
       .charcterName-bot-top-i {
-        // width: 130px;
+        cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;

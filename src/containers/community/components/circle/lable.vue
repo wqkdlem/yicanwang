@@ -13,7 +13,13 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="categoryList-bot">
@@ -89,7 +95,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="ifChanCate" width="900px">
+    <el-dialog :title="modelTitle" class="abow_dialog" :visible.sync="ifChanCate" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">标签名称：</div>
@@ -101,7 +107,7 @@
         </div>
         <div class="box-i">
           <div class="box-left">排序：</div>
-          <input width type="number" v-model="basicInformation.weight" placeholder="请输入排序" />
+          <input width type="number" min="0" v-model="basicInformation.weight" placeholder="请输入排序" />
         </div>
         <!-- <div class="box-i">
           <div class="box-left">类型：</div>
@@ -114,15 +120,15 @@
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChanCate= false">取 消</el-button>
-        <el-button type="primary" @click="onSureChangeLable">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onSureChangeLable">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除等级" class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除标签？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onDelCate">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onDelCate">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -171,6 +177,7 @@ export default {
         limit: this.limit
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
     },
     onChangeCate(data) {
@@ -197,6 +204,8 @@ export default {
       } = this.basicInformation;
       let url = "/admin/community_label";
       if (!name) return this.$message("请先输入标签名称");
+      if (!title) return this.$message("请先输入标签标题");
+      if (!weight) return this.$message("请先输入排序");
       let data = {};
       if (this.modelTitle == "修改标签") {
         let data = {
@@ -206,6 +215,7 @@ export default {
           id
         };
         let response = await put({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       if (this.modelTitle == "新增标签") {
         let data = {
@@ -214,6 +224,7 @@ export default {
           weight
         };
         let response = await post({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       this.$message(this.modelTitle + "成功");
       this.getTableData();
@@ -225,6 +236,8 @@ export default {
       };
       let response = await del({ url, data });
       this.ifShowDele = false;
+      if (response.msg) return this.$message(response.msg);
+
       this.$message("删除成功");
       this.getTableData();
     },
@@ -308,7 +321,7 @@ export default {
         display: flex;
         justify-content: start;
         .categoryList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;
@@ -419,6 +432,10 @@ export default {
     .box-img {
       align-items: flex-start;
     }
+  }
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>

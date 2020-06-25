@@ -4,24 +4,17 @@
     <div class="content">
       <el-container style="height: 100%; border: 1px solid #eee">
         <el-aside width="245px">
-          <el-menu
-            @close="handleClose"
-            @open="handleOpen"
-            @select="onGetItem"
-            default-active="/communityBy"
-            router
-          >
+          <el-menu default-active="/communityBy" router>
             <el-submenu v-for="(item,index) in navLeft" :key="index" :index="item.title">
               <template slot="title">
-                <i class="el-icon-location"></i>
+                <img style="width:15px;height:15px" :src="item.icon" alt />
                 <span>{{item.title}}</span>
               </template>
               <el-menu-item-group>
                 <el-menu-item
                   v-for="(data,index) in item.grandson"
                   :key="index"
-                  :index="'/'+data.url?data.url:'communityBy'"
-                  @click="onToSecondaryPage(item)"
+                  :index="'/'+data.url"
                 >{{data.title}}</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
@@ -55,14 +48,15 @@ export default {
     return {
       currentContent: "",
       navLeft: [],
-      currentlySelected: ""
+      currentlySelected: "",
+      routerA: "/communityBy"
     };
   },
   created() {
     let { query } = this.$route;
     this.currentContent = query;
     this.initGetSecondNav();
-    this.handleOpen(this.navLeft[0].title, this.navLeft[0].grandson[0].title);
+    this.getUrl();
   },
   methods: {
     async initGetSecondNav() {
@@ -70,16 +64,18 @@ export default {
       let response = await get({ url });
       this.navLeft = response.child;
     },
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    onGetItem(key, keyPath) {
-      this.currentlySelected = keyPath;
-    },
-    onToSecondaryPage(data) {}
+    getUrl() {
+      let self = this;
+      let currentUrl = window.location.href;
+      let aa = currentUrl.split("#")[1];
+      self.routerA = aa.substring(0, aa.indexOf("?"));
+      if (self.routerA) {
+        console.log(currentUrl, self.routerA, "刷新后路由");
+      } else {
+        self.routerA = currentUrl.split("#")[1];
+        console.log(self.routerA, "刷新后路由11111111111");
+      }
+    }
   }
 };
 </script>

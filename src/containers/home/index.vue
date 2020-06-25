@@ -4,85 +4,297 @@
     <div class="content">
       <div class="content-left">
         <div class="content-left-i">
-          <img src alt />
+          <img :src="homeIcon" alt />
           <span>首页</span>
         </div>
       </div>
       <div class="content-right">
         <div class="content-top">
-          <div
-            class="content-top-i"
-            v-for="(item,index) in allData"
-            :key="index"
-            :style="{background:item.color}"
-          >
+          <div class="content-top-i" style="background:#8F94FB">
             <div class="content-top-i-top">
-              <div class="content-top-i-top-top">{{item.committed}}</div>
+              <div class="content-top-i-top-top">所有待发货</div>
               <div class="content-top-i-top-bot">
-                {{item.committedNum}}
-                <span>{{item.committedUnit}}</span>
+                <span
+                  v-if="homeData.raw_data&&homeData.raw_data.waitSendOrderNum"
+                >{{homeData.raw_data.waitSendOrderNum}}</span>
+                <span v-else>0</span>
+                <span>单</span>
               </div>
             </div>
             <div class="content-top-i-bot">
               <div class="content-top-i-bot-left">
-                <div class="content-top-i-bot-left-top">{{item.todayOrder}}</div>
+                <div class="content-top-i-bot-left-top">今日订单数</div>
                 <div class="content-top-i-bot-left-bot">
-                  {{item.todayOrderUnm}}
-                  <span>{{item.todayOrderUnit}}</span>
+                  <span
+                    v-if="homeData.raw_data&&homeData.raw_data.dayOrderNum"
+                  >{{homeData.raw_data.dayOrderNum}}</span>
+                  <span v-else>0</span>
+                  <span>单</span>
                 </div>
               </div>
-              <img class="content-top-i-bot-right" :src="item.img" />
+              <img class="content-top-i-bot-right" :src="fahuoimg" />
+            </div>
+          </div>
+
+          <div class="content-top-i" style="background:#F99636">
+            <div class="content-top-i-top">
+              <div class="content-top-i-top-top">所有待付款</div>
+              <div class="content-top-i-top-bot">
+                <span
+                  v-if="homeData.raw_data&&homeData.raw_data.waitPayOrderNum"
+                >{{homeData.raw_data.waitPayOrderNum}}</span>
+                <span v-else>0</span>
+                <span>单</span>
+              </div>
+            </div>
+            <div class="content-top-i-bot">
+              <div class="content-top-i-bot-left">
+                <div class="content-top-i-bot-left-top">今日收入</div>
+                <div class="content-top-i-bot-left-bot">
+                  <span
+                    v-if="homeData.raw_data&&homeData.raw_data.dayOrderMoney"
+                  >{{homeData.raw_data.dayOrderMoney}}</span>
+                  <span v-else>0</span>
+                  <span>元</span>
+                </div>
+              </div>
+              <img class="content-top-i-bot-right" :src="fahuoimg" />
+            </div>
+          </div>
+
+          <div class="content-top-i" style="background:#3DD376">
+            <div class="content-top-i-top">
+              <div class="content-top-i-top-top">本月订单数</div>
+              <div class="content-top-i-top-bot">
+                <span
+                  v-if="homeData.raw_data&&homeData.raw_data.monthOrderNum"
+                >{{homeData.raw_data.monthOrderNum}}</span>
+                <span v-else>0</span>
+                <span>单</span>
+              </div>
+            </div>
+            <div class="content-top-i-bot">
+              <div class="content-top-i-bot-left">
+                <div class="content-top-i-bot-left-top">昨日订单数</div>
+                <div class="content-top-i-bot-left-bot">
+                  <span
+                    v-if="homeData.raw_data&&homeData.raw_data.yesterDayOrderNum"
+                  >{{homeData.raw_data.yesterDayOrderNum}}</span>
+                  <span v-else>0</span>
+                  <span>单</span>
+                </div>
+              </div>
+              <img class="content-top-i-bot-right" :src="dingdanimg" />
+            </div>
+          </div>
+
+          <div class="content-top-i" style="background:#F09819">
+            <div class="content-top-i-top">
+              <div class="content-top-i-top-top">本月收入</div>
+              <div class="content-top-i-top-bot">
+                <span
+                  v-if="homeData.raw_data&&homeData.raw_data.monthOrderMoney"
+                >{{homeData.raw_data.monthOrderMoney}}</span>
+                <span v-else>0</span>
+                <span>元</span>
+              </div>
+            </div>
+            <div class="content-top-i-bot">
+              <div class="content-top-i-bot-left">
+                <div class="content-top-i-bot-left-top">昨日收入</div>
+                <div class="content-top-i-bot-left-bot">
+                  <span
+                    v-if="homeData.raw_data&&homeData.raw_data.yesterDayOrderMoney"
+                  >{{homeData.raw_data.yesterDayOrderMoney}}</span>
+                  <span v-else>0</span>
+                  <span>元</span>
+                </div>
+              </div>
+              <img class="content-top-i-bot-right" :src="shouruimg" />
             </div>
           </div>
         </div>
+
         <div class="content-center">
           <div class="content-center-top">汤料数据</div>
           <div class="content-center-bot">
-            <div class="content-center-bot-i" v-for="(item,index) in soupBasesData" :key="index">
+            <div class="content-center-bot-i">
               <div class="content-center-bot-i-top">
                 <div class="content-center-bot-i-top-top">
-                  <img :src="item.img" alt />
-                  <span>{{item.committed}}</span>
+                  <img :src="dingdanIcon" alt />
+                  <span>所有待发货</span>
                 </div>
                 <div class="content-center-bot-i-top-bot">
-                  {{item.committedNum}}
-                  <span>{{item.committedUnit}}</span>
+                  <span
+                    v-if="homeData.soup_data&&homeData.soup_data.waitSendOrderNum"
+                  >{{homeData.soup_data.waitSendOrderNum}}</span>
+                  <span v-else>0</span>
+                  <span>单</span>
                 </div>
               </div>
               <div class="content-center-bot-i-bot">
-                <div class="content-center-bot-i-bot-top">{{item.todayOrder}}</div>
+                <div class="content-center-bot-i-bot-top">今日订单数</div>
                 <div class="content-center-bot-i-bot-bot">
-                  {{item.todayOrderUnm}}
-                  <span>{{item.todayOrderUnit}}</span>
+                  <span
+                    v-if="homeData.soup_data&&homeData.soup_data.dayOrderNum"
+                  >{{homeData.soup_data.dayOrderNum}}</span>
+                  <span v-else>0</span>
+                  <span>单</span>
+                  <span>单</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-center-bot-i">
+              <div class="content-center-bot-i-top">
+                <div class="content-center-bot-i-top-top">
+                  <img :src="shouruIcon" alt />
+                  <span>所有待付款</span>
+                </div>
+                <div class="content-center-bot-i-top-bot">
+                  <span
+                    v-if="homeData.soup_data&&homeData.soup_data.waitPayOrderNum"
+                  >{{homeData.soup_data.waitPayOrderNum}}</span>
+                  <span v-else>0</span>
+                  <span>单</span>
+                </div>
+              </div>
+              <div class="content-center-bot-i-bot">
+                <div class="content-center-bot-i-bot-top">今日收入</div>
+                <div class="content-center-bot-i-bot-bot">
+                  <span
+                    v-if="homeData.soup_data&&homeData.soup_data.dayOrderMoney"
+                  >{{homeData.soup_data.dayOrderMoney}}</span>
+                  <span v-else>0</span>
+                  <span>元</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-center-bot-i">
+              <div class="content-center-bot-i-top">
+                <div class="content-center-bot-i-top-top">
+                  <img :src="dingdanIcon" alt />
+                  <span>本月订单数</span>
+                </div>
+                <div class="content-center-bot-i-top-bot">
+                  <span
+                    v-if="homeData.soup_data&&homeData.soup_data.monthOrderNum"
+                  >{{homeData.soup_data.monthOrderNum}}</span>
+                  <span v-else>0</span>
+                  <span>单</span>
+                </div>
+              </div>
+              <div class="content-center-bot-i-bot">
+                <div class="content-center-bot-i-bot-top">昨天订单数</div>
+                <div class="content-center-bot-i-bot-bot">
+                  <span
+                    v-if="homeData.soup_data&&homeData.soup_data.yesterDayOrderNum"
+                  >{{homeData.soup_data.yesterDayOrderNum}}</span>
+                  <span v-else>0</span>
+                  <span>单</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-center-bot-i">
+              <div class="content-center-bot-i-top">
+                <div class="content-center-bot-i-top-top">
+                  <img :src="shouruIcon" alt />
+                  <span>本月收入</span>
+                </div>
+                <div class="content-center-bot-i-top-bot">
+                  <span
+                    v-if="homeData.soup_data&&homeData.soup_data.monthOrderMoney"
+                  >{{homeData.soup_data.monthOrderMoney}}</span>
+                  <span v-else>0</span>
+                  <span>元</span>
+                </div>
+              </div>
+              <div class="content-center-bot-i-bot">
+                <div class="content-center-bot-i-bot-top">昨天收入</div>
+                <div class="content-center-bot-i-bot-bot">
+                  <span
+                    v-if="homeData.soup_data&&homeData.soup_data.yesterDayOrderMoney"
+                  >{{homeData.soup_data.yesterDayOrderMoney}}</span>
+                  <span v-else>0</span>
+                  <span>元</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="content-bottom">
-          <div class="content-bottom-i" v-for="(item,index) in lookBackData" :key="index">
-            <div class="content-bottom-i-top">{{item.title}}</div>
+          <div class="content-bottom-i">
+            <div class="content-bottom-i-top">数据回报</div>
             <div class="content-bottom-i-cen">
               <div class="content-bottom-i-cen-lef">
-                <div class="content-bottom-i-cen-lef-top">{{item.realTime}}</div>
+                <div class="content-bottom-i-cen-lef-top">新增客户数（周）</div>
                 <div class="content-bottom-i-cen-lef-bot">
-                  {{item.realTimeNum}}
+                  <span
+                    v-if="homeData.soup_data&&homeData.soup_data.weekUserNum"
+                  >{{homeData.soup_data.weekUserNum}}</span>
+                  <span v-else>0</span>
                   <p>
                     对比上周
                     <span
-                      :style="{color:item.regulation?'rgba(253, 81, 81, 1)':'rgba(60, 179, 113, 1)'}"
-                    >{{item.realTimeContrast}}</span>
+                      :style="{color:homeData.user_data&&homeData.user_data.is_increase?'rgba(60, 179, 113, 1)':'rgba(253, 81, 81, 1)'}"
+                    >{{homeData.user_data.updateNum}}</span>
                   </p>
-                  <img :src="item.regulation?contrastUp:contrastNext" alt />
+                  <img
+                    :src="homeData.user_data&&homeData.user_data.is_increase?contrastNext:contrastUp"
+                    alt
+                  />
                 </div>
               </div>
               <div class="content-bottom-i-cen-rig">
-                <div class="content-bottom-i-cen-rig-left">{{item.overall}}</div>
-                <div class="content-bottom-i-cen-rig-right">{{item.overallNum}}</div>
+                <div class="content-bottom-i-cen-rig-left">总客户数量</div>
+                <div class="content-bottom-i-cen-rig-right">
+                  <span
+                    v-if="homeData.user_data&&homeData.user_data.sumNum"
+                  >{{homeData.user_data.sumNum}}</span>
+                  <span v-else>0</span>
+                </div>
               </div>
             </div>
             <div class="content-bottom-i-bot">
-              <p>{{item.addData}}</p>
+              <p>新增客户数量</p>
+            </div>
+          </div>
+          <div class="content-bottom-i">
+            <div class="content-bottom-i-top">订单提交</div>
+            <div class="content-bottom-i-cen">
+              <div class="content-bottom-i-cen-lef">
+                <div class="content-bottom-i-cen-lef-top">本周订单数（周）</div>
+                <div class="content-bottom-i-cen-lef-bot">
+                  <span
+                    v-if="homeData.order_data&&homeData.order_data.weekOrderNum"
+                  >{{homeData.order_data.weekOrderNum}}</span>
+                  <span v-else>0</span>
+                  <p>
+                    对比上周
+                    <span
+                      :style="{color:homeData.order_data&&homeData.order_data.is_increase?'rgba(253, 81, 81, 1)':'rgba(60, 179, 113, 1)'}"
+                    >{{homeData.order_data.updateOrderNum}}</span>
+                  </p>
+                  <img
+                    :src="homeData.order_data&&homeData.order_data.is_increase?contrastUp:contrastNext"
+                    alt
+                  />
+                </div>
+              </div>
+              <div class="content-bottom-i-cen-rig">
+                <div class="content-bottom-i-cen-rig-left">总订单数</div>
+                <div class="content-bottom-i-cen-rig-right">
+                  <span
+                    v-if="homeData.order_data&&homeData.order_data.sumOrderNum"
+                  >{{homeData.order_data.sumOrderNum}}</span>
+                  <span v-else>0</span>
+                </div>
+              </div>
+            </div>
+            <div class="content-bottom-i-bot">
+              <p>订单数据</p>
             </div>
           </div>
         </div>
@@ -101,112 +313,30 @@ export default {
     return {
       contrastUp: require("@/assets/new_images/contrastUp.png"),
       contrastNext: require("@/assets/new_images/contrastNext.png"),
-      allData: [
-        {
-          committed: "所有待发货",
-          committedNum: "25345",
-          committedUnit: "单",
-          todayOrder: "昨日订单数",
-          todayOrderUnm: "543",
-          todayOrderUnit: "单",
-          img: require("@/assets/new_images/dingdan.png"),
-          color: "#8F94FB"
-        },
-        {
-          committed: "所有待发货",
-          committedNum: "25345",
-          committedUnit: "单",
-          todayOrder: "昨日订单数",
-          todayOrderUnm: "543",
-          todayOrderUnit: "单",
-          img: require("@/assets/new_images/shouru.png"),
-          color: "#F99636"
-        },
-        {
-          committed: "所有待发货",
-          committedNum: "25345",
-          committedUnit: "单",
-          todayOrder: "昨日订单数",
-          todayOrderUnm: "543",
-          todayOrderUnit: "单",
-          img: require("@/assets/new_images/dingdan.png"),
-          color: "#3DD376"
-        },
-        {
-          committed: "所有待发货",
-          committedNum: "25345",
-          committedUnit: "单",
-          todayOrder: "昨日订单数",
-          todayOrderUnm: "543",
-          todayOrderUnit: "单",
-          img: require("@/assets/new_images/shouru.png"),
-          color: "#F09819"
-        }
-      ],
-      soupBasesData: [
-        {
-          committed: "所有待发货",
-          committedNum: "25345",
-          committedUnit: "单",
-          todayOrder: "昨日订单数",
-          todayOrderUnm: "543",
-          todayOrderUnit: "单",
-          img: require("@/assets/new_images/dingdanIcon.png")
-        },
-        {
-          committed: "所有待发货",
-          committedNum: "25345",
-          committedUnit: "单",
-          todayOrder: "昨日订单数",
-          todayOrderUnm: "543",
-          todayOrderUnit: "单",
-          img: require("@/assets/new_images/shouruIcon.png")
-        },
-        {
-          committed: "所有待发货",
-          committedNum: "25345",
-          committedUnit: "单",
-          todayOrder: "昨日订单数",
-          todayOrderUnm: "543",
-          todayOrderUnit: "单",
-          img: require("@/assets/new_images/dingdanIcon.png")
-        },
-        {
-          committed: "所有待发货",
-          committedNum: "25345",
-          committedUnit: "单",
-          todayOrder: "昨日订单数",
-          todayOrderUnm: "543",
-          todayOrderUnit: "单",
-          img: require("@/assets/new_images/shouruIcon.png")
-        }
-      ],
-      lookBackData: [
-        {
-          title: "数据汇报",
-          realTime: "新增客户（周）",
-          realTimeNum: "2333",
-          realTimeContrast: "2222",
-          regulation: true,
-          overall: "总客户数量",
-          overallNum: "2334555",
-          addData: "新增客户数据"
-        },
-        {
-          title: "订单提交",
-          realTime: "今日订单数（日）",
-          realTimeNum: "29",
-          realTimeContrast: "22",
-          regulation: false,
-          overall: "总客户数量",
-          overallNum: "2334555",
-          addData: "订单数据"
-        }
-      ]
+      fahuoimg: require("@/assets/new_images/dingdan.png"),
+      fukuanimg: require("@/assets/new_images/shouru.png"),
+      dingdanimg: require("@/assets/new_images/dingdan.png"),
+      shouruimg: require("@/assets/new_images/shouru.png"),
+      dingdanIcon: require("@/assets/new_images/dingdanIcon.png"),
+      shouruIcon: require("@/assets/new_images/dingdanIcon.png"),
+      homeIcon: require("@/assets/new_images/homeIcon.png"),
+      homeData: ""
     };
   },
-  created() {},
-  methods: {}
+  created() {
+    this.initHomeData();
+  },
+  methods: {
+    async initHomeData() {
+      let params = {
+        data_type: "index"
+      };
+      let url = "/admin/data";
+      let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
+      this.homeData = response;
+    }
+  }
 };
 </script>
 
@@ -233,14 +363,13 @@ export default {
         align-items: center;
         height: 56px;
         img {
-          width: 24px;
-          height: 18px;
+          width: 15px;
+          height: 15px;
           display: inline-block;
-          border: 1px solid red;
         }
         span {
-          font-size: 18px;
-          color: #909399;
+          font-size: 14px;
+          color: black;
           display: inline-block;
           margin-left: 15px;
         }

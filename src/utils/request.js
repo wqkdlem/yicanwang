@@ -38,8 +38,12 @@ export const get = ({ url = "", baseUrl = "", params = {} }) => {
             })
             .then(rs => {
                 const response = rs.data;
-                // if (response.code === 400001) return (window.location = "/");
-                if (!response.code || response.code !== 200) return;
+                if (response.code === 400001) {
+                    window.location = "#/login";
+                    localStorage.clear();
+                    return;
+                }
+                if (!response.code || response.code !== 200) return resolve(response);
                 resolve(response.data);
             })
             .catch(error => {
@@ -102,7 +106,11 @@ export const post = ({
             .then(rs => {
                 const response = rs.data;
                 console.log(response);
-                if (response.code === 400001) return (window.location = "#/login");
+                if (response.code === 400001) {
+                    window.location = "#/login";
+                    localStorage.clear();
+                    return;
+                }
                 if (!response.code || response.code !== 200) return resolve(response);
                 resolve(response.data);
             })
@@ -230,7 +238,12 @@ export const del = ({
             .then(rs => {
                 const response = rs.data;
                 console.log(response);
-                if (response.code === 400001) return (window.location = "#/login");
+                if (response.code === 400001) {
+                    window.location = "#/login";
+                    localStorage.clear();
+                    return;
+                }
+
                 if (!response.code || response.code !== 200) return resolve(response);
                 resolve(response.data);
             })
@@ -294,8 +307,12 @@ export const put = ({
             .then(rs => {
                 const response = rs.data;
                 console.log(response);
-                if (response.code === 400001) return (window.location = "#/login");
-                if (!response.code || response.code !== 200) return;
+                if (response.code === 400001) {
+                    window.location = "#/login";
+                    localStorage.clear();
+                    return;
+                }
+                if (!response.code || response.code !== 200) return resolve(response);
                 resolve(response.data);
             })
             .catch(error => {

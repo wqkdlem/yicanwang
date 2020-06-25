@@ -10,7 +10,13 @@
     <div class="deit-bot">
       <div class="deit-bot-top">
         <span>角色名称：</span>
-        <input type="text" style="width:90%" placeholder="请输入角色名称" />
+        <input
+          type="text"
+          v-model="jurisdictionData.role_name"
+          style="width:90%"
+          placeholder="请输入角色名称"
+          :disabled="true"
+        />
       </div>
       <el-tree
         ref="tree"
@@ -40,7 +46,6 @@
 import { get, post, del, put, fakeGet } from "@/utils/request.js";
 export default {
   name: "HelloWorld",
-  props: { jurisdictionData: {} },
   data() {
     return {
       value: "",
@@ -50,10 +55,14 @@ export default {
         children: "children",
         label: "label"
       },
-      pickOnArray: [] //所有选中的节点
+      pickOnArray: [], //所有选中的节点
+      jurisdictionData: ""
     };
   },
   created() {
+    let { query } = this.$route;
+    this.jurisdictionData = query;
+    console.log(this.jurisdictionData);
     this.$nextTick(() => {
       this.initDataList();
     });
@@ -67,11 +76,11 @@ export default {
         _levelname[i].parentNode.style.cssFloat = "left"; //最底层的节点，包括多选框和名字都让他左浮动
         _levelname[i].parentNode.style.styleFloat = "left";
       }
-    }, 2000);
+    }, 580);
   },
   methods: {
     onShowCharacterName() {
-      this.$emit("onShowCharacterName");
+      this.$router.go(-1);
     },
     //获取角色权限列表
     async initDataList() {
@@ -110,8 +119,8 @@ export default {
         rules: this.pickOnArray.toString()
       };
       let response = await put({ url, data });
-      if (response.code != 200) return this.$message(response.msg);
       this.$message("修改成功");
+      if (response.msg) return this.$message(response.msg);
     }
   }
 };

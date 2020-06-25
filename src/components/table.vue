@@ -59,8 +59,8 @@
         </el-col>
         <el-col :span="3">
           <div class="table-content-content-div">
-            <div style="color:#333333">{{item.user.username}}</div>
-            <div>{{item.user.telphone}}</div>
+            <div style="color:#333333">{{item.user.nickname}}</div>
+            <div>{{item.user.mobilePhone}}</div>
             <!-- <img :src="xie" @click="ifChagneUser=true" style="width:13px;height:14px;" alt /> -->
           </div>
         </el-col>
@@ -85,6 +85,7 @@
             <div
               class="payState"
               v-if="item.order_state===2||item.order_state===3||item.order_state===4"
+              @click="getLogistics(item)"
             >物流</div>
             <div
               class="payState"
@@ -113,19 +114,6 @@
               v-if="item.order_state===5"
             >退款</div>
           </div>
-          <!-- <div class="table-content-content-div border0 table-content-content-div-change">
-            <div class="payState" @click="onToRawMaterialDetail(item.id)">详情</div>
-            <div class="payState">物流</div>
-            <div
-              class="payState"
-              @click="ifShipments = true;changeOrderPriceData=item;changeOrderPriceData.price = '';
-      changeOrderPriceData.expressno = '';"
-            >发货</div>
-            <div class="payState">确认收货</div>
-            <div class="payState" @click="ifOrderPrice = true;changeOrderPriceData=item">订单改价</div>
-            <div class="payState" @click="getAddressList(item)">修改收货地址</div>
-            <div class="payState" @click="ifRefund = true">退款</div>
-          </div>-->
         </el-col>
       </el-row>
       <el-row class="table-content-foot">
@@ -150,9 +138,9 @@
         </el-col>
       </el-row>
     </div>
-    <el-dialog title="订单改价" :visible.sync="ifOrderPrice" width="600px">
+    <el-dialog title="订单改价" class="abow_dialog" :visible.sync="ifOrderPrice" width="900px">
       <div class="box">
-        <div>
+        <div class="shipments">
           <el-row class="table-title">
             <el-col :span="12">
               <div class="table-title-div">商品</div>
@@ -195,18 +183,22 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifOrderPrice = false">取 消</el-button>
-          <el-button type="primary" @click="onChangeOrderPrice('order_amount')">确 定</el-button>
+          <el-button
+            style="margin-left:40px"
+            type="primary"
+            @click="onChangeOrderPrice('order_amount')"
+          >确 定</el-button>
         </span>
       </div>
     </el-dialog>
-    <el-dialog title="发货" :visible.sync="ifShipments" width="600px">
+    <el-dialog title="发货" class="abow_dialog" :visible.sync="ifShipments" width="900px">
       <div class="box">
-        <div>
+        <div class="shipments">
           <el-row class="table-title">
-            <el-col :span="12">
+            <el-col :span="10">
               <div class="table-title-div">商品</div>
             </el-col>
-            <el-col :span="4">
+            <el-col :span="6">
               <div class="table-title-div">总计</div>
             </el-col>
             <el-col :span="8">
@@ -215,7 +207,7 @@
           </el-row>
           <div class="table-content" style="margin-top: 0;">
             <el-row class="table-content-content" style="background:#fff" type="flex">
-              <el-col :span="12">
+              <el-col :span="10">
                 <div class="table-content-content-div">
                   <div
                     class="table-content-content-div-a"
@@ -228,7 +220,7 @@
                   </div>
                 </div>
               </el-col>
-              <el-col :span="4">
+              <el-col :span="6">
                 <div class="table-content-content-div">
                   <div>{{changeOrderPriceData.order_amount}}$</div>
                   <div>{{changeOrderPriceData.sum_count}}件</div>
@@ -242,14 +234,19 @@
             </el-row>
           </div>
         </div>
-        <div class="box-left" style="margin-top:20px">选择地址：</div>
         <div style="display:flex;aline-item:center;margin-top:8px">
-          <input
-            style=" width: 243px;height: 40px;margin-left:20px"
-            type="text"
+          <el-select
             v-model="changeOrderPriceData.express_company"
-            placeholder="请输入快递名称"
-          />
+            filterable
+            placeholder="请选择物流公司"
+          >
+            <el-option
+              v-for="item in companyList"
+              :key="item.company"
+              :label="item.company"
+              :value="item.id"
+            ></el-option>
+          </el-select>
           <input
             style=" width: 243px;height: 40px;margin-left:20px"
             type="text"
@@ -259,11 +256,15 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShipments = false">取 消</el-button>
-          <el-button type="primary" @click="onChangeOrderPrice('send_goods')">确 定</el-button>
+          <el-button
+            style="margin-left:40px"
+            type="primary"
+            @click="onChangeOrderPrice('send_goods')"
+          >确 定</el-button>
         </span>
       </div>
     </el-dialog>
-    <el-dialog title="修改地址" :visible.sync="ifChageAddress" width="600px">
+    <el-dialog title="修改地址" class="abow_dialog" :visible.sync="ifChageAddress" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left">修改地址：</div>
@@ -310,14 +311,14 @@
               <div class="box-left">选择省市区：</div>
               <div style="display:flex;">
                 <el-cascader
-                  style="width:408px;margin-left:10px;"
+                  style="width:680px;margin-left:10px;"
                   :options="provincesList"
                   v-model="changeOrderPriceData.order_address.city_id"
                 ></el-cascader>
               </div>
             </div>
             <div class="box-i">
-              <div class="box-left">详细人地址</div>
+              <div class="box-left">详细人地址：</div>
               <input
                 width
                 type="text"
@@ -329,18 +330,22 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifChageAddress = false">取 消</el-button>
-          <el-button type="primary" @click="onChangeOrderPrice('edit_address')">确 定</el-button>
+          <el-button
+            style="margin-left:40px"
+            type="primary"
+            @click="onChangeOrderPrice('edit_address')"
+          >确 定</el-button>
         </span>
       </div>
     </el-dialog>
-    <el-dialog title="修改买家信息" :visible.sync="ifChagneUser" width="600px">
+    <el-dialog title="修改买家信息" class="abow_dialog" :visible.sync="ifChagneUser" width="900px">
       <div class="box">
         <div class="box-i">
           <div class="box-left" style="width:140px;">买家姓名：</div>
           <input
             width
             type="text"
-            style="width:380px;"
+            style="width:680px;"
             v-model="changeOrderPriceData.title"
             placeholder="请输入"
           />
@@ -350,29 +355,32 @@
           <input
             width
             type="text"
-            style="width:380px;"
+            style="width:680px;"
             v-model="changeOrderPriceData.title"
             placeholder="请输入"
           />
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifChagneUser = false">取 消</el-button>
-          <el-button type="primary" @click>确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click>确 定</el-button>
         </span>
       </div>
     </el-dialog>
-    <el-dialog title="物流" :visible.sync="ifChagneUser" width="600px">
+    <el-dialog title="物流" class="abow_dialog" :visible.sync="ifLogistics" width="900px">
       <div class="box">
         <div>
-          <img :src="tishi" style="width:14px;height:15px;" alt /> 当前暂无任何快递信息
+          <div v-if="logisticsInformation">
+            <logistics :logisticsInformation="logisticsInformation"></logistics>
+          </div>
+          <div v-else>暂无物流信息!</div>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="ifChagneUser = false">取 消</el-button>
-          <el-button type="primary" @click>确 定</el-button>
+          <el-button @click="ifLogistics = false">取 消</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="ifLogistics = false">确 定</el-button>
         </span>
       </div>
     </el-dialog>
-    <el-dialog title="退款" :visible.sync="ifRefund" width="600px">
+    <el-dialog title="退款" class="abow_dialog" :visible.sync="ifRefund" width="900px">
       <div class="box">
         <div style="margin-left:60px;">买家申请退款金额：{{changeOrderPriceData.order_amount}}元</div>
         <div style="margin-left:60px;">退款金额将优先退还到月，剩余部分将会按您选择的退款方式退还</div>
@@ -381,7 +389,7 @@
           <input
             width
             type="text"
-            style="width:380px;"
+            style="width:680px;"
             v-model="changeOrderPriceData.order_amount"
             placeholder="请输入"
           />
@@ -390,7 +398,7 @@
           <div class="box-left" style="width:140px;">退款方式：</div>
           <el-select v-model="value" placeholder="请选择地址">
             <el-option
-              style="width:380px;"
+              style="width:680px;"
               v-for="item in logisticsCompany"
               :key="item.name"
               :label="item.name"
@@ -400,7 +408,7 @@
         </div>-->
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifRefund = false">取 消</el-button>
-          <el-button type="primary" @click="onChangeRefund('agree')">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onChangeRefund('agree')">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -409,8 +417,11 @@
 
 <script>
 import { get, post, del, put, fakeGet } from "@/utils/request.js";
+import { localSave, localRead } from "@/lib/local.js";
+import logistics from "@/components/logistics.vue";
 export default {
   props: ["tableData"],
+  components: { logistics },
   data() {
     return {
       value: "",
@@ -429,12 +440,15 @@ export default {
       ifChageAddress: false, //修改地址
       ifChagneUser: false, //修改买家信息
       ifRefund: false, //退款
+      ifLogistics: false, //物流
       addressList: [], //地址列表
       addressId: "",
       provincesList: "", //省市区列表
       proviceId: 0, //当前选中省份index
       cityId: 0, //当前选中市index
-      regionId: 0 //当前选中区index
+      regionId: 0, //当前选中区index
+      logisticsInformation: {}, //物流信息
+      companyList: [] //物流公司列表
     };
   },
   watch: {
@@ -443,11 +457,17 @@ export default {
     }
   },
   created() {
+    this.getCompanyList();
+    if (localRead("provincesList"))
+      return (this.provincesList = JSON.parse(localRead("provincesList")));
     this.getProvincesList();
   },
   methods: {
     onToRawMaterialDetail(id) {
-      this.$emit("onToRawMaterialDetail", id);
+      let data = {
+        id: id
+      };
+      this.$router.push({ path: "/rawMaterialDetail", query: data });
     },
     //获取地址选择列表
     async getAddressList(item) {
@@ -460,6 +480,7 @@ export default {
         uid: this.changeOrderPriceData.uid
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.addressList = response.address;
     },
     //获取省市区列表
@@ -467,7 +488,32 @@ export default {
       let url = "/admin/citys";
       let params = "";
       let response = await get({ url, params });
-      this.provincesList = response;
+      if (response.msg) return this.$message(response.msg);
+      this.provincesList = JSON.stringify(response);
+
+      localSave("provincesList", this.provincesList);
+    },
+    //获取物流信息
+    async getLogistics(item) {
+      this.ifLogistics = true;
+      this.changeOrderPriceData = item;
+      let url = "/admin/logistics";
+      let params = {
+        order_id: this.changeOrderPriceData.id
+      };
+      let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
+      this.logisticsInformation = response;
+      console.log(this.logisticsInformation, response, "物流信息");
+    },
+    //获取物流公司列表
+    async getCompanyList() {
+      let url = "/admin/express_company";
+      let params = "";
+      let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
+      this.companyList = response;
+      console.log(response, "response");
     },
     async onChangeOrderPrice(content = "", item = "") {
       if (item) {
@@ -528,8 +574,8 @@ export default {
         areaid: this.addressId[2] || this.addressId[0]
       };
       let url = "/admin/raw_order";
-      let respone = await put({ url, data });
-      if (respone.msg) return this.$message(respone.msg);
+      let response = await put({ url, data });
+      if (response.msg) return this.$message(response.msg);
       this.ifOrderPrice = false;
       this.$emit("onchange");
       if (content === "order_amount") return this.$message("订单改价成功");
@@ -545,10 +591,10 @@ export default {
         refund_money: this.changeOrderPriceData.order_amount
       };
       let url = "/admin/raw_order";
-      let respone = await post({ url, data });
-      console.log(respone);
+      let response = await post({ url, data });
+      console.log(response);
       this.ifRefund = false;
-      if (respone.msg) return this.$message(respone.msg);
+      if (response.msg) return this.$message(response.msg);
       // this.$message("退款成功");
     }
   }
@@ -599,7 +645,8 @@ input {
 
 .table-content-content {
   border-bottom: 1px solid #c0c4cc;
-  background: rgba(233, 233, 233, 1);
+  border-top: 1px solid #c0c4cc;
+  background: #f6f6f6;
 }
 
 .table-content-content-div {
@@ -728,6 +775,20 @@ input {
   color: rgba(51, 51, 51, 0.5);
   border-radius: 4px;
 }
+.shipments {
+  border: 1px solid #c0c4cc;
+  border-right: 0;
+  border-bottom: 0;
+  .table-content-content {
+    border-top: 0;
+    border-bottom: 0;
+    .table-content-content-div {
+      border-right: 1px solid #c0c4cc;
+      border-bottom: 1px solid #c0c4cc;
+      border-top: 0;
+    }
+  }
+}
 .box {
   .box-i,
   .box-img {
@@ -737,7 +798,7 @@ input {
     .box-left {
       font-size: 14px;
       color: #333333;
-      width: 100px;
+      width: 130px;
       text-align: right;
       padding-right: 10px;
       box-sizing: border-box;
@@ -746,7 +807,7 @@ input {
       margin-left: 10px;
     }
     input {
-      width: 410px;
+      width: 680px;
       height: 40px;
       line-height: 40px;
       padding: 0 20px;
@@ -760,7 +821,7 @@ input {
       margin-left: 10px;
     }
     .el-select {
-      width: 410px;
+      width: 680px;
       height: 40px;
       margin-left: 10px;
 

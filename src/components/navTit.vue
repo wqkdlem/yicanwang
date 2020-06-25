@@ -1,8 +1,8 @@
 <template>
   <div class="nav">
     <div class="nav-left">
-      <img style src alt />
-      <span>伊餐网</span>
+      <img style :src="logo" alt />
+      <!-- <span>伊餐网</span> -->
     </div>
     <div class="nav-center">
       <div
@@ -17,15 +17,15 @@
       </div>
     </div>
     <div class="nav-rig" @click="ifQuit = true;">
-      <img style src alt />
-      <span>111</span>
+      <img style :src="touxiang" alt />
+      <span>{{username}}</span>
     </div>
-    <el-dialog title="物流" :visible.sync="ifQuit" width="600px">
+    <el-dialog title="退出登录"  class="abow_dialog" :visible.sync="ifQuit" width="600px">
       <div class="box">
         <div>确认退出当前帐号？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifChagneUser = false">取 消</el-button>
-          <el-button type="primary" @click="onToQuit">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onToQuit">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -34,89 +34,23 @@
 
 <script>
 import { get, post, del, put, fakeGet } from "@/utils/request.js";
+import { localSave, localRead } from "@/lib/local.js";
 export default {
   name: "navTit",
   props: { vid: {} },
   data() {
     return {
       ifQuit: false,
-      navData: [
-        // {
-        //   id: 1,
-        //   pid: 0,
-        //   title: "首页",
-        //   condition: 1,
-        //   level: 1,
-        //   icon: "shouye",
-        //   icons: "onshouye",
-        //   url: "#"
-        // },
-        // {
-        //   id: 2,
-        //   pid: 0,
-        //   title: "采购",
-        //   condition: 1,
-        //   level: 1,
-        //   icon: "caigou",
-        //   icons: "onCaigou",
-        //   url: "#"
-        // },
-        // {
-        //   id: 41,
-        //   pid: 0,
-        //   title: "点餐",
-        //   condition: 1,
-        //   level: 1,
-        //   icon: "diancan",
-        //   icons: "onDiancan",
-        //   url: "#"
-        // },
-        // {
-        //   id: 42,
-        //   pid: 0,
-        //   title: "大数据",
-        //   condition: 1,
-        //   level: 1,
-        //   icon: "shuju",
-        //   icons: "onShuju",
-        //   url: "#"
-        // },
-        // {
-        //   id: 43,
-        //   pid: 0,
-        //   title: "推广",
-        //   condition: 1,
-        //   level: 1,
-        //   icon: "tuiguang",
-        //   icons: "onTuiguang",
-        //   url: "#"
-        // },
-        // {
-        //   id: 54,
-        //   pid: 0,
-        //   title: "社区",
-        //   condition: 1,
-        //   level: 1,
-        //   icon: "shequ",
-        //   icons: "onShequ",
-        //   url: "#"
-        // },
-        // {
-        //   id: 64,
-        //   pid: 0,
-        //   title: "系统设置",
-        //   condition: 1,
-        //   level: 1,
-        //   icon: "shezhi",
-        //   icons: "onShezhi",
-        //   url: "#"
-        // }
-      ]
+      touxiang: require("@/assets/new_images/touxiang.png"),
+      logo: require("@/assets/new_images/logo.png"),
+      navData: "",
+      username: ""
     };
   },
   catch: {},
   created() {
     this.onGetNavList();
+    this.username = localRead("username");
   },
   methods: {
     onToPage(item) {
@@ -165,16 +99,15 @@ export default {
   .nav-left {
     width: 245px;
     background-color: #39ab6c;
-    height: 120px;
+    height: 110px;
     padding-left: 35px;
     box-sizing: border-box;
     text-align: left;
     display: flex;
     align-items: center;
     img {
-      width: 44px;
-      height: 44px;
-      border: 1px solid red;
+      width: 120px;
+      height: 35px;
       line-height: 120px;
       display: inline-block;
     }
@@ -203,7 +136,6 @@ export default {
     img {
       width: 44px;
       height: 44px;
-      border: 1px solid red;
       display: inline-block;
     }
     span {

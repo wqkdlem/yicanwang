@@ -167,13 +167,14 @@
           </div>
           <div class="userList-bot-bot-i-cene">
             <div>
-              <span style="font-size:14px">¥</span> 9999
+              <span style="font-size:14px">¥</span>
+              {{item.week_money}}
             </div>
-            <p>均周</p>
+            <p>本周</p>
             <span>交易金额</span>
           </div>
           <div class="userList-bot-bot-i-cend userList-bot-bot-i-cenf">
-            <div class="userList-bot-bot-i-cend-i">
+            <div class="userList-bot-bot-i-cend-i" @click="onToOlderFrom(item)">
               <img :src="dingdanIcon" alt />
               <div>订单列表</div>
             </div>
@@ -183,14 +184,14 @@
             </div>
           </div>
           <div class="userList-bot-bot-i-ceng">
-            <div class="userList-bot-bot-i-ceng-ia">发优惠劵</div>
+            <!-- <div class="userList-bot-bot-i-ceng-ia">发优惠劵</div> -->
             <div class="userList-bot-bot-i-ceng-ib">{{item.createtime}}</div>
           </div>
           <!-- <div class="userList-bot-bot-i"></div> -->
         </div>
       </div>
     </div>
-    <el-dialog :title="modelTitle" :visible.sync="dialogVisible" width="500px">
+    <el-dialog :title="modelTitle"  class="abow_dialog" :visible.sync="dialogVisible" width="500px">
       <div class="box" v-if="modelTitle=='修改用户标签'">
         <div
           class="box-i"
@@ -211,7 +212,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="onChangeLabel">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onChangeLabel">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -306,6 +307,7 @@ export default {
         end_time: this.date[1] || ""
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
     },
     handleSizeChange(data) {
@@ -324,7 +326,7 @@ export default {
         type: "member"
       };
       let response = await get({ url, params });
-      console.log(response);
+      if (response.msg) return this.$message(response.msg);
       this.memberList = response;
       console.log(this.memberList, "初始化所需所有列表");
     },
@@ -353,6 +355,17 @@ export default {
       if (response.msg) return this.$message(response.msg);
       this.getTableData();
       this.$message("修改成功");
+    },
+    //用户列表跳转订单
+    onToOlderFrom(item) {
+      let data = {
+        id: item.id
+      };
+      if (item.order_type === 0) return this.$message("暂无订单信息");
+      if (item.order_type === 1)
+        return this.$router.push({ path: "/rawMaterial", query: data });
+      if (item.order_type === 2)
+        return this.$router.push({ path: "/soupBases", query: data });
     },
     onToUserDetail(data) {
       console.log(data);
@@ -413,7 +426,7 @@ export default {
       display: flex;
       justify-content: flex-end;
       .userList-bot-top-i {
-        // width: 130px;
+        cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;

@@ -2,8 +2,8 @@
   <div class="productList">
     <div class="productList-top">
       <div class="productList-top-tit">
-        产品列表
-        <span style="color:#3CB371">(2)</span>
+        汤料列表
+        <!-- <span style="color:#3CB371">(2)</span> -->
       </div>
       <div class="productList-top-con">
         <div class="productList-top-con-left">
@@ -46,36 +46,47 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" icon="el-icon-search" @click="getTableData">搜索</el-button>
+        <el-button
+          style="margin-left:40px"
+          type="primary"
+          class="el-button"
+          icon="el-icon-search"
+          @click="getTableData"
+        >搜索</el-button>
       </div>
     </div>
     <div class="productList-bot">
       <div class="productList-bot-top">
         <div class="productList-bot-top-w">
-          <div class="productList-bot-top-i" @click="onToProductListDetail">
+          <div class="productList-bot-top-i" @click="onToProductListDetailAdd">
             <i class="el-icon-plus"></i>
             <span>新增汤料</span>
           </div>
-          <div class="productList-bot-top-i">
+          <!-- <div class="productList-bot-top-i">
             <i class="el-icon-delete"></i>
             <span>回收站</span>
-          </div>
+          </div>-->
         </div>
       </div>
       <div class="productList-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
-          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <!-- <el-table-column align="center" type="selection" width="55"></el-table-column> -->
           <el-table-column align="center" prop="id" label="ID"></el-table-column>
           <el-table-column align="center" prop="goods_name" label="名称"></el-table-column>
           <el-table-column align="center" prop="goods_weight" label="重量"></el-table-column>
           <el-table-column align="center" prop="cate.name" label="分类"></el-table-column>
-          <el-table-column align="center" prop="group" label="图片">
-            <img slot-scope="slot" style="width:120px;height:120px" :src="slot.row.goodImg" alt />
+          <el-table-column align="center" prop="group" label="图片" width="200">
+            <img
+              slot-scope="slot"
+              style="width:180px;height:70px;display:inline-block;"
+              :src="slot.row.goodImgs"
+              alt
+            />
           </el-table-column>
-          <el-table-column align="center" prop="goods_price" label="成本价"></el-table-column>
+          <el-table-column align="center" prop="goods_cost" label="成本价"></el-table-column>
           <el-table-column align="center" prop="goods_price" label="售价"></el-table-column>
-          <el-table-column align="center" prop="group" label="库存"></el-table-column>
-          <el-table-column align="center" prop="group" label="排序"></el-table-column>
+          <el-table-column align="center" prop="goods_storage" label="库存"></el-table-column>
+          <el-table-column align="center" prop="weight" label="排序"></el-table-column>
           <el-table-column align="center" prop="status" label="上架">
             <div slot-scope="scope">
               <i
@@ -91,15 +102,8 @@
             </div>
           </el-table-column>
 
-          <el-table-column align="center" label="操作" width="160">
-            <!--  @click="onShowJurisdiction(scope.row)" @click="onToCompile(scope.row)"  @click="ifDeleData(scope.row.id)"-->
+          <el-table-column align="center" label="操作" width="160" fixed="right">
             <template slot-scope="scope">
-              <!-- <el-button
-                type="text"
-                size="small"
-                style="color:#3CB371"
-                @click="onTOComment(scope.row.id)"
-              >评论</el-button>-->
               <el-button
                 type="text"
                 size="small"
@@ -116,26 +120,25 @@
             </template>
           </el-table-column>
         </el-table>
-
-        <div class="block">
-          <span class="demonstration">每页显示</span>
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="100"
-            layout="sizes, prev, pager, next"
-            :total="10"
-          ></el-pagination>
-        </div>
+      </div>
+      <div class="block">
+        <span class="demonstration">每页显示</span>
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="100"
+          layout="sizes, prev, pager, next"
+          :total="tableData.page.data_count"
+        ></el-pagination>
       </div>
     </div>
-    <el-dialog title="删除等级" :visible.sync="ifShowDele" width="400px">
+    <el-dialog title="删除产品" class="abow_dialog" :visible.sync="ifShowDele" width="900px">
       <div class="box">
         <div class="box-con">确认删除当前产品？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="ifShowDele = false">取 消</el-button>
-          <el-button type="primary" @click="onSoupBases">确 定</el-button>
+          <el-button style="margin-left:40px" type="primary" @click="onSoupBases">确 定</el-button>
         </span>
       </div>
     </el-dialog>
@@ -198,51 +201,18 @@ export default {
         limit: this.limit
       };
       let response = await get({ url, params });
+      if (response.msg) return this.$message(response.msg);
       this.tableData = response;
       console.log(this.tableData, "汤料数据");
     },
-    onChangeLable(data) {
-      this.ifChanlable = true;
-      this.modelTitle = "修改标签";
-      this.changeDataContent = data;
-    },
-    onAddLable() {
-      this.ifChanlable = true;
-      this.modelTitle = "新增标签";
-      this.changeDataContent = {
-        group: "",
-        status: 1,
-        gid: ""
-      };
+    // 产品管理新增
+    onToProductListDetailAdd() {
+      this.$router.push({ path: "/soupBasesListDetail" });
     },
     //产品管理编辑
     onToProductListDetail(data = "") {
       this.$router.push({ path: "/soupBasesListDetail", query: data });
     },
-    // async onSureChangeLable() {
-    //   this.ifChanlable = false;
-    //   let url = "/admin/product_tl";
-    //   let { group = "", status = 1, gid = "" } = this.changeDataContent;
-    //   if (!group) return this.$message("请先输入标签名称");
-    //   let data = {};
-    //   if (this.modelTitle == "修改标签") {
-    //     let data = {
-    //       name: group,
-    //       status,
-    //       id: gid
-    //     };
-    //     let response = await put({ url, data });
-    //   }
-    //   if (this.modelTitle == "新增标签") {
-    //     let data = {
-    //       name: group,
-    //       status
-    //     };
-    //     let response = await post({ url, data });
-    //   }
-    //   this.$message(this.modelTitle + "成功");
-    //   this.getTableData();
-    // },
     async onSoupBases() {
       let url = "/admin/product_tl";
       let data = {
@@ -333,7 +303,7 @@ export default {
         display: flex;
         justify-content: start;
         .productList-bot-top-i {
-          // width: 130px;
+          cursor: pointer;
           margin-right: 30px;
           padding: 0 12px;
           box-sizing: border-box;
@@ -358,13 +328,13 @@ export default {
   .userLabel-bot-bot {
     margin-top: 20px;
     flex: auto;
-    .block {
-      display: flex;
-      align-items: center;
-      flex-direction: row;
-      justify-content: flex-end;
-      margin-top: 10px;
-    }
+  }
+  .block {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 10px;
   }
   .box {
     .box-i {

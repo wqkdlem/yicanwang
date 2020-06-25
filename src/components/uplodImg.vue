@@ -9,13 +9,15 @@
       :on-success="uploadSuccess"
       :before-remove="beforeRemove"
       :before-upload="beforeAvatarUpload"
-      :limit="1"
+      :limit="9"
       multiple
       :on-exceed="handleExceed"
       :file-list="fileList"
+      :show-file-list="false"
+      ref="foreignPersonUploadItem"
     >
       <div>
-        <img v-if="uploadPicUrl" :src="uploadPicUrl||uplodingImg" class="avatar" />
+        <img v-if="uploadPicUrla" :src="uploadPicUrla" class="avatar" />
         <img v-else :src="uplodingImg" />
       </div>
       <!-- <el-button size="small" type="primary">选择图片</el-button> -->
@@ -41,32 +43,63 @@ export default {
       domain: "https://up-z2.qiniup.com", // 七牛云的上传地址（华东区）
       qiniuaddr: "res.ycw.emjiayuan.com", // 七牛云的图片外链地址 七牛云空间的外链地址
       fileList: [],
-      uplodingImg: require("@/assets/new_images/uplodingImg.png")
+      uplodingImg: require("@/assets/new_images/uplodingImg.png"),
+      uploadPicUrla: ""
     };
   },
   created() {
+    this.uploadPicUrla = this.uploadPicUrl;
     this.getQiniuToken();
   },
   watch: {
     uploadPicUrl(news, old) {
       console.log(news, old);
+      this.uploadPicUrla = news;
+      console.log("this.uploadPicUrla");
+      console.log(old);
     }
   },
   methods: {
     async getQiniuToken() {
       let url = "/admin/qiniu_token";
       let response = await get({ url });
-      this.QiniuData = response;
+      this.QiniuData.token = response;
       console.log(this.QiniuData);
     },
     beforeAvatarUpload(file) {
+      // this.$refs.foreignPersonUploadItem.uploadFiles;
       this.QiniuData.data = file;
-      this.QiniuData.key = `${file.name}`;
-      console.log(this.QiniuData.key);
+      this.QiniuData.key = `${file.uid}${file.name}`;
+      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const extension =
+        testmsg === "jpg" ||
+        testmsg === "JPG" ||
+        testmsg === "jpeg" ||
+        testmsg === "JPEG" ||
+        testmsg === "png" ||
+        testmsg === "PNG" ||
+        testmsg === "bmp" ||
+        testmsg === "BMP";
+      const isLt50M = file.size / 1024 / 1024 < 10;
+      if (!extension) {
+        this.$message({
+          message: "上传图片只能是jpg / jpeg / png / bmp格式!",
+          type: "error"
+        });
+        return false; //必须加上return false; 才能阻止
+      }
+      console.log(file);
+      if (!isLt50M) {
+        this.$message({
+          message: "上传文件大小不能超过 10MB!",
+          type: "error"
+        });
+        return false;
+      }
+      return extension || isLt50M;
     },
     uploadSuccess(response, file, fileList) {
-      this.uploadPicUrl = `http://${this.qiniuaddr}/${response.key}`;
-      console.log(this.uploadPicUrl, "传给后端的图片地址");
+      this.uploadPicUrla = `http://${this.qiniuaddr}/${response.key}`;
       let data = {
         uploadPicUrl: this.uploadPicUrl,
         uploadPicImg: response.key
@@ -96,7 +129,7 @@ export default {
     },
     handleExceed(files, fileList) {
       this.$message.warning(
-        `当前限制选择 1 张图片，如需更换，请删除上一张图片在重新选择！`
+        `当前限制选择 9 张图片，如需更换，请删除上一张图片在重新选择！`
       );
     }
   }
@@ -108,8 +141,8 @@ export default {
 .el-upload {
   div {
     img {
-      width: 160px;
-      height: 160px;
+      width: 180px;
+      height: 180px;
     }
   }
 }

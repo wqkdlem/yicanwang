@@ -4,19 +4,8 @@
       <div class="purchaseSlideshow-top-tit">轮播图管理</div>
       <div class="purchaseSlideshow-top-con">
         <div class="purchaseSlideshow-top-con-left">
-          <div class="purchaseSlideshow-top-con-i">
-            类型：
-            <el-select v-model="value" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </div>
           <!-- <div class="purchaseSlideshow-top-con-i">
-            显示位置：
+            类型：
             <el-select v-model="value" placeholder="请选择">
               <el-option
                 v-for="item in options"
@@ -32,7 +21,7 @@
           </div>
         </div>
 
-        <el-button type="primary" class="el-button" bImg="el-bImg-search">搜索</el-button>
+        <el-button style="margin-left:40px" type="primary" class="el-button" bImg="el-bImg-search" @click="getTableData">搜索</el-button>
       </div>
     </div>
     <div class="purchaseSlideshow-bot">
@@ -41,27 +30,27 @@
           <i class="el-bImg-plus"></i>
           <span>新增轮播图</span>
         </div>
-        <div class="purchaseSlideshow-bot-top-i">
+        <!-- <div class="purchaseSlideshow-bot-top-i">
           <i class="el-bImg-delete"></i>
           <span>批量删除</span>
-        </div>
+        </div>-->
       </div>
       <div class="purchaseSlideshow-bot-bot">
         <el-table :data="tableData.data" border :height="700" style="width: 100%;">
-          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <!-- <el-table-column align="center" type="selection" width="55"></el-table-column> -->
           <el-table-column align="center" prop="id" label="ID"></el-table-column>
-          <el-table-column align="center" prop="name" label="图片" width="180">
+          <el-table-column align="center" prop="name" label="图片" width="200">
             <img
               slot-scope="scope"
-              style="width:100px;height:40px;border-radius:4px;"
+              style="width:180px;height:70px;display:inline-block;"
               :src="scope.row.bImgs"
               alt
             />
           </el-table-column>
           <el-table-column align="center" prop="title" label="标题"></el-table-column>
           <el-table-column align="center" prop="weight" label="排序"></el-table-column>
-          <el-table-column align="center" prop="link" label="链接"></el-table-column>
-          <el-table-column align="center" prop="type_id" label="类型"></el-table-column>
+          <el-table-column align="center" prop="link" width="180" label="链接"></el-table-column>
+          <el-table-column align="center" prop="type_text" label="类型"></el-table-column>
           <el-table-column align="center" label="启用">
             <el-switch
               slot-scope="scope"
@@ -70,10 +59,22 @@
               inactive-color="#ff4949"
             ></el-switch>
           </el-table-column>
-          <el-table-column align="center" prop="address" label="操作" width="160">
+          <el-table-column align="center" prop="address" label="操作" width="160" fixed="right">
             <template slot-scope="scope">
-              <el-button size="mini" @click="onToChange(scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="ifDeleData(scope.row.id)">删除</el-button>
+              <el-button
+                type="text"
+                size="small"
+                style="color:#3CB371"
+                @click="onToChange(scope.row)"
+              >编辑</el-button>
+              <el-button
+                type="text"
+                size="small"
+                style="color:#FB6534"
+                @click="ifDeleData(scope.row.id)"
+              >删除</el-button>
+              <!-- <el-button size="mini" @click="onToChange(scope.row)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="ifDeleData(scope.row.id)">删除</el-button>-->
             </template>
           </el-table-column>
         </el-table>
@@ -93,7 +94,7 @@
     </div>
     <el-dialog
       :title="modelTitle"
-      :visible.sync="ifChangeGoods"
+       class="abow_dialog" :visible.sync="ifChangeGoods"
       width="900px"
       :before-close="handleClose"
     >
@@ -121,17 +122,22 @@
           <div class="box-left">图片：</div>
           <uplodImg
             style="margin-left:10px"
-            :uploadPicUrl="changeData.bImg"
+            :uploadPicUrl="changeData.bImgs"
             @uploadSuccess="uploadSuccess"
           ></uplodImg>
         </div>
         <div class="box-i box-img">
           <div class="box-left">链接：</div>
-          <input width type="text" v-model="changeData.link" placeholder="请输入链接" />
+          <input
+            width
+            type="text"
+            v-model="changeData.link"
+            placeholder="内部链接请填写具体商品ID,外部链接请填写链接地址"
+          />
         </div>
         <div class="box-i">
           <div class="box-left">排序：</div>
-          <input width type="number" v-model="changeData.weight" placeholder="请输入排序" />
+          <input width type="number" v-model="changeData.weight" min="0" placeholder="请输入排序" />
         </div>
         <div class="box-i">
           <div class="box-left">启用：</div>
@@ -145,15 +151,15 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifChangeGoods = false">取 消</el-button>
-        <el-button type="primary" @click="ifChangeuser">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="ifChangeuser">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="删除管理员" :visible.sync="ifDele" width="300px">
-      确定删除管理员？
+    <el-dialog title="删除轮播图"  class="abow_dialog" :visible.sync="ifDele" width="900px">
+      确定删除轮播图？
       <div class="box"></div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="ifDele = false">取 消</el-button>
-        <el-button type="primary" @click="onDeleData">确 定</el-button>
+        <el-button style="margin-left:40px" type="primary" @click="onDeleData">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -184,7 +190,8 @@ export default {
         weight: "",
         is_show: true,
         type_id: 2,
-        link: ""
+        link: "",
+        bImgs: ""
       },
       modelTitle: "修改轮播图",
       uploadPicImg: ""
@@ -214,6 +221,8 @@ export default {
       this.ifChangeGoods = true;
       this.changeData = data;
       this.modelTitle = "修改轮播图";
+      this.uploadPicImg = data.bImg;
+      this.uploadPicUrl = data.bImgs;
     },
     //确定修改或者新增轮播图
     async ifChangeuser() {
@@ -230,7 +239,8 @@ export default {
       } = this.changeData;
       console.log(this.changeData);
       if (!title) return this.$message("请先输入标题");
-      // if (!bImg) return this.$message("请先上传图片");
+      if (!this.uploadPicImg) return this.$message("请先上传图片");
+      if (!link) return this.$message("请先输入链接");
       if (!weight) return this.$message("请先输入排序");
       let data = {};
       if (this.modelTitle == "修改轮播图") {
@@ -244,6 +254,7 @@ export default {
           link
         };
         let response = await put({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       if (this.modelTitle == "新增轮播图") {
         let data = {
@@ -255,9 +266,10 @@ export default {
           link
         };
         let response = await post({ url, data });
+        if (response.msg) return this.$message(response.msg);
       }
       this.getTableData();
-      // this.$message(this.modelTitle + "成功");
+      this.$message(this.modelTitle + "成功");
     },
     async getTableData() {
       let url = "/admin/banner_yl";
@@ -267,20 +279,18 @@ export default {
         keyword: this.keyword,
         type: this.type
       };
-      let respone = await get({ url, params });
-      // if (respone.code != 200) return this.$message(respone.msg);
-      respone.data.map((item, index) => {
+      let response = await get({ url, params });
+      // if (response.code != 200) return this.$message(response.msg);
+      response.data.map((item, index) => {
         console.log(item, index);
         if (item.is_show == 1) item.is_show = true;
         if (item.is_show == 0) item.is_show = false;
       });
-      this.tableData = respone;
+      this.tableData = response;
     },
     uploadSuccess(data) {
-      this.changeData.bImg = data.uploadPicUrl;
-      console.log(this.changeData.bImg, "前端展示图片");
       this.uploadPicImg = data.uploadPicImg;
-      console.log(this.changeData.bImg, this.uploadPicImg);
+      console.log(this.uploadPicImg);
     },
     handleSizeChange(data) {
       this.page = 1;
@@ -295,10 +305,10 @@ export default {
       this.ondeleDataID = id;
       this.ifDele = true;
     },
-    //删除管理员
+    //删除轮播图
     async onDeleData() {
       this.ifDele = false;
-      let url = "/admin/admin/";
+      let url = "/admin/banner_yl";
       let data = { id: this.ondeleDataID };
       let response = await del({ url, data });
       this.getTableData();
@@ -360,7 +370,7 @@ export default {
       display: flex;
       justify-content: start;
       .purchaseSlideshow-bot-top-i {
-        // width: 130px;
+        cursor: pointer;
         margin-right: 30px;
         padding: 0 12px;
         box-sizing: border-box;
